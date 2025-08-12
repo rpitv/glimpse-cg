@@ -3,6 +3,7 @@ import { Server as Engine } from "engine.io";
 import { Server } from "socket.io";
 import { defineEventHandler } from "h3";
 import { createReplicants, getReplicant } from '~/utils/replicants';
+import { migrateReplicantsSchema } from "~/utils/db";
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
@@ -11,6 +12,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   io.bind(engine);
   // Initialize the replicants if it doesn't already exist
   createReplicants();
+  // Migrate replicants schema if needed
+  migrateReplicantsSchema();
 
   io.on("connection", (socket) => {
     
