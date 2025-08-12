@@ -1,62 +1,68 @@
 <template>
 	<div :class="'center'">
 		<div class="scoreboard bordered">
-			<div class="team2-section">
-				<TeamView v-if="teamTwo.enabled.value" :team-id="1" />
-				<div v-if="announcementType === 'away'" class="announcement-section team2">
+			<div>
+				<TeamView team="awayTeam" />
+				<div v-if="powerplaySync.type === 'away'" class="announcement-section awayTeam">
 					<p>
-						{{ powerPlayStatus }} {{ powerPlayClock }}
+						{{ powerplaySync.status }} {{ powerPlayClock }}
 					</p>
 				</div>
-				<div v-if="replicants.announcements.team2.value.length > 0" class="announcement-section team2">
+				<div v-if="scoreboard!.awayTeam.announcement.length > 0" class="announcement-section awayTeam">
 					<p>
-						{{ computedMessage(replicants.announcements.team2.value[0]).value }}
+						{{ computedMessage(scoreboard!.awayTeam.announcement[0]).value }}
 					</p>
 				</div>
-				<div v-if="replicants.gameSettings.showShootouts.value" class="announcement-section team2">
+				<div v-if="channel![channelIndex].shootout" class="announcement-section awayTeam">
 					<p>
-						{{replicants.teams[1].shootouts.value}}
+            <span v-for="shot of hockeyAwayTeam.score">
+              {{ shot ? '✅' : '❌' }}
+            </span>
 					</p>
 				</div>
 			</div>
-
-			<div class="team1-section bordered">
-				<TeamView v-if="teamOne.enabled.value" :team-id="0" />
-				<div v-if="announcementType === 'home'" class="announcement-section team1">
+			<div class="bordered">
+				<TeamView team="homeTeam" />
+				<div v-if="powerplaySync.type === 'home'" class="announcement-section homeTeam">
 					<p>
-						{{ powerPlayStatus }} {{ powerPlayClock }}
+            {{ powerplaySync.status }} {{ powerPlayClock }}
 					</p>
 				</div>
-				<div v-if="replicants.announcements.team1.value.length > 0" class="announcement-section team1">
+				<div v-if="scoreboard!.homeTeam.announcement.length > 0" class="announcement-section homeTeam">
 					<p>
-						{{ computedMessage(replicants.announcements.team1.value[0]).value }}
+						{{ computedMessage(scoreboard!.homeTeam.announcement[0]).value  }}
 					</p>
 				</div>
-				<div v-if="replicants.gameSettings.showShootouts.value" class="announcement-section team1">
+				<div v-if="channel![channelIndex].shootout" class="announcement-section homeTeam">
 					<p>
-						{{replicants.teams[0].shootouts.value}}
+					<p>
+            <span v-for="shot of hockeyHomeTeam.score">
+              {{ shot ? '✅' : '❌' }}
+            </span>
+					</p>
 					</p>
 				</div>
 			</div>
 
 			<div class="time-section bordered">
-				<p v-if="replicants.gameSettings.periods.enabled.value" class="period-section">
+				<p class="period-section">
 					{{ formattedPeriod }}
 				</p>
 				<hr>
-				<div v-if="replicants.gameSettings.clock.enabled.value" class="clock-section">
+				<div class="clock-section">
 					<p>
 						{{ formattedClockTime }}
 					</p>
 				</div>
-				<div v-if="announcementType === 'global'" class="announcement-section global">
+				<div v-if="powerplaySync.type === 'global'" class="announcement-section global">
 					<p>
-						{{ powerPlayStatus }} {{ powerPlayClock }}
+						{{ powerplaySync.status }} {{ powerPlayClock }}
+
 					</p>
 				</div>
-				<div v-if="replicants.announcements.global.value.length > 0" class="announcement-section global">
+				<div v-if="scoreboard!.announcement.length > 0" class="announcement-section global">
 					<p>
-						{{ computedMessage(replicants.announcements.global.value[0]).value }}
+						{{ computedMessage(scoreboard!.announcement[0]).value }}
 					</p>
 				</div>
 			</div>
@@ -65,23 +71,30 @@
 </template>
 
 <script setup lang="ts">
-
-import {computed} from "vue";
+import type { Channels, Configuration, Scoreboard } from "~/types/replicants";
 import TeamView from "./TeamView.vue";
-import {loadReplicants} from "../../../../browser-common/replicants";
-import {Announcement} from "../../../../common/Announcement";
+import { Announcement } from "~/utils/announcement";
 
-const replicants = await loadReplicants();
-const teamOne = replicants.teams[0];
-const teamTwo = replicants.teams[1];
-
-const clock = replicants.scoreboard.clock;
-const period = replicants.scoreboard.period;
+const route = useRoute();
+let channelIndex = ref(0);
+if (route.query.channel)
+  channelIndex.value = parseInt(route.query.channel as string);
+const channel = useReplicant<Channels>("channels");
+const scoreboard = useReplicant<Scoreboard>("scoreboard");
+const configuration = useReplicant<Configuration>("configuration")
+const hockeyAwayTeam = computed(() => scoreboard.value!.hockey.awayTeam);
+const hockeyHomeTeam = computed(() => scoreboard.value!.hockey.homeTeam);
+const awayTeam = computed(() => configuration.value!.awayTeam);
+const homeTeam = computed(() => configuration.value!.homeTeam);
+const awayTeamColor = computed(() => awayTeam.value.primaryColor);
+const homeTeamColor = computed(() => homeTeam.value.primaryColor);
+const clock = computed(() => scoreboard.value!.clock);
+const period = computed(() => scoreboard.value!.period);
 
 const formattedClockTime = computed<string>(() => {
-	const minutes = Math.floor(clock.time.value / 60000).toString();
-	let seconds = Math.floor((clock.time.value % 60000) / 1000).toString();
-	const millis = Math.floor((clock.time.value % 1000) / 100).toString();
+	const minutes = Math.floor(clock.value.time / 60000).toString();
+	let seconds = Math.floor((clock.value.time % 60000) / 1000).toString();
+	const millis = Math.floor((clock.value.time % 1000) / 100).toString();
 	if (minutes === '0') {
 		return `${seconds}.${millis}`;
 	} else {
@@ -92,9 +105,9 @@ const formattedClockTime = computed<string>(() => {
 })
 
 const formattedPeriod = computed<string>(() => {
-	if(period.value > replicants.gameSettings.periods.count.value) {
-		const overtimePeriod = period.value - replicants.gameSettings.periods.count.value;
-		if (period.value > replicants.gameSettings.periods.overtime.count.value + 3)
+	if(period.value.count > period.value.length) {
+		const overtimePeriod = period.value.count - period.value.length;
+		if (period.value.count > period.value.overtime.length + period.value.length)
 			return 'S/O';
 		if(overtimePeriod === 1) {
 			return 'OT';
@@ -103,17 +116,17 @@ const formattedPeriod = computed<string>(() => {
 		}
 	}
 
-	if(period.value === undefined) {
+	if(period.value.count === undefined) {
 		return '1st';
 	}
 
 	// Teens for some reason all end in "th" in English.
-	if(period.value > 10 && period.value < 20) {
+	if(period.value.count > 10 && period.value.count < 20) {
 		return period.value + 'th';
 	}
 
-	// For all other numbers, we need to figure out the suffix.
-	const lastNumberOfPeriod = period.value % 10;
+	// For all other numbers up to 99, we need to figure out the suffix.
+	const lastNumberOfPeriod = period.value.count % 10;
 	if(lastNumberOfPeriod === 1) {
 		return `${period.value}st`;
 	} else if(lastNumberOfPeriod === 2) {
@@ -138,10 +151,8 @@ function pickTextColorBasedOnBgColorSimple(bgColor: string, lightColor: string, 
 		darkColor : lightColor;
 }
 
-const team1Color = replicants.teams[0].primaryColor;
-const team2Color = replicants.teams[1].primaryColor;
-const team1TextColor = computed(() => pickTextColorBasedOnBgColorSimple(team1Color.value, '#ffffff', '#000000'))
-const team2TextColor = computed(() => pickTextColorBasedOnBgColorSimple(team2Color.value, '#ffffff', '#000000'))
+const homeTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(homeTeam.value.primaryColor, '#ffffff', '#000000'))
+const awayTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(awayTeam.value.primaryColor, '#ffffff', '#000000'))
 
 
 function computedMessage(message: Announcement) {
@@ -149,7 +160,7 @@ function computedMessage(message: Announcement) {
 		if(!message.timer || !message.timer.visible) {
 			return message.message;
 		} else {
-			const timeRemaining = message.timer.length - (message.timer.startedAt - replicants.scoreboard.clock.time.value);
+			const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.value!.clock.time);
 
 			const minutes = Math.max(0, Math.floor(timeRemaining / 60000)).toString();
 			// noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
@@ -165,153 +176,72 @@ function computedMessage(message: Announcement) {
 }
 
 // POWERPLAY SYNC
-const announcementType = computed(() => {
-	if (!replicants.scoreboard.penalty.value)
-		return "";
-	// If we are in overtime
-	if (replicants.gameSettings.periods.overtime.count.value + 3 < period.value)
-		return "";
-	if (replicants.gameSettings.periods.count.value === 4 || (replicants.gameSettings.periods.count.value === 5 &&
-		replicants.gameSettings.periods.shootouts.value !== true)) {
-		// If two away players are on penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value) {
-			// If two home players are on penalty
-			if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value)
-				return "";
-			if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-				return "home";
-			return "home";
-		}
-		// If two home players are on penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value) {
-			// If two home players are on penalty
-			if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value)
-				return "";
-			if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-				return "away";
-			return "away";
-		}
-		// If either away player is on a penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value) {
-			// If either home player is on a penalty...
-			if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-				return "";
-			return "home";
-		}
-		// If either home player is on a penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value) {
-			// If either home player is on a penalty...
-			if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-				return "";
-			return "away";
-		}
-	}
-	if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value) {
-		// If two home players are on penalty
-		if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value)
-			return "global"
-		return "home";
-	}
-	// If two home players are on penalty...
-	if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value) {
-		// If two away players are on penalty
-		if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value)
-			return "global";
-		return "away";
-	}
-	// If either away player is on a penalty...
-	if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value) {
-		// If either home player is on a penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-			return "global";
-		return "home";
-	}
-	// If either home player is on a penalty...
-	if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value) {
-		// If either home player is on a penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-			return "global";
-		return "away";
-	}
-	return "";
-})
-
-const powerPlayStatus = computed(() => {
-	if (replicants.gameSettings.periods.count.value >= 5 && replicants.gameSettings.periods.shootouts.value)
-		return "";
-	// If we are in overtime
-	if (replicants.gameSettings.periods.count.value === 4 || (replicants.gameSettings.periods.count.value === 5 && !replicants.gameSettings.periods.shootouts.value)) {
-		// If two away players are on penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value) {
-			// If two home players are on penalty
-			if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value)
-				return "";
-			if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-				return "4 on 3";
-			return "5 on 3";
-		}
-		// If two home players are on penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value) {
-			// If two home players are on penalty
-			if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value)
-				return "";
-			if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-				return "4 on 3";
-			return "5 on 3";
-		}
-		// If either away player is on a penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value) {
-			// If either home player is on a penalty...
-			if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-				return "";
-			return "Power Play";
-		}
-		// If either home player is on a penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value) {
-			// If either home player is on a penalty...
-			if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-				return "";
-			return "Power Play";
-		}
-	}
+const powerplaySync = computed(() => {
 	// If two away players are on penalty...
-	if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value) {
+  let powerplay = {
+    status: "",
+    type: "",
+  }
+	if (hockeyAwayTeam.value.penalty.player1.number && hockeyAwayTeam.value.penalty.player2.number) {
 		// If two home players are on penalty
-		if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value)
-			return "3 on 3";
-		if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-			return "4 on 3";
-		return "5 on 3"
+		if (hockeyHomeTeam.value.penalty.player1.number) {
+      if (hockeyHomeTeam.value.penalty.player2.number) {
+        powerplay.type = "global";
+        powerplay.status = "3 on 3";
+      } else {
+        powerplay.type = "home";
+        powerplay.status = "4 on 3";
+      }
+    } else {
+      powerplay.type = "home";
+      powerplay.status = "5 on 3";
+    }
 	}
 	// If two home players are on penalty...
-	if (replicants.teams[0].player1PenaltyNumber.value && replicants.teams[0].player2PenaltyNumber.value) {
-		// If two home players are on penalty
-		if (replicants.teams[1].player1PenaltyNumber.value && replicants.teams[1].player2PenaltyNumber.value)
-			return "3 on 3";
-		if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-			return "4 on 3";
-		return "5 on 3";
+	else if (hockeyHomeTeam.value.penalty.player1.number && hockeyHomeTeam.value.penalty.player2.number) {
+		// If two away players are on penalty
+    if (hockeyAwayTeam.value.penalty.player1.number) {
+      if (hockeyAwayTeam.value.penalty.player2.number) {
+        powerplay.type = "global";
+        powerplay.status = "3 on 3";
+      } else {
+        powerplay.type = "away";
+        powerplay.status = "4 on 3";
+      }
+    } else {
+      powerplay.type = "away";
+      powerplay.status = "5 on 3";
+    }
 	}
 	// If either away player is on a penalty...
-	if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value) {
+	else if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
 		// If either home player is on a penalty...
-		if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value)
-			return "4 on 4";
-		return "Power Play";
+		if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+       powerplay.type = "global";
+       powerplay.status = "4 on 4";
+    } else {
+      powerplay.type = "home";
+      powerplay.status = "Power Play";
+    }
 	}
 	// If either home player is on a penalty...
-	if (replicants.teams[0].player1PenaltyNumber.value || replicants.teams[0].player2PenaltyNumber.value) {
-		// If either home player is on a penalty...
-		if (replicants.teams[1].player1PenaltyNumber.value || replicants.teams[1].player2PenaltyNumber.value)
-			return "4 on 4";
-		return "Power Play";
-	}
-})
+	else if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+    // If either away player is on a penalty...
+    if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
+      powerplay.type = "global";
+      powerplay.status = "4 on 4";
+    } else {
+      powerplay.type = "away";
+      powerplay.status = "Power Play";
+    }
+  }
+	return powerplay;
+});
 
 const powerPlayClock = computed(() => {
 	let smallestTime = "";
-	const times = [replicants.teams[0].player1PenaltyClock.value, replicants.teams[0].player2PenaltyClock.value,
-					replicants.teams[1].player1PenaltyClock.value, replicants.teams[1].player2PenaltyClock.value];
+	const times = [hockeyHomeTeam.value.penalty.player1.timer, hockeyHomeTeam.value.penalty.player2.timer,
+    hockeyAwayTeam.value.penalty.player1.timer, hockeyAwayTeam.value.penalty.player2.timer];
 
 	for (const time of times) {
 		if (!time)
@@ -368,6 +298,7 @@ div {
 	align-items: center;
 	font-family: 'Roboto', sans-serif;
 	background-color: rgb(220, 220, 220);
+	height: var(--scoreboard-height);
 
 	hr {
 		height: 50%;
@@ -388,7 +319,6 @@ div {
 		font-size: 1.5vw;
 		width: 5.9vw;
 	}
-	height: var(--scoreboard-height);
 }
 
 .announcement-section {
@@ -408,24 +338,24 @@ div {
 		justify-content: center;
 	}
 
-	&.team1 {
+	&.homeTeam {
 		display: flex;
 		align-items: center;
 		text-align: left;
 		padding-left: 0.5em;
-		background-color: v-bind(team1Color);
-		color: v-bind(team1TextColor);
+		background-color: v-bind(homeTeamColor);
+		color: v-bind(homeTeamTextColor);
 		width: 20.7vw;
 		top: 5.4vh;
 	}
 
-	&.team2 {
+	&.awayTeam {
 		display: flex;
 		align-items: center;
 		text-align: left;
 		padding-left: 0.5em;
-		background-color: v-bind(team2Color);
-		color: v-bind(team2TextColor);
+		background-color: v-bind(awayTeamColor);
+		color: v-bind(awayTeamTextColor);
 		top: 5.4vh;
 		width: 20.7vw;
 	}

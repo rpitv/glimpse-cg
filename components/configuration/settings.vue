@@ -18,7 +18,7 @@
       <USeparator v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'" orientation="horizontal" :class="height" />
       <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
         <UFormField label="Type (Important for Rosters)">
-          <USelect :class="width" :items="type" v-model="configuration.type"/>
+          <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="$emit('update:config')"/>
         </UFormField>
       </div>
       <USeparator orientation="horizontal" :class="height" />
@@ -35,7 +35,7 @@ import TeamConfig from './teamConfig.vue';
 import type { Configuration } from '~/types/replicants';
 
 
-const channel = useState<string>('channel');
+
 const awayTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('awayTeamConfig');
 const homeTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('homeTeamConfig');
 
@@ -86,7 +86,7 @@ const type = [{
   value: 'women'
 }];
 
-const configuration = useReplicant<Configuration>(channel.value, 'configuration');
+const configuration = useReplicant<Configuration>('configuration');
 
 const emit = defineEmits(['update:config'])
 defineExpose({

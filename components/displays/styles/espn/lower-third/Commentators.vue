@@ -1,56 +1,51 @@
 <template>
-	<img :src="commentators" :style="{'bottom': `${offset}vh`}">
-	<div class="commentators-container" v-if="!replicants.lowerThird.commentators.twoPoint5a.value">
-		<p v-if="replicants.lowerThird.commentators.leftPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.leftPerson.name.value }}
-		</p>
-		<p v-if="replicants.lowerThird.commentators.centerPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.centerPerson.name.value }}
-		</p>
-		<p v-if="replicants.lowerThird.commentators.rightPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.rightPerson.name.value }}
-		</p>
-	</div>
-	<div class="commentators-2point5A-pt1" v-if="replicants.lowerThird.commentators.twoPoint5a.value">
-		<p v-if="replicants.lowerThird.commentators.leftPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.leftPerson.name.value }}
-		</p>
-		<p v-if="replicants.lowerThird.commentators.centerPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.centerPerson.name.value }}
-		</p>
-	</div>
-	<div class="commentators-2point5A-pt2" v-if="replicants.lowerThird.commentators.twoPoint5a.value">
-		<p v-if="replicants.lowerThird.commentators.rightPerson.name.value" :style="{'bottom': `${offset}vh`}">
-			{{ replicants.lowerThird.commentators.rightPerson.name.value }}
-		</p>
+	<img :style="commentatorsImage" :src="commentatorsGraphic" >
+	<div :style="commentatorsContainer">
+    <div v-for="(person, i) of commentators!.people" :key="i" class="commentator">
+      <span v-if="person.name" :style="{
+        color: person.nameColor || 'rgb(63, 64, 59)',
+        fontSize: person.nameSize + 3.5 + 'vh'
+      }">{{ person.name }}</span>
+    </div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import commentators from "../../../../../assets/espn/Commentators.png"
-import { loadReplicants } from "../../../../../browser-common/replicants";
-import {computed, ref, watch} from "vue";
+import commentatorsGraphic from "~/assets/espn/Commentators.png"
+import type { CSSProperties } from "vue";
+import { computed } from "vue";
+import type { LowerThird } from "~/types/replicants";
 
-const replicants = await loadReplicants();
+const replicants = useReplicant<LowerThird>("lowerThird");
+const commentators = computed(() => replicants.value?.commentators);
 
-const offset = computed(() => {
-	if (replicants.lowerThird.commentators.offset.enabled.value)
-		return replicants.lowerThird.commentators.offset.number.value;
-	else
-		return 0;
-})
-
+const commentatorsImage = computed((): CSSProperties => {
+	return {
+		bottom: commentators.value!.offsetY + "vh",
+	}
+});
+const commentatorsContainer = computed((): CSSProperties => {
+	return {
+		alignItems: "center",
+		bottom: commentators.value!.offsetY+ 17 + "vh",
+		display: "flex",
+		height: "5vh",
+		justifyContent: "space-around",
+		left: "14vw",
+		position: "absolute",
+		width: "72vw",
+	}
+});
 </script>
 
 <style scoped>
 @font-face {
 	font-family: "swiss721_med";
-	src: url('../../../../../assets/espn/Swiss721Medium.ttf')
+	src: url('~/assets/espn/Swiss721Medium.ttf')
 }
 div {
 	position: absolute;
 	font-family: "swiss721_med";
-	color: rgb(63, 64, 59);
 }
 img {
 	position: absolute;
@@ -58,37 +53,5 @@ img {
 	width: 100vw;
 	height: 100vh;
 	transition: opacity 1s;
-}
-
-.commentators-container {
-	position: absolute;
-	left: 14vw;
-	bottom: 20vh;
-	width: 72vw;
-	height: 5vh;
-	display: flex;
-	justify-content: space-around;
-	font-size: 3.5vh;
-}
-
-.commentators-2point5A-pt1 {
-	position: absolute;
-	left: 14vw;
-	width: 35vw;
-	height: 5vh;
-	bottom: 20vh;
-	display: flex;
-	justify-content: space-around;
-	font-size: 3.5vh;
-}
-.commentators-2point5A-pt2 {
-	position: absolute;
-	left: 64vw;
-	width: 22vw;
-	height: 5vh;
-	bottom: 20vh;
-	display: flex;
-	justify-content: space-around;
-	font-size: 3.5vh;
 }
 </style>

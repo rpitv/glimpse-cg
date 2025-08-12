@@ -9,27 +9,21 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   const io = new Server();
 
   io.bind(engine);
-  // Initialize the replicants for a default channel (e.g., 'default')
-  const defaultChannel = "default";
-  createReplicants(defaultChannel);
+  // Initialize the replicants if it doesn't already exist
+  createReplicants();
 
   io.on("connection", (socket) => {
     
-    // Expecting { channel, name }
-    socket.on('replicant:subscribe', ({ channel, name }: { channel: string; name: string }) => {
-      // Create the channel if it doesn't exist
-      let rep = getReplicant(channel, name);
-      if (!rep) {
-        createReplicants(channel);
-        rep = getReplicant(channel, name);
-      }
+    // Expecting { name }
+    socket.on('replicant:subscribe', ({ name }: { name: string }) => {
+      const rep = getReplicant(name);
       if (!rep) return;
-      rep.subscribe((val) => socket.emit(`replicant:update:${channel}:${name}`, val));
+      rep.subscribe((val) => socket.emit(`replicant:update:${name}`, val));
     });
 
-    // Expecting { channel, name, value }
-    socket.on('replicant:set', ({ channel, name, value }: { channel: string; name: string; value: unknown }) => {
-      const rep = getReplicant(channel, name);
+    // Expecting { name, value }
+    socket.on('replicant:set', ({ name, value }: { name: string; value: unknown }) => {
+      const rep = getReplicant(name);
       rep?.set(value);
     });
   });

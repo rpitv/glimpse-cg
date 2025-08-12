@@ -1,39 +1,37 @@
 <template>
 	<div class="team-section">
 		<div class="logo-section">
-			<img v-if="team.logo.value" :src="team.logo.value" alt="">
+			<img v-if="team.logo" :src="team.logo" :alt="team.schoolName">
 		</div>
 		<div class="name-section">
 			<p>
-				{{ team.schoolName.value }}
+				{{ team.shortName }}
 			</p>
 		</div>
 		<div class="score-section">
 			<p>
-				{{ team.score.value }}
+				{{ scoreboardTeam.score }}
 			</p>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-
-import {defineProps} from "vue";
-import {loadReplicants} from "../../../../browser-common/replicants";
+import type { PropType } from "vue";
+import type { Configuration, Scoreboard } from "~/types/replicants";
 
 const props = defineProps({
-	teamId: {
-		type: Number,
+	team: {
+		type: String as PropType<"awayTeam" | "homeTeam">,
 		required: true
 	}
 })
 
-const replicants = await loadReplicants();
-const team = replicants.teams[props.teamId];
-const messages = replicants.announcements[<'team1' | 'team2'>`team${props.teamId + 1}`];
-
-// noinspection JSUnusedGlobalSymbols -- used in vbind
-const logoBgColor = team.primaryColor;
+const configuration = useReplicant<Configuration>("configuration");
+const scoreboard = useReplicant<Scoreboard>("scoreboard");
+const scoreboardTeam = computed(() => scoreboard.value![props.team]);
+const team = computed(() => configuration.value![props.team]);
+const logoBgColor = ref(scoreboardTeam.value.primaryColor);
 </script>
 
 <style scoped lang="scss">
@@ -62,35 +60,30 @@ const logoBgColor = team.primaryColor;
 .name-section {
 	display: inline-flex;
 	align-items: center;
-
-	p {
-		margin-left: 0.6vw;
-	}
-
 	width: 13.5vw;
 	height: 100%;
-
 	background-color: rgb(240,240,240);
 	color: rgb(73,73,68);
 	font-weight: 700;
 	font-size: 1.7vw;
+	p {
+		margin-left: 0.6vw;
+	}
 }
 
 .score-section {
 	display: inline-flex;
 	justify-content: right;
 	align-items: center;
-
+	background-color: rgb(240,240,240);
+	color: rgb(73,73,68);
+	font-weight: 900;
+	font-size: 2.2vw;
 	width: 4.5vw;
 	height: 100%;
 
 	p {
 		margin-right: 0.2vw;
 	}
-
-	background-color: rgb(240,240,240);
-	color: rgb(73,73,68);
-	font-weight: 900;
-	font-size: 2.2vw;
 }
 </style>

@@ -1,11 +1,7 @@
 <template>
   <div class="px-3">
-    <UNavigationMenu class="w-full justify-center" :items="items">
-      <template #channels-content="{ item }">
-        <div class="w-2">
-          Current Channel {{ channel }}
-        </div>
-      </template>
+    <UNavigationMenu class="w-full" :items="items">
+
     </UNavigationMenu>
     <slot />  
   </div>
@@ -15,7 +11,7 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 const router = useRouter();
 
-const channel = useState<string>("channel");
+
 
 const items = ref<NavigationMenuItem[][]>([[
   {

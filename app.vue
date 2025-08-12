@@ -9,12 +9,6 @@
 </template>
 
 <script lang="ts" setup>
-const state = useState<string>('channel');
-
-callOnce(async () => {
-  state.value = 'default';
-})
-
 </script>
 
 

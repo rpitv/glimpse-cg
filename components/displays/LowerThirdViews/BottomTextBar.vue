@@ -1,0 +1,119 @@
+<template>
+  <div :class="channels![channelIndex].bottomTextBar || preview ? 'show' : 'hide'">
+    <div class="container">
+      <div :class="channels![channelIndex].bottomGrayText || preview ? 'show' : 'hide'">
+        <span class="abs top-text" :style="greyTextStyle">{{ bottomTextBar!.greyText.text }}</span>
+      </div>
+      <div>
+        <img class="abs" :src="redBar" :style="redBarStyle">
+        <span class="abs red-text" :style="redTextStyle">{{ bottomTextBar!.redText.text }}</span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import redBar from "../../../assets/rpitv-modern/red_bar.png";
+import {computed, type CSSProperties} from "vue";
+import type { Channels, Configuration, LowerThird } from "~/types/replicants";
+
+defineProps({
+  preview: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
+});
+
+
+const route = useRoute();
+let channelIndex = ref(0);
+if (route.query.channel)
+  channelIndex.value = parseInt(route.query.channel as string);
+
+const channels = useReplicant<Channels>("channels");
+const lowerThird = useReplicant<LowerThird>("lowerThird");
+const bottomTextBar = computed(() => lowerThird.value?.bottomTextBar);
+
+const greyTextStyle = computed((): CSSProperties => {
+  return {
+    opacity: bottomTextBar.value!.greyText.text?.length === 0 ? 0 : 1,
+    background: bottomTextBar.value!.greyText.bgColor || "#54585AFF",
+    top: "auto",
+    marginLeft: bottomTextBar.value!.greyText.offsetX + "vw",
+    paddingLeft: "4vw",
+    marginRight: "4vw",
+    marginBottom: bottomTextBar.value!.greyText.offsetY + "vw",
+    left: "42.6vh",
+    bottom: "15vh",
+    width: "70.2vw",
+    padding: "0.5vh",
+    fontSize: 3 + bottomTextBar.value!.greyText.textSize + "vh",
+    textAlign: bottomTextBar.value!.greyText.alignment,
+    color: bottomTextBar.value!.greyText.textColor,
+  }
+});
+
+const redBarStyle = computed((): CSSProperties => {
+    return {
+        marginLeft: bottomTextBar.value!.redText.offsetX + "vw",
+        marginBottom: bottomTextBar.value!.redText.offsetY + "vw",
+    }
+});
+
+const redTextStyle = computed((): CSSProperties => {
+    // auto adjust sizing if enabled
+    if (bottomTextBar.value!.redText.autoResize) {
+        switch (bottomTextBar.value!.redText.text.trim().split("\n").length) {
+            case 1:
+                bottomTextBar.value!.redText.textSize = 3
+                break;
+            case 2:
+                bottomTextBar.value!.redText.textSize = 0
+                break;
+            default:
+                break
+        }
+    }
+
+    return {
+        whiteSpace: "pre-wrap",
+        top: "auto",
+        marginLeft: 4 + bottomTextBar.value!.redText.offsetX + "vw",
+        marginRight: "4vw",
+        marginBottom: bottomTextBar.value!.redText.offsetY + "vw",
+        left: "20vw",
+        bottom: "6vh",
+        width: "64.5vw",
+        fontSize: 3.3 + bottomTextBar.value!.redText.textSize + "vh",
+        textAlign: bottomTextBar.value!.redText.alignment,
+        color: bottomTextBar.value!.redText.textColor,
+    }
+});
+</script>
+
+<style scoped lang="scss">
+@font-face {
+    font-family: "Malgun Gothic Bold";
+    src: url("../../../assets/rpitv-modern/MalgunGothicBold.ttf") format('truetype');
+}
+
+.container {
+    font-family: "Malgun Gothic Bold";
+}
+
+.abs {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.top-text:before, .top-text:after {
+  content: "\00a0\00a0\00a0\00a0"
+}
+
+img {
+  width: 100vw;
+  height: 100vh;
+}
+</style>

@@ -1,18 +1,18 @@
 <template>
-	<div class="banner" :class="{show: replicants.sync.values.sogs.value && replicants.scoreboard.visible.value, hide: !replicants.sync.values.sogs.value || !replicants.scoreboard.visible.value}">
+	<div class="banner" :class="{show: channels![channelIndex].scoreboard, hide: !channels![channelIndex].scoreboard}">
 		<div class="title">SHOTS ON GOAL</div>
 		<div class="bottom"></div>
 		<div class="upward-line"></div>
-		<div class="left-team-name" :style="{color: replicants.teams[1].primaryColor.value}">
-			{{ replicants.teams[1].schoolName.value }}
+		<div class="away-team-name" :style="{color: awayTeam.primaryColor}">
+			{{ awayTeam.shortName }}
 		</div>
-		<div class="right-team-name" :style="{color: '#d6001c'}">
-			{{ replicants.teams[0].schoolName.value }}
+		<div class="home-team-name" :style="{color: homeTeam.primaryColor}">
+			{{ homeTeam.shortName }}
 		</div>
-		<div class="right-team-sogs"> {{ replicants.teams[0].shots.value }}</div>
-		<div class="left-team-sogs"> {{ replicants.teams[1].shots.value }}</div>
+		<div class="away-team-sogs"> {{ scoreboard!.hockey.awayTeam.sog }}</div>
+		<div class="home-team-sogs"> {{ scoreboard!.hockey.homeTeam.sog }}</div>
 	</div>
-	<div class="banner" :class="{show: replicants.sync.values.faceoffs.value && replicants.scoreboard.visible.value, hide: !replicants.sync.values.faceoffs.value || !replicants.scoreboard.visible.value}">
+	<!-- <div class="banner" :class="{show: replicants.sync.values.faceoffs.value && replicants.scoreboard.visible.value, hide: !replicants.sync.values.faceoffs.value || !replicants.scoreboard.visible.value}">
 		<div class="title">Faceoffs</div>
 		<div class="bottom"></div>
 		<div class="upward-line"></div>
@@ -22,14 +22,27 @@
 		<div class="right-team-name" :style="{color: '#d6001c'}">
 			{{ replicants.teams[0].schoolName.value }}
 		</div>
-		<div class="right-team-sogs">{{ replicants.http.sidearms.body.value.hkgame.team[1].totals.misc.facewon }} </div>
-		<div class="left-team-sogs">{{ replicants.http.sidearms.body.value.hkgame.team[0].totals.misc.facewon }}</div>
-	</div>
+		<div class="right-team-sogs">{{ replicants.http.sidearms.body.value.hkgame?.team[1].totals.misc.facewon }} </div>
+		<div class="left-team-sogs">{{ replicants.http.sidearms.body.value.hkgame?.team[0].totals.misc.facewon }}</div>
+	</div> -->
 </template>
 
 <script setup lang="ts">
-import {loadReplicants} from "../../../../browser-common/replicants";
-const replicants = await loadReplicants();
+import type { Channels, Configuration, Scoreboard } from '~/types/replicants';
+
+const route = useRoute();
+let channelIndex = ref(0);
+if (route.query.channel)
+  channelIndex.value = parseInt(route.query.channel as string);
+
+const channels = useReplicant<Channels>('channels');
+const configuration = useReplicant<Configuration>('configuration');
+const scoreboard = useReplicant<Scoreboard>('scoreboard');
+
+const awayTeam = computed(() => configuration.value!.awayTeam);
+const homeTeam = computed(() => configuration.value!.homeTeam);
+
+
 </script>
 
 <style scoped>
@@ -81,20 +94,20 @@ div {
 	top: 4vh;
 	width: 0.3vh;
 }
-.left-team-name {
+.away-team-name {
 	top: 3vh;
 	left: 0.3vw;
 }
-.right-team-name {
+.home-team-name {
 	top: 3vh;
 	left: 13.2vw;
 }
-.left-team-sogs {
+.away-team-sogs {
 	top: 3vh;
 	width: 12.1vw;
 	text-align: right;
 }
-.right-team-sogs {
+.home-team-sogs {
 	top: 3vh;
 	width: 48.4vw;
 	text-align: center;

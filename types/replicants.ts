@@ -1,25 +1,51 @@
+import type { Announcement } from "~/utils/announcement"
+import type { StandingsTeam } from "~/utils/standings"
+
 export const defaultLowerThird = {
+  bottomTextBar: {
+    greyText: {
+      text: "",
+      alignment: 'center' as 'left' | 'center' | 'right',
+      textSize: 0,
+      offsetX: 0,
+      offsetY: 0,
+      textColor: '#FFFFFF',
+      bgColor: '#000000'
+    },
+    redText: {
+      text: "",
+      alignment: "center" as 'left' | 'center' | 'right',
+      textSize: 0,
+      offsetX: 0,
+      offsetY: 0,
+      textColor: '#FFFFFF',
+      autoResize: false
+    }
+  },
   bug: {
-    show: false,
     offsetX: 0,
     offsetY: 0,
   },
   commentators: {
-    show: false,
     offsetX: 0,
     offsetY: 0,
     people: [] as Commentator[],
   },
   copyright: {
-    show: false,
     offsetX: 0,
     offsetY: 0,
     text: `©${new Date().getFullYear()} RPI TV`,
     textColor: '#000000',
     textSize: 0,
   },
+  endGraphics: {
+    disabled: false,
+    title: 'RPI TV Crew',
+    message: 'Director\nProducer\nReplay Operator\nCamera Operator',
+    length: 30,
+    type: 'box' as 'scroll' | 'box',
+  },
   goToBreak: {
-    show: false,
     offsetX: 0,
     offsetY: 0,
     description: {
@@ -27,6 +53,7 @@ export const defaultLowerThird = {
       fontSize: 0,
       fontColor: '#000000',
       text: '',
+      autoFit: false,
     },
     awayTeam : {
       name: '',
@@ -58,10 +85,9 @@ export const defaultLowerThird = {
     teamSwap: false,
   },
   locator: {
-    show: false,
     offsetX: 0,
     offsetY: 0,
-    leftTeam : {
+    awayTeam : {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -71,7 +97,7 @@ export const defaultLowerThird = {
       primaryColor: '',
       secondaryColor: '',
     },
-    rightTeam : {
+    homeTeam : {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -96,9 +122,13 @@ export const defaultLowerThird = {
     playerNumber: '',
     playerColor: '',
     imageURL: '',
+    teamside: 'awayTeam' as 'awayTeam' | 'homeTeam',
     offsetX: 0,
     offsetY: 0,
-    show: false
+    height: 0,
+    year: 0,
+    weight: 0,
+    hometown: ''
   }
 }
 
@@ -148,17 +178,45 @@ export const defaultConfiguration = {
     special: false,
     athletics: ''
   },
+  sync: {
+    awayTeam: {
+      score: true,
+      football: {
+        downs: true,
+        yardsToGo: true,
+        possession: true,
+        playClock: true,
+      },
+      hockey: {
+        sog: true,
+      }
+    },
+    homeTeam: {
+      sog: true,
+      score: true,
+      football: {
+        downs: true,
+        yardsToGo: true,
+        possession: true,
+        playClock: true,
+      },
+      hockey: {
+        sog: true,
+      }
+    }
+  }
 }
 
 export const defaultScoreboard = {
-  show: false,
   offsetX: 0,
   offsetY: 0,
   clock: {
-    time: '120_000', // 2 minutes in milliseconds
+    time: 120_000, // 2 minutes in milliseconds
     isRunning: false,
   },
+  announcement: [] as Announcement[],
   awayTeam: {
+    announcement: [] as Announcement[],
     name: '',
     nameColor: '#000000',
     nameSize: 0,
@@ -171,6 +229,7 @@ export const defaultScoreboard = {
     secondaryColor: '#FFFFFF',
   },
   homeTeam: {
+    announcement: [] as Announcement[],
     name: '',
     nameColor: '#000000',
     nameSize: 0,
@@ -196,10 +255,9 @@ export const defaultScoreboard = {
       // Should the period count exceed its length + OT length, it will 
       // be considered a shootout and the period will be rendered as S/O.
       enabled: false,
-      show: false,
       round: 0,
     },
-    leftTeam: {
+    awayTeam: {
       // The score is an array of booleans, where each boolean represents a goal scored in the shootout.
       score: [] as boolean[],
       penalty: {
@@ -215,7 +273,7 @@ export const defaultScoreboard = {
       sog: 0,
       faceoff: 0
     },
-    rightTeam: {
+    homeTeam: {
       // The score is an array of booleans, where each boolean represents a goal scored in the shootout.
       score: [] as boolean[],
       penalty: {
@@ -245,23 +303,27 @@ export const defaultScoreboard = {
 export const defaultFullscreen = {
   credits: {
     credit: [] as Credit[],
-    show: false
+  },
+  standings: {
+    teams: [] as StandingsTeam[],
+    title: "",
+    subtitle: "",
+    headerLogoLink: "",
   },
   custom: [] as CustomGraphic[]
 }
 
 export const defaultExternal = {
-  leftTeam: {
+  awayTeam: {
     athleticsURL: '',
   },
-  rightTeam: {
+  homeTeam: {
     athleticsURL: '',
   }
 }
 
 interface CustomGraphic {
   name: string;
-  show: boolean;
   offsetX: number;
   offsetY: number;
   imagePath: string;
@@ -285,8 +347,60 @@ export class Credit {
 	}
 }
 
+
+export class Channel {
+  public bottomTextBar: boolean;
+  public bottomGrayText: boolean;
+  public bottomRedText: boolean;
+  public bug: boolean;
+  public commentators: boolean;
+  public copyright: boolean;
+  public endGraphic: boolean;
+  public goToBreak: boolean;
+  public locator: boolean;
+  public playerBio: boolean;
+  public produced: boolean;
+  public scoreboard: boolean;
+  public shootout: boolean;
+  public sog: boolean;
+  public standings: boolean;
+  public credits: boolean;
+  public custom: boolean[];
+  public constructor() {
+    this.bottomTextBar = false;
+    this.bottomGrayText = false;
+    this.bottomRedText = false;
+    this.bug = false;
+    this.commentators = false;
+    this.copyright = false;
+    this.endGraphic = false;
+    this.goToBreak = false;
+    this.locator = false;
+    this.playerBio = false;
+    this.produced = false;
+    this.scoreboard = false;
+    this.shootout = false;
+    this.sog = false;
+    this.standings = false;
+    this.credits = false;
+    this.custom = [];
+  }
+  addCustomGraphic() {
+    this.custom.push(false);
+  }
+  updateCustomGraphic(index: number) {
+    this.custom[index] = false;
+  }
+  deleteCustomGraphic(index: number) {
+    this.custom.splice(index, 1);
+  }
+}
+
+export const defaultChannels: Channel[] = [new Channel()];
+
 export type LowerThird = typeof defaultLowerThird;
 export type Configuration = typeof defaultConfiguration;
 export type Scoreboard = typeof defaultScoreboard;
 export type Fullscreen = typeof defaultFullscreen;
 export type External = typeof defaultExternal;
+export type Channels = typeof defaultChannels;

@@ -1,40 +1,52 @@
 <template>
-	<div>
-		<img id="ESPNCopyrightImg" :src="ESPN_Copyright">
-		<span id="ESPNCopyrightText">© {{ new Date().getFullYear() }} ESPN, Inc. All Rights Reserved. ESPN.</span>
-	</div>
+  <TombstoneBuilder :style="tombstone">
+    <div id="ESPNCopyrightText" :style="copyrightTextContainer">
+      <span :style="copyrightText">
+        {{ copyright!.text || (`© ${new Date().getFullYear()} ESPN, Inc. All Rights Reserved`) }}
+      </span>
+    </div>
+  </TombstoneBuilder>
 </template>
 
 <script setup lang="ts">
-import ESPN_Copyright from "../../../../../assets/espn/ESPN_Copyright.png"
-import {loadReplicants} from "../../../../../browser-common/replicants";
+import type {CSSProperties} from "vue";
+import TombstoneBuilder from "../tomestone/TombstoneBuilder.vue";
+import type { LowerThird } from "~/types/replicants";
 
-const replicants = await loadReplicants();
+const lowerThird = useReplicant<LowerThird>("lowerThird");
+const copyright = computed(() => lowerThird.value!.copyright);
+const leftOffset = 5;
+const bottomOffset = 6;
+const textPadding = 1;
+
+const tombstone = computed((): CSSProperties => {
+  return {
+    left: (copyright!.value.offsetX + leftOffset) + "vw",
+    bottom: (copyright!.value.offsetY + bottomOffset) + "vh",
+    maxWidth: (100 - (textPadding + copyright!.value.offsetX) * 2 - leftOffset) + "vw",
+  }
+});
+const copyrightTextContainer = computed((): CSSProperties => {
+  return {
+    padding: textPadding + "vw",
+  }
+});
+const copyrightText = computed((): CSSProperties => {
+  return {
+    color: copyright!.value.textColor,
+    fontSize: copyright!.value.textSize + 3.8 + "vh",
+  }
+});
+
 </script>
 
 <style scoped lang="scss">
-
 @font-face {
-	font-family: "swiss721_bold";
-	src: url('../../../../../assets/espn/Swiss721Bold.ttf')
-}
-
-#ESPNCopyrightImg {
-	position: absolute;
-	top: 0;
-	left: 0;
-
-	width: 100vw;
-	height: 100vh;
-
-	transition: opacity 1s;
+  font-family: "swiss721_bold";
+  src: url('~/assets/espn/Swiss721Bold.ttf')
 }
 
 #ESPNCopyrightText {
-	font-family: "swiss721_bold";
-	position: absolute;
-	font-size: 3.3vh;
-	bottom: 8vh;
-	left: 7.3vw;
+  font-family: "swiss721_bold";
 }
 </style>

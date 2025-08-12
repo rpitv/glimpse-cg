@@ -1,9 +1,9 @@
 <template>
 	<div id="container" :class="{
-			show: replicants.lowerThird.showProduced.value,
-			hide: !replicants.lowerThird.showProduced.value,
-			translateUp: replicants.lowerThird.showCopyright.value,
-			translateNone: !replicants.lowerThird.showCopyright.value
+			show: channels![channelIndex].produced,
+			hide: channels![channelIndex].produced,
+			translateUp: channels![channelIndex].copyright,
+			translateNone: !channels![channelIndex].copyright
 		}">
 		<img id="ESPNCopyrightImg" :src="ESPN_Copyright">
 		<img id="logo" :src="RPITV_LOGO">
@@ -12,17 +12,24 @@
 </template>
 
 <script setup lang="ts">
-import ESPN_Copyright from "../../../../../assets/espn/ESPN_Copyright.png"
-import RPITV_LOGO from "../../../../../assets/rpitv-modern/rpitv_logo.svg"
-import {loadReplicants} from "../../../../../browser-common/replicants";
+import ESPN_Copyright from "~/assets/espn/ESPN_Copyright.png"
+import RPITV_LOGO from "~/assets/rpitv-modern/rpitv_logo.svg"
+import type { LowerThird, Channels } from "~/types/replicants";
 
-const replicants = await loadReplicants();
+const lowerThird = useReplicant<LowerThird>("lowerThird");
+const route = useRoute();
+let channelIndex = ref(0);
+if (route.query.channel)
+  channelIndex.value = parseInt(route.query.channel as string);
+
+const channels = useReplicant<Channels>("channels");
+
 </script>
 
 <style scoped lang="scss">
 @font-face {
 	font-family: "swiss721_bold";
-	src: url('../../../../../assets/espn/Swiss721Bold.ttf')
+	src: url('~/assets/espn/Swiss721Bold.ttf')
 }
 
 #container.translateUp {

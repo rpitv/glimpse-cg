@@ -1,120 +1,132 @@
 <template>
-	<img :src="Locator">
-	<div id="team1SecondaryColor" :style="{'background-color': replicants.teams[1].secondaryColor.value}"></div>
-	<div id="team1PrimaryColor" :style="{'background-color': replicants.teams[1].primaryColor.value}"></div>
-	<div id="team0SecondaryColor" :style="{'background-color': replicants.teams[0].secondaryColor.value}"></div>
-	<div id="team0PrimaryColor" :style="{'background-color': replicants.teams[0].primaryColor.value}"></div>
-	<div class="team1Logo">
-		<img id="team1Logo" :src="replicants.lowerThird.school2Logo.value">
+	<img class="locator" :src="Locator">
+	<div :style="awayTeamSecondaryColor"></div>
+	<div :style="awayTeamPrimaryColor">
+		<img :style="awayTeamLogo" :src="locator!.awayTeam.logo || awayTeam.logo">
 	</div>
-	<div class="team2Logo">
-		<img id="team2Logo" :src="replicants.lowerThird.school1Logo.value">
+	<div :style="homeTeamSecondaryColor"></div>
+	<div :style="homeTeamPrimaryColor">
+		<img :style="homeTeamLogo" :src="locator.homeTeam.logo || homeTeam.logo">
 	</div>
-	<div class="team1Name">{{replicants.teams[1].schoolName.value}}</div>
-	<div class="team0Name">{{replicants.teams[0].schoolName.value}}</div>
+	<div :style="awayTeamName">{{ locator!.awayTeam.name || awayTeam.shortName }}</div>
+	<div :style="homeTeamName">{{ locator!.homeTeam.name || homeTeam.shortName }}</div>
+	<div :style="location	">
+	</div>
 </template>
 
 <script setup lang="ts">
-import Locator from "../../../../../assets/espn/Locator.png"
-import {loadReplicants} from "../../../../../browser-common/replicants";
+import Locator from "~/assets/espn/Locator.png"
+import type { CSSProperties } from "vue";
+import { computed } from "vue";
+import type { Configuration, LowerThird } from "~/types/replicants";
 
-const replicants = await loadReplicants();
+const lowerThird = useReplicant<LowerThird>("lowerThird");
+const configuration = useReplicant<Configuration>("configuration");
+
+const locator = computed(() => lowerThird.value!.locator);
+const awayTeam = computed(() => configuration.value!.awayTeam);
+const homeTeam = computed(() => configuration.value!.homeTeam);
+
+const awayTeamSecondaryColor = computed((): CSSProperties => {return {
+	backgroundColor: locator!.value.awayTeam.secondaryColor || awayTeam.value.secondaryColor,
+	bottom: "22.1vh",
+	height: "9.6vh",
+	left: "29.3vw",
+	width: "2.7vw"
+}});
+const awayTeamPrimaryColor = computed((): CSSProperties => {return {
+	alignItems: "center",
+	backgroundColor: locator!.value.awayTeam.primaryColor || awayTeam.value.primaryColor,
+	bottom: "22.1vh",
+	display: "flex",
+	height: "9.6vh",
+	justifyContent: "center",
+	left: "32.4vw",
+	width: "11.8vw",
+}});
+const homeTeamPrimaryColor = computed((): CSSProperties => {return {
+	alignItems: "center",
+	backgroundColor: locator!.value.homeTeam.primaryColor|| locator!.value.homeTeam.primaryColor,
+	bottom: "22.1vh",
+	display: "flex",
+	height: "9.6vh",
+	justifyContent: "center",
+	left: "55.5vw",
+	width: "11.9vw",
+}});
+const homeTeamSecondaryColor = computed((): CSSProperties => {return {
+	backgroundColor: locator!.value.homeTeam.secondaryColor || locator!.value.homeTeam.secondaryColor,
+	bottom: "22.1vh",
+	height: "9.6vh",
+	left: "67.6vw",
+	width: "2.7vw",
+}});
+const awayTeamLogo = computed((): CSSProperties => {return {
+	height: locator!.value.awayTeam.logoSize + "%",
+	maxHeight: "9.5vh",
+	maxWidth: "11.9vw",
+	position: "relative",
+}});
+const homeTeamLogo = computed((): CSSProperties => {return {
+	height: locator!.value.homeTeam.logoSize + "%",
+	maxHeight: "9.5vh",
+	maxWidth: "11.9vw",
+	position: "relative",
+}});
+const awayTeamName = computed((): CSSProperties => {return {
+	alignItems: "center",
+	color: locator!.value.awayTeam.nameColor || "black",
+	display: "flex",
+	flexWrap: "nowrap",
+	fontSize: locator!.value.awayTeam.nameSize + 3.7 + "vh",
+	height: "5.55vh",
+	justifyContent: "center",
+	left: "30.84vw",
+	top: "79.26vh",
+	width: "14vw",
+}});
+const homeTeamName = computed((): CSSProperties => {return {
+	alignItems: "center",
+	color: locator!.value.homeTeam.nameColor,
+	flexWrap: "nowrap",
+	fontSize: locator!.value.homeTeam.nameSize + 3.7 + "vh",
+	height: "5.55vh",
+	justifyContent: "center",
+	left: "54.78vw",
+	top: "79.26vh",
+	width: "14vw",
+}});
+const location = computed((): CSSProperties => {
+	return {
+		alignItems: "center",
+		color: "pink",
+		bottom: "10.9vh",
+		display: "flex",
+		height: "3.97vh",
+		fontSize: "3.6vh",
+		justifyContent: "center",
+		left: "34.08vw",
+		width: "32.875vw",
+	}
+})
+
 </script>
 
 <style scoped>
 @font-face {
 	font-family: "swiss721_heavy";
-	src: url('../../../../../assets/espn/Swiss721Heavy.ttf')
+	src: url('~/assets/espn/Swiss721Heavy.ttf')
 }
 div {
 	position: absolute;
 	font-family: "swiss721_heavy";
 }
-img {
+.locator {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
 }
-#team1SecondaryColor {
-	left: 29.5vw;
-	bottom: 22.1vh;
-	width: 2.7vw;
-	height: 9.6vh;
-}
-#team1PrimaryColor {
-	left: 32.4vw;
-	bottom: 22.1vh;
-	width: 11.8vw;
-	height: 9.6vh;
-}
-#team0SecondaryColor {
-	left: 67.6vw;
-	width: 2.7vw;
-	bottom: 22.1vh;
-	height: 9.6vh;
-}
-#team0PrimaryColor {
-	left: 55.6vw;
-	bottom: 22.1vh;
-	width: 11.9vw;
-	height: 9.6vh;
-}
-.team1Logo {
-	left: 0;
-	bottom: 22.4vh;
-	width: 76.67vw;
-	display: flex;
-	justify-content: center;
-}
-#team1Logo {
-	position: relative;
-	height: auto;
-	width: auto;
-	max-width: 11.9vw;
-	max-height: 9vh;
-}
-.team2Logo {
-	left: 0;
-	bottom: 22.4vh;
-	width: 123vw;
-	display: flex;
-	justify-content: center;
-}
-#team2Logo {
-	position: relative;
-	height: auto;
-	width: auto;
-	max-width: 11.9vw;
-	max-height: 9vh;
-}
-.team1Name {
-	color: rgba(63,63,63);
-	left: 30.84vw; /* 592px / 1920px * 100 */
-	top: 79.26vh; /* 856px / 1080px * 100 */
-	width: 14vw; /* 270px / 1920px * 100 */
-	height: 5.55vh; /* 60px / 1080px * 100 */
-	word-wrap: anywhere;
 
-	font-size: calc(1.7vw);
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	flex-wrap: wrap;
-}
-.team0Name {
-	color: rgba(63,63,63);
-	left: 54.78vw; /* 1052px / 1920px * 100 */
-	top: 79.26vh; /* 856px / 1080px * 100 */
-	width: 14vw; /* 270px / 1920px * 100 */
-	height: 5.5vh; /* 60px / 1080px * 100 */
-	word-wrap: anywhere;
-
-	font-size:calc(1.7vw);
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	flex-wrap: wrap;
-}
 </style>

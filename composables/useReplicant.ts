@@ -2,12 +2,12 @@ import { ref, watch, onMounted } from 'vue';
 import { socket } from "~/utils/socket"
 
 
-export function useReplicant<T>(channel: string = 'default', name: string) {
+export function useReplicant<T>(name: string) {
   const value = ref<T | null>(null);
 
   onMounted(() => {
-    socket.emit('replicant:subscribe', { channel, name });
-    socket.on(`replicant:update:${channel}:${name}`, (incoming: T) => {
+    socket.emit('replicant:subscribe', { name });
+    socket.on(`replicant:update:${name}`, (incoming: T) => {
       if (JSON.stringify(value.value) !== JSON.stringify(incoming)) {
         value.value = incoming;
       }
@@ -16,7 +16,7 @@ export function useReplicant<T>(channel: string = 'default', name: string) {
 
   watch(value, (newVal) => {
     if (newVal !== null) {
-      socket.emit('replicant:set', { channel, name, value: newVal });
+      socket.emit('replicant:set', { name, value: newVal });
     }
   }, { deep: true });
 

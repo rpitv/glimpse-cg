@@ -1,6 +1,6 @@
 <template>
   <div id="configuration-page">
-    <Settings ref="settings" @update:config="schedule?.refresh()"/>
+    <Settings ref="settings" @update:config="schedule?.refresh();"/>
     <Schedule ref="schedule" @loadMatchup="setPresets" />
   </div>
 </template>

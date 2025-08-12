@@ -2,46 +2,46 @@ import { Configuration } from "~/types/replicants";
 import { getReplicant } from "~/utils/replicants";
 
 export default defineEventHandler(async (event) => {
-  const { channel } = getQuery(event) as { channel: string };
-  const configuration = getReplicant<Configuration>(channel, "configuration");
-  let mensAthleticsURL = "https://rpiathletics.com/sports"
-  let womensAthleticsURL = "https://rpiathletics.com/sports";
+  const configuration = getReplicant<Configuration>("configuration");
+  let athleticsURL = "https://rpiathletics.com/sports"
   switch (configuration?.value.sport) {
     case "hockey":
-      mensAthleticsURL += "/mens-ice-hockey/schedule";
-      womensAthleticsURL += "/womens-ice-hockey/schedule";
+      if (configuration.value.type === 'men')
+        athleticsURL += "/mens-ice-hockey/schedule";
+      else if (configuration.value.type === 'women')
+        athleticsURL += "/womens-ice-hockey/schedule";
       break;
     case "football":
-      mensAthleticsURL += "/football/schedule";
-      womensAthleticsURL = "";
+      athleticsURL += "/football/schedule";
       break;
     case "lacrosse":
-      mensAthleticsURL += "/mens-lacrosse/schedule";
-      womensAthleticsURL += "/womens-lacrosse/schedule";
+      if (configuration.value.type === 'men')
+        athleticsURL += "/mens-lacrosse/schedule";
+      else if (configuration.value.type === 'women')
+        athleticsURL += "/womens-lacrosse/schedule";
       break;
     case "acha":
-      mensAthleticsURL = "https://rpiacha.com/schedule/";
-      womensAthleticsURL = "";
+      athleticsURL = "https://rpiacha.com/schedule/"
       break;
     case "soccer":
-      mensAthleticsURL += "/mens-soccer/schedule";
-      womensAthleticsURL += "/womens-soccer/schedule";
+      if (configuration.value.type === 'men')
+        athleticsURL += "/mens-soccer/schedule";
+      else if (configuration.value.type === 'women')
+        athleticsURL += "/womens-soccer/schedule";
       break;
     case "basketball":
-      mensAthleticsURL += "/mens-basketball/schedule";
-      womensAthleticsURL += "/womens-basketball/schedule";
+      if (configuration.value.type === 'men')
+        athleticsURL += "/mens-basketball/schedule";
+      else if (configuration.value.type === 'women')
+        athleticsURL += "/womens-basketball/schedule";
       break;
     default:
       break;
   }
   return { 
-    mens: await fetch(`${mensAthleticsURL}?grid=true`)
+    data: await fetch(`${athleticsURL}?grid=true`)
       .then(async (response) => await response.text()),
-    womens: womensAthleticsURL ? await fetch(`${womensAthleticsURL}?grid=true`)
-      .then(async (response) => await response.text()) : null,
-    mensLogo: await fetch(`${mensAthleticsURL}`)
+    logos: await fetch(`${athleticsURL}`)
       .then(async (response) => await response.text()),
-    womensLogo: womensAthleticsURL ? await fetch(`${womensAthleticsURL}`)
-      .then(async (response) => await response.text()) : null
   }
 });

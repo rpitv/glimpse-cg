@@ -1,9 +1,11 @@
 <template>
   <div id="graphics" :style="route.query.dev === '1' ? 'background-color: white;' : ''">
+    <MainView />
   </div>
 </template>
 
 <script lang="ts" setup>
+import MainView from "~/components/displays/main.vue";
 const route = useRoute();
 
 definePageMeta({

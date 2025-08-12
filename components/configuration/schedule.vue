@@ -8,12 +8,12 @@
       <p>Getting schedule...</p>
     </div>
     <div v-else>
-      <URadioGroup id="schedule" :loop="true" indicator="hidden" variant="table" 
+      <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table" 
         value-key="val" :items="schedule" v-model="selectedSchool" 
         @dblclick="() => { if (selectedSchool?.preset) emit('loadMatchup', selectedSchool?.preset) }"
       >
         <template #label="{ item }">
-          <div :id="item.id" class="flex items-center gap-2">
+          <div :id="item.uni" class="flex items-center gap-2">
             <img class="schedule-logo" :src="item.val.opponentLogo?.src"></img>
             <div>
               <p class="text-muted text-left">{{ item.val.type === 'women' ? '(WOMEN)' : '(MEN)' }}</p>
@@ -26,18 +26,6 @@
       <UTooltip :disabled="!!selectedSchool?.preset" text="This school does not have a preset available." :delay-duration="0">
         <UButton class="mt-2" :disabled="!selectedSchool || !selectedSchool.preset" @click="emit('loadMatchup', selectedSchool?.preset)">Load Matchup</UButton>
       </UTooltip>
-
-      <!-- <div id="schedule">
-        <div v-for="(item, index) in schedule" :key="index" :tabindex="0" :class="`schedule-item ${item.type === 'men' ? 'men' : 'women'}`" @focus="select(item)" @focusout="selectedSchool = null">
-          <div class="schedule-logo">
-            <img v-if="item.opponentLogo" :src="item.opponentLogo.src" :alt="item.opponentLogo.alt" />
-          </div>
-          <div class="schedule-content">
-            <h2>{{ item.title }}</h2>
-            <p>{{ item.description }}</p>
-          </div>
-        </div>
-      </div> -->
     </div>
   </UCard>
 
@@ -46,6 +34,7 @@
 <script lang="ts" setup>
 import schools from '~/assets/schools.json';
 import type { Configuration } from '~/types/replicants';
+import { URadioGroup } from '#components';
 
 interface Timeline {
   val: {
@@ -58,10 +47,10 @@ interface Timeline {
     };
     preset: Configuration['awayTeam' | 'homeTeam'] | null;
   }
-  id: string
+  uni: string
 }
 
-const channel = useState('channel');
+const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
 
 const schedule = ref<Timeline[]>([]);
 const domParser = new DOMParser();
@@ -106,11 +95,10 @@ function parseSidearmsSchedule(html: string, logoHTML: string, type: string): vo
         },
         preset: preset || null as Configuration['awayTeam' | 'homeTeam'] | null,
       },
-      id: i.toString()
+      uni: i.toString()
     };
-    // new Date("December 5, 2025").getTime()
     if (!current) {
-      if (new Date(`${date} ${time}`).getTime() >= new Date("December 5, 2025").getTime()) { 
+      if (new Date(`${date} ${time}`).getTime() >= Date.now()) { 
         current = true;
         selectedSchool.value = opponentData.val;
         scrollToView = i;
@@ -132,43 +120,35 @@ function toMilitaryTime(t: string): string {
 }
 
 async function refresh() {
-  schedule.value = [];
   loading.value = true;
-  const data = await $fetch(`http://localhost:3000/api/schedule?channel=${channel.value}`, {
+  schedule.value = [];
+  const data = await $fetch(`http://localhost:3000/api/schedule`, {
   }).catch((error) => {
     console.error("Error fetching schedule:", error);
   });
-  const { mens, womens, mensLogo, womensLogo } = data as {
-    mens: string;
-    womens?: string;
-    mensLogo: string;
-    womensLogo?: string;
+  const { data: dataHTML, logos } = data as {
+    data: string;
+    logos: string;
   }
-  parseSidearmsSchedule(mens, mensLogo, 'men');
-  if (womens && womensLogo)
-    parseSidearmsSchedule(womens, womensLogo, 'women');
-  schedule.value.sort((a, b) => {
-    const dateA = new Date(a.val.description as string);
-    const dateB = new Date(b.val.description as string);
-    return dateA.getTime() - dateB.getTime();
-  });
+  parseSidearmsSchedule(dataHTML, logos, 'men');
   loading.value = false;
 }
 
-function scrollInitial() {
-  document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center'});
-}
 
 const emit = defineEmits(['loadMatchup']);
 
 onMounted(async () => {
   await refresh();
-  scrollInitial();
 });
+
+watch((radioSchedule), () => {
+  if (radioSchedule.value)
+    document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center'});
+
+})
 
 defineExpose({
   refresh,
-  scrollInitial
 });
 </script>
 
