@@ -8,8 +8,8 @@
       <p>Getting schedule...</p>
     </div>
     <div v-else>
-      <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table" 
-        value-key="val" :items="schedule" v-model="selectedSchool" 
+      <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table"
+        value-key="val" :items="schedule" v-model="selectedSchool"
         @dblclick="() => { if (selectedSchool?.preset) emit('loadMatchup', selectedSchool?.preset) }"
       >
         <template #label="{ item }">
@@ -78,16 +78,16 @@ function parseSidearmsSchedule(html: string, logoHTML: string, type: string): vo
     const opponentLogo = logoElements[i]?.querySelector('img')?.getAttribute('data-src') || '';
     const preset = schools.find(s => opponent.includes(s.schoolName) || opponent.includes(s.shortName) || opponent.includes(s.abbr));
 
-    const opponentData: Timeline = { 
+    const opponentData: Timeline = {
       val: {
         description: new Date(`${date} ${time}`).toLocaleString([], {
-          month: 'short', 
+          month: 'short',
           day: 'numeric',
           year: 'numeric',
-          hour: '2-digit', 
+          hour: '2-digit',
           minute:'2-digit'
-        }), 
-        title: opponent, 
+        }),
+        title: opponent,
         type,
         opponentLogo: {
           src: `https://rpiathletics.com${opponentLogo}`,
@@ -98,7 +98,7 @@ function parseSidearmsSchedule(html: string, logoHTML: string, type: string): vo
       uni: i.toString()
     };
     if (!current) {
-      if (new Date(`${date} ${time}`).getTime() >= Date.now()) { 
+      if (new Date(`${date} ${time}`).getTime() >= Date.now()) {
         current = true;
         selectedSchool.value = opponentData.val;
         scrollToView = i;
@@ -122,9 +122,9 @@ function toMilitaryTime(t: string): string {
 async function refresh() {
   loading.value = true;
   schedule.value = [];
-  const data = await $fetch(`http://localhost:3000/api/schedule`, {
+  const data = await $fetch(`${window.location.origin}/api/schedule`, {
   }).catch((error) => {
-    console.error("Error fetching schedule:", error);
+    console.error("Error fetching.ts schedule:", error);
   });
   const { data: dataHTML, logos } = data as {
     data: string;
