@@ -34,11 +34,10 @@
 import TeamConfig from './teamConfig.vue';
 import type { Configuration } from '~/types/replicants';
 
-
-
 const awayTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('awayTeamConfig');
 const homeTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('homeTeamConfig');
 
+const configuration = useState<Configuration>('configuration');
 
 const width = 'w-48';
 const height = 'h-5'
@@ -86,7 +85,6 @@ const type = [{
   value: 'women'
 }];
 
-const configuration = useReplicant<Configuration>('configuration');
 
 const emit = defineEmits(['update:config'])
 defineExpose({

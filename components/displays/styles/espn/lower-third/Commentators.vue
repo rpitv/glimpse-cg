@@ -16,7 +16,7 @@ import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { LowerThird } from "~/types/replicants";
 
-const replicants = useReplicant<LowerThird>("lowerThird");
+const replicants = useState<LowerThird>("lowerThird");
 const commentators = computed(() => replicants.value?.commentators);
 
 const commentatorsImage = computed((): CSSProperties => {

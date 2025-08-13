@@ -34,9 +34,9 @@ import type { CSSProperties } from "vue";
 import ESPNGoToBreak from "~/assets/espn/Scoreboard.png";
 import type { Scoreboard, Configuration, LowerThird } from "~/types/replicants";
 
-const lowerThird = useReplicant<LowerThird>("lowerThird");
-const configuration = useReplicant<Configuration>("configuration");
-const scoreboard = useReplicant<Scoreboard>("scoreboard");
+const lowerThird = useState<LowerThird>("lowerThird");
+const configuration = useState<Configuration>("configuration");
+const scoreboard = useState<Scoreboard>("scoreboard");
 const goToBreak = computed(() => lowerThird.value!.goToBreak);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);

@@ -19,7 +19,7 @@ import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { Fullscreen } from "~/types/replicants";
 
-const configuration = useReplicant<Fullscreen>("fullscreen");
+const configuration = useState<Fullscreen>("fullscreen");
 const credits = computed(() => configuration.value!.credits);
 
 

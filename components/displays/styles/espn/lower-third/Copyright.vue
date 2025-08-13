@@ -13,7 +13,7 @@ import type {CSSProperties} from "vue";
 import TombstoneBuilder from "../tomestone/TombstoneBuilder.vue";
 import type { LowerThird } from "~/types/replicants";
 
-const lowerThird = useReplicant<LowerThird>("lowerThird");
+const lowerThird = useState<LowerThird>("lowerThird");
 const copyright = computed(() => lowerThird.value!.copyright);
 const leftOffset = 5;
 const bottomOffset = 6;

@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { espnStyles, rpiTVStyles} from "../util";
 import ESPNCommentators from "../styles/espn/lower-third/Commentators.vue";
-import RPITVCommentators from "../styles/rpitv-lower-thirds/Commentators.vue";
+import RPITVCommentators from "../styles/rpitv/lower-third/Commentators.vue";
 import type { Channels, Configuration } from "~/types/replicants";
 
 defineProps({
@@ -25,8 +25,8 @@ let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useReplicant<Channels>("channels");
-const configuration = useReplicant<Configuration>("configuration");
+const channels = useState<Channels>("channels");
+const configuration = useState<Configuration>("configuration");
 </script>
 
 <style scoped lang="scss">

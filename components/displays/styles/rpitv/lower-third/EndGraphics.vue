@@ -18,8 +18,8 @@ const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channels = useReplicant<Channels>("channels");
-const lowerThird = useReplicant<LowerThird>("lowerThird");
+const channels = useState<Channels>("channels");
+const lowerThird = useState<LowerThird>("lowerThird");
 const endGraphics = computed(() => lowerThird.value!.endGraphics);
 const showCrawl = ref(false);
 

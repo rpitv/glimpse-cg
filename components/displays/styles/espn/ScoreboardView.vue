@@ -35,11 +35,9 @@
 				</div>
 				<div v-if="channel![channelIndex].shootout" class="announcement-section homeTeam">
 					<p>
-					<p>
             <span v-for="shot of hockeyHomeTeam.score">
               {{ shot ? '✅' : '❌' }}
             </span>
-					</p>
 					</p>
 				</div>
 			</div>
@@ -79,9 +77,9 @@ const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channel = useReplicant<Channels>("channels");
-const scoreboard = useReplicant<Scoreboard>("scoreboard");
-const configuration = useReplicant<Configuration>("configuration")
+const channel = useState<Channels>("channels");
+const scoreboard = useState<Scoreboard>("scoreboard");
+const configuration = useState<Configuration>("configuration")
 const hockeyAwayTeam = computed(() => scoreboard.value!.hockey.awayTeam);
 const hockeyHomeTeam = computed(() => scoreboard.value!.hockey.homeTeam);
 const awayTeam = computed(() => configuration.value!.awayTeam);

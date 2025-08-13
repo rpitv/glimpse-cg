@@ -31,9 +31,9 @@ let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useReplicant<Channels>("channels");
-const lowerThird = useReplicant<LowerThird>("lowerThird");
-const bottomTextBar = computed(() => lowerThird.value?.bottomTextBar);
+const channels = useState<Channels>("channels");
+const lowerThird = useState<LowerThird>("lowerThird");
+const bottomTextBar = computed(() => lowerThird.value!.bottomTextBar);
 
 const greyTextStyle = computed((): CSSProperties => {
   return {

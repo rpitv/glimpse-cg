@@ -10,7 +10,7 @@ const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channels = useReplicant<Channels>("channels");
+const channels = useState<Channels>("channels");
 </script>
 
 <style scoped lang="scss">

@@ -16,13 +16,13 @@ import ESPN_Copyright from "~/assets/espn/ESPN_Copyright.png"
 import RPITV_LOGO from "~/assets/rpitv-modern/rpitv_logo.svg"
 import type { LowerThird, Channels } from "~/types/replicants";
 
-const lowerThird = useReplicant<LowerThird>("lowerThird");
+const lowerThird = useState<LowerThird>("lowerThird");
 const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useReplicant<Channels>("channels");
+const channels = useState<Channels>("channels");
 
 </script>
 

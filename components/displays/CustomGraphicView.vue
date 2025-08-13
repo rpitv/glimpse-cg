@@ -14,8 +14,8 @@ let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useReplicant<Channels>("channels");
-const fullscreen = useReplicant<Fullscreen>("fullscreen");
+const channels = useState<Channels>("channels");
+const fullscreen = useState<Fullscreen>("fullscreen");
 
 const channelGraphics = computed(() => channels.value![channelIndex.value].custom);
 const customGraphics = computed(() => fullscreen.value!.custom);

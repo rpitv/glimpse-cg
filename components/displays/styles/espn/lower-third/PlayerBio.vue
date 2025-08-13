@@ -31,9 +31,9 @@ let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const lowerThird = useReplicant<LowerThird>("lowerThird");
-const configuration = useReplicant<Configuration>("configuration");
-const channels = useReplicant<Channels>("channels");
+const lowerThird = useState<LowerThird>("lowerThird");
+const configuration = useState<Configuration>("configuration");
+const channels = useState<Channels>("channels");
 const playerBio = computed(() => lowerThird.value!.playerBio);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);

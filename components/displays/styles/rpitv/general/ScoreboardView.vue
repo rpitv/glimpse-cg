@@ -73,9 +73,9 @@ if (route.query.channel)
 
 gsap.registerPlugin(CustomEase);
 
-const scoreboard = useReplicant<Scoreboard>("scoreboard");
-const configuration = useReplicant<Configuration>("configuration");
-const channels = useReplicant<Channels>("channels");
+const scoreboard = useState<Scoreboard>("scoreboard");
+const configuration = useState<Configuration>("configuration");
+const channels = useState<Channels>("channels");
 const clock = computed(() => scoreboard.value!.clock);
 const period = computed(() => scoreboard.value!.period);
 const awayTeam = computed(() => configuration.value!.awayTeam);

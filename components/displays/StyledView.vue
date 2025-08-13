@@ -34,7 +34,7 @@ import ESPNTombstone from "./styles/espn/tomestone/Tombstone.vue";
 import BottomTextBar from "./LowerThirdViews/BottomTextBar.vue";
 import type { Configuration } from "~/types/replicants";
 
-const configuration = useReplicant<Configuration>("configuration");
+const configuration = useState<Configuration>("configuration");
 </script>
 
 <style scoped lang="scss">
