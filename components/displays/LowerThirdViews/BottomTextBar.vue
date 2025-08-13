@@ -13,17 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import redBar from "../../../assets/rpitv-modern/red_bar.png";
+import redBar from "~/assets/rpitv-modern/red_bar.png";
 import {computed, type CSSProperties} from "vue";
-import type { Channels, Configuration, LowerThird } from "~/types/replicants";
-
-defineProps({
-  preview: {
-    type: Boolean,
-    required: false,
-    default: false
-  }
-});
+import type { Channels, LowerThird } from "~/types/replicants";
 
 
 const route = useRoute();
@@ -31,8 +23,10 @@ let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>("channels");
-const lowerThird = useState<LowerThird>("lowerThird");
+const preview = ref(route.query.preview === "bottomtextbar" || false);
+
+const channels = await useReplicant<Channels>("channels");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
 const bottomTextBar = computed(() => lowerThird.value!.bottomTextBar);
 
 const greyTextStyle = computed((): CSSProperties => {

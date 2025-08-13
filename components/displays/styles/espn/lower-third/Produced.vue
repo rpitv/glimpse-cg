@@ -1,7 +1,7 @@
 <template>
 	<div id="container" :class="{
 			show: channels![channelIndex].produced,
-			hide: channels![channelIndex].produced,
+			hide: !channels![channelIndex].produced,
 			translateUp: channels![channelIndex].copyright,
 			translateNone: !channels![channelIndex].copyright
 		}">
@@ -14,15 +14,16 @@
 <script setup lang="ts">
 import ESPN_Copyright from "~/assets/espn/ESPN_Copyright.png"
 import RPITV_LOGO from "~/assets/rpitv-modern/rpitv_logo.svg"
-import type { LowerThird, Channels } from "~/types/replicants";
+import type { Channels } from "~/types/replicants";
 
-const lowerThird = useState<LowerThird>("lowerThird");
 const route = useRoute();
+const preview = ref(route.query.preview === "produced" || false);
+
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>("channels");
+const channels = await useReplicant<Channels>("channels");
 
 </script>
 

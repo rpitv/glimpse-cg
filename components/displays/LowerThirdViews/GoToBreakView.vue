@@ -20,12 +20,14 @@ defineProps({
 });
 
 const route = useRoute();
+const preview = ref(route.query.preview === "gotobreak" || false);
+
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>("channels");
-const configuration = useState<Configuration>("configuration");
+const channels = await useReplicant<Channels>("channels");
+const configuration = await useReplicant<Configuration>("configuration");
 </script>
 
 <style scoped lang="scss">

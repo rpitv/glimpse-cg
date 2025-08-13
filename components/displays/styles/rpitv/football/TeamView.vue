@@ -25,8 +25,8 @@ const props = defineProps({
 	}
 })
 
-const configuration = useState<Configuration>("configuration");
-const scoreboard = useState<Scoreboard>("scoreboard");
+const configuration = await useReplicant<Configuration>("configuration");
+const scoreboard = await useReplicant<Scoreboard>("scoreboard");
 const team = computed(() => configuration.value![props.team]);
 const scoreboardTeam = computed(() => scoreboard.value![props.team]);
 

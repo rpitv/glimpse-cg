@@ -40,8 +40,8 @@ import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
 import type { Configuration, Scoreboard } from "~/types/replicants";
 
 gsap.registerPlugin(CustomEase);
-const configuration = useState<Configuration>("configuration");
-const scoreboard = useState<Scoreboard>("scoreboard");
+const configuration = await useReplicant<Configuration>("configuration");
+const scoreboard = await useReplicant<Scoreboard>("scoreboard");
 const awayTeam = computed(() => configuration.value!.awayTeam);
 const homeTeam = computed(() => configuration.value!.homeTeam);
 const clock = computed(() => scoreboard.value!.clock);

@@ -20,8 +20,8 @@ import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { Configuration, LowerThird } from "~/types/replicants";
 
-const lowerThird = useState<LowerThird>("lowerThird");
-const configuration = useState<Configuration>("configuration");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const configuration = await useReplicant<Configuration>("configuration");
 
 const locator = computed(() => lowerThird.value!.locator);
 const awayTeam = computed(() => configuration.value!.awayTeam);

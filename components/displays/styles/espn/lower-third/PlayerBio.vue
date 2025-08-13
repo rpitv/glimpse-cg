@@ -29,11 +29,11 @@ import type { Channels, Configuration, LowerThird } from "~/types/replicants";
 const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
-  channelIndex.value = parseInt(route.query.channel as string);
+	channelIndex.value = parseInt(route.query.channel as string);
 
-const lowerThird = useState<LowerThird>("lowerThird");
-const configuration = useState<Configuration>("configuration");
-const channels = useState<Channels>("channels");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const configuration = await useReplicant<Configuration>("configuration");
+const channels = await useReplicant<Channels>("channels");
 const playerBio = computed(() => lowerThird.value!.playerBio);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);

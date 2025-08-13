@@ -33,11 +33,11 @@ import type { Channels, Configuration, Scoreboard } from '~/types/replicants';
 const route = useRoute();
 let channelIndex = ref(0);
 if (route.query.channel)
-  channelIndex.value = parseInt(route.query.channel as string);
+	channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>('channels');
-const configuration = useState<Configuration>('configuration');
-const scoreboard = useState<Scoreboard>('scoreboard');
+const channels = await useReplicant<Channels>('channels');
+const configuration = await useReplicant<Configuration>('configuration');
+const scoreboard = await useReplicant<Scoreboard>('scoreboard');
 
 const awayTeam = computed(() => configuration.value!.awayTeam);
 const homeTeam = computed(() => configuration.value!.homeTeam);

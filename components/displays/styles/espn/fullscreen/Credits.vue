@@ -19,7 +19,7 @@ import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { Fullscreen } from "~/types/replicants";
 
-const configuration = useState<Fullscreen>("fullscreen");
+const configuration = await useReplicant<Fullscreen>("fullscreen");
 const credits = computed(() => configuration.value!.credits);
 
 
@@ -48,7 +48,7 @@ const creditsContainer = computed((): CSSProperties => {
 
 const people = computed((): CSSProperties[] => {
 	const styles: CSSProperties[] = [];
-	for (const credit of replicants.fullscreen.credits.credit.value) {
+	for (const credit of credits.value.credit) {
 		styles.push({
 			color: credit.peopleColor,
 			fontSize: credit.peopleSize + 2.4 + "vh",
@@ -59,7 +59,7 @@ const people = computed((): CSSProperties[] => {
 
 const title = computed((): CSSProperties[] => {
 	const styles: CSSProperties[] = [];
-	for (const credit of replicants.fullscreen.credits.credit.value) {
+	for (const credit of credits.value.credit) {
 		styles.push({
 			color: credit.titleColor,
 			fontSize: credit.titleSize + 3.3 + "vh",
@@ -73,11 +73,11 @@ const title = computed((): CSSProperties[] => {
 <style scoped lang="scss">
 @font-face {
 	font-family: "swiss721_heavy";
-	src: url('../../../../../assets/espn/Swiss721Heavy.ttf');
+	src: url('~/assets/espn/Swiss721Heavy.ttf');
 }
 @font-face {
 	font-family: "swiss721_med";
-	src: url('../../../../../assets/espn/Swiss721Medium.ttf');
+	src: url('~/assets/espn/Swiss721Medium.ttf');
 }
 div {
 	position: absolute;

@@ -1,18 +1,17 @@
-import { ref, watch, onMounted } from 'vue';
 import { socket } from "~/utils/socket"
 
+const replicantCache = new Map<string, ReturnType<typeof ref>>();
 
-
-import { nextTick } from 'vue';
-
-export async function useReplicant<T>(name: string) {
+export async function useReplicant<T>(name: string): Promise<ReturnType<typeof ref<T>>> {
+  if (replicantCache.has(name)) {
+    return replicantCache.get(name);
+  }
   const value = ref<T | undefined>(undefined);
 
   let resolveFirst: ((v: typeof value) => void) | null = null;
   const firstValue = new Promise<typeof value>((resolve) => {
     resolveFirst = resolve;
   });
-
 
   socket.emit('replicant:subscribe', { name });
   socket.on(`replicant:update:${name}`, (incoming: T) => {
@@ -33,5 +32,6 @@ export async function useReplicant<T>(name: string) {
   // Wait for the first value to be set before returning
   await firstValue;
   await nextTick();
+  replicantCache.set(name, value);  
   return value;
 }

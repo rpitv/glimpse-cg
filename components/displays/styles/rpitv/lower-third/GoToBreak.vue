@@ -21,9 +21,9 @@ import ScoreboardGraphic from "~/assets/rpitv-modern/Scoreboard.png"
 import type { CSSProperties } from "vue";
 import type { Configuration, LowerThird, Scoreboard } from "~/types/replicants";
 
-const lowerThird = useState<LowerThird>("lowerThird");
-const scoreboard = useState<Scoreboard>("scoreboard");
-const configuration = useState<Configuration>("configuration");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const scoreboard = await useReplicant<Scoreboard>("scoreboard");
+const configuration = await useReplicant<Configuration>("configuration");
 const goToBreak = computed(() => lowerThird.value!.goToBreak);
 const gtbHomeTeam = computed(() => goToBreak.value.homeTeam);
 const gtbAwayTeam = computed(() => goToBreak.value.awayTeam);

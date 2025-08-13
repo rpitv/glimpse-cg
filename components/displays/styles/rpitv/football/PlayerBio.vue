@@ -16,8 +16,8 @@ import { computed, ref, type CSSProperties} from "vue";
 import {calcLinearGrad, isLighter, isLightColor} from "../../../util";
 import type { Configuration, LowerThird } from "~/types/replicants";
 
-const configuration = useState<Configuration>("configuration");
-const lowerThird = useState<LowerThird>("lowerThird");
+const configuration = await useReplicant<Configuration>("configuration");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
 const playerBio = computed(() => lowerThird.value!.playerBio);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);

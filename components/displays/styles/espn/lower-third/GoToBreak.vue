@@ -34,9 +34,9 @@ import type { CSSProperties } from "vue";
 import ESPNGoToBreak from "~/assets/espn/Scoreboard.png";
 import type { Scoreboard, Configuration, LowerThird } from "~/types/replicants";
 
-const lowerThird = useState<LowerThird>("lowerThird");
-const configuration = useState<Configuration>("configuration");
-const scoreboard = useState<Scoreboard>("scoreboard");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const configuration = await useReplicant<Configuration>("configuration");
+const scoreboard = await useReplicant<Scoreboard>("scoreboard");
 const goToBreak = computed(() => lowerThird.value!.goToBreak);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);
@@ -179,19 +179,19 @@ const scaleTextToFit = () => {
 };
 
 // Watch for changes in the text prop
-watch([goToBreak.value.description.text, clock.value.time, goToBreak.value.description.autoFit,
-			goToBreak.value.description.fontSize, goToBreak.value.description.clock],
-	async () => {
-		if (!goToBreak.value.description.autoFit) {
-			const text = scalingText.value;
-			if (!text) return;
-			text.style.fontSize = goToBreak.value.description.fontSize+ 2.36 + "vh";
-			return;
-		}
-		await nextTick();
-		scaleTextToFit();
-	}
-);
+// watch([goToBreak.value.description.text, clock.value.time, goToBreak.value.description.autoFit,
+// 			goToBreak.value.description.fontSize, goToBreak.value.description.clock],
+// 	async () => {
+// 		if (!goToBreak.value.description.autoFit) {
+// 			const text = scalingText.value;
+// 			if (!text) return;
+// 			text.style.fontSize = goToBreak.value.description.fontSize+ 2.36 + "vh";
+// 			return;
+// 		}
+// 		await nextTick();
+// 		scaleTextToFit();
+// 	}
+// );
 
 // Handle scaling on mount and cleanup on unmount
 onMounted(() => {

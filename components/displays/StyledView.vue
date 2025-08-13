@@ -14,7 +14,7 @@
     <PlayerBioView id="PlayerBio"/>
     <BottomTextBar id="bottom-text-bar"/>
     <CopyrightView id="copyright"/>
-    <BugView/>
+    <BugView />
   </div>
 </template>
 
@@ -34,7 +34,7 @@ import ESPNTombstone from "./styles/espn/tomestone/Tombstone.vue";
 import BottomTextBar from "./LowerThirdViews/BottomTextBar.vue";
 import type { Configuration } from "~/types/replicants";
 
-const configuration = useState<Configuration>("configuration");
+const configuration = await useReplicant<Configuration>("configuration");
 </script>
 
 <style scoped lang="scss">

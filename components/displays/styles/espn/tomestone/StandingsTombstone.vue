@@ -33,7 +33,7 @@ import { StandingsTeam } from "~/utils/standings";
 import TombstoneBuilder from "./TombstoneBuilder.vue";
 import type { Fullscreen } from "~/types/replicants";
 
-const fullscreen = useState<Fullscreen>("fullscreen");
+const fullscreen = await useReplicant<Fullscreen>("fullscreen");
 const standings = computed(() => fullscreen.value!.standings);
 
 function sortByPosition(a: StandingsTeam, b: StandingsTeam) {

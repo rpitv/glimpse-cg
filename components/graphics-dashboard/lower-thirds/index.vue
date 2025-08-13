@@ -2,9 +2,9 @@
   <div>
     <UCard>
       <template #header>
-        <div class="text-2xl">
+        <p class="text-2xl">
           Lower Third
-        </div>
+        </p>
       </template>
       <template #default>
         <div>
@@ -12,7 +12,6 @@
             
           </URadioGroup>
         </div>
-
       </template>
     </UCard>
   </div>

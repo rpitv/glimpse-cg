@@ -11,21 +11,16 @@ import ESPNBug from "../styles/espn/lower-third/Bug.vue";
 import RPITVBug from "../styles/rpitv/lower-third/Bug.vue";
 import { espnStyles, rpiTVStyles} from "../util";
 
-defineProps({
-	preview: {
-		type: Boolean,
-		required: false,
-		default: false
-	}
-});
 
 const route = useRoute();
+const preview = ref(route.query.preview === "bug" || false);
+
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>("channels");
-const configuration = useState<Configuration>("configuration");
+const channels = await useReplicant<Channels>("channels");
+const configuration = await useReplicant<Configuration>("configuration");
 
 
 </script>

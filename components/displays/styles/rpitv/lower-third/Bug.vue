@@ -7,7 +7,7 @@ import bug from "~/assets/rpitv-modern/rpitvBug.png";
 import { computed, type CSSProperties } from "vue";
 import type { LowerThird } from "~/types/replicants";
 
-const lowerThird = useState<LowerThird>("lowerThird");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
 
 const bugStyle = computed((): CSSProperties => {
 	return {

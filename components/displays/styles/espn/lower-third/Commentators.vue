@@ -15,8 +15,7 @@ import commentatorsGraphic from "~/assets/espn/Commentators.png"
 import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { LowerThird } from "~/types/replicants";
-
-const replicants = useState<LowerThird>("lowerThird");
+const replicants = await useReplicant<LowerThird>("lowerThird");
 const commentators = computed(() => replicants.value?.commentators);
 
 const commentatorsImage = computed((): CSSProperties => {

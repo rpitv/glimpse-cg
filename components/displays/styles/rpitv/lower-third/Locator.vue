@@ -17,8 +17,8 @@ import type { CSSProperties } from "vue";
 import type { Configuration, LowerThird } from "~/types/replicants";
 
 // background color of the gray in use rgb(133,133,133);
-const lowerThird = useState<LowerThird>("lowerThird");
-const configuration = useState<Configuration>("configuration");
+const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const configuration = await useReplicant<Configuration>("configuration");
 const locator = computed(() => lowerThird.value!.locator);
 const homeTeam = computed(() => configuration.value!.homeTeam);
 const awayTeam = computed(() => configuration.value!.awayTeam);

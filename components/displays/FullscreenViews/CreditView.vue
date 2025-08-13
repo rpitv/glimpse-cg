@@ -9,21 +9,17 @@ import { espnStyles, rpiTVStyles } from "../util";
 import type { Configuration, Channels } from '~/types/replicants';
 import ESPNCredits from "../styles/espn/fullscreen/Credits.vue";
 
-defineProps({
-	preview: {
-		type: Boolean,
-		required: false,
-		default: false
-	}
-});
 
 const route = useRoute();
+
+const preview = ref(route.query.preview === "credit" || false);
+
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = useState<Channels>("channels");
-const configuration = useState<Configuration>("configuration");
+const channels = await useReplicant<Channels>("channels");
+const configuration = await useReplicant<Configuration>("configuration");
 </script>
 
 <style scoped lang="scss">

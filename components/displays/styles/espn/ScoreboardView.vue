@@ -74,12 +74,13 @@ import TeamView from "./TeamView.vue";
 import { Announcement } from "~/utils/announcement";
 
 const route = useRoute();
+
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channel = useState<Channels>("channels");
-const scoreboard = useState<Scoreboard>("scoreboard");
-const configuration = useState<Configuration>("configuration")
+const channel = await useReplicant<Channels>("channels");
+const scoreboard = await useReplicant<Scoreboard>("scoreboard");
+const configuration = await useReplicant<Configuration>("configuration")
 const hockeyAwayTeam = computed(() => scoreboard.value!.hockey.awayTeam);
 const hockeyHomeTeam = computed(() => scoreboard.value!.hockey.homeTeam);
 const awayTeam = computed(() => configuration.value!.awayTeam);
