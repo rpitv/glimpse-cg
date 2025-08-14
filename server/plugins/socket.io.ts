@@ -1,22 +1,19 @@
-import type { NitroApp } from "nitropack";
-import { Server as Engine } from "engine.io";
-import { Server } from "socket.io";
-import { defineEventHandler } from "h3";
-import { createReplicants, getReplicant } from '~/utils/replicants';
-import { migrateReplicantsSchema } from "~/utils/db";
+import type {NitroApp} from "nitropack";
+import {Server as Engine} from "engine.io";
+import {Server} from "socket.io";
+import {defineEventHandler} from "h3";
+import {getReplicant} from '~/utils/replicants';
+import {initDb} from "~/utils/db";
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
   const io = new Server();
 
   io.bind(engine);
-  // Initialize the replicants if it doesn't already exist
-  createReplicants();
-  // Migrate replicants schema if needed
-  migrateReplicantsSchema();
+  initDb();
 
   io.on("connection", (socket) => {
-    
+
     // Expecting { name }
     socket.on('replicant:subscribe', ({ name }: { name: string }) => {
       const rep = getReplicant(name);

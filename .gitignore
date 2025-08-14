@@ -5,6 +5,9 @@
 .nitro
 .cache
 dist
+cache
+/0.0.0.0/
+
 
 # Node dependencies
 node_modules
@@ -25,3 +28,4 @@ logs
 
 # db
 replicants.db
+/replicants.db-journal
