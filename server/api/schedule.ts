@@ -20,12 +20,82 @@ export interface ScheduleResults {
     games: ScheduledGame[]
 }
 
-function parsesSchedulePage(data: string, forceFetch: boolean) {
-    const results: ScheduleResults = {
-        lastUpdated: new Date().toString(),
-        games: []
+/**
+ * Returns a {@link Date} of the game.
+ * @param date From the schedule page in the format `Oct 3 (Fri)
+ * @param seasonYear Currently selected season from the season selection dropdown menu, format `2025-2026` or `2025`
+ * @param time Whatever the time that's displayed on the page, this one is less picky since {@link Date} can resolve many varriations.
+ */
+function calculateGameDate(date: string, seasonYear: string | number, time: string) {
+    const targetDateWeekday =
+        date?.substring(date?.indexOf("(") + 1, date?.lastIndexOf(")")) || // sidearm format
+        date?.split(",").length > 1 ? date?.split(", ")[0] : // ACHA format
+            undefined;
+    let fullGameDate = new Date(`${date} ${seasonYear} ${time}`);
+    // the day of week generated doesn't match expected so it must be the next year in the season i.e. Jan date in a winter sport
+    if (targetDateWeekday && fullGameDate.toLocaleDateString("en-us", {weekday: 'short'}) !== targetDateWeekday) {
+        fullGameDate = new Date(`${date.substring(0, date.indexOf("("))}, ${(Number(seasonYear) || 2000) + 1} ${time}`);
     }
-    const document = new JSDOM(data).window.document;
+    return fullGameDate;
+}
+
+
+function opponentLogoSanitizer(link: string | undefined, forceFetch: boolean) {
+    if (!link) {
+        return ""
+    }
+    if (link.startsWith("https://images.sidearmdev.com/crop?url")) {
+        const res = new URL(link).searchParams.get("url")
+        return res ? `/api/img?force=${forceFetch}&src=` + encodeURIComponent(res) : ""
+    }
+    if (link.startsWith("/images")) {
+        return `/api/img?force=${forceFetch}&src=` + encodeURIComponent("https://rpiathletics.com" + link)
+    }
+    return ""
+}
+
+function parseNextgenSite(document: Document, forceFetch: boolean) {
+    const games: ScheduledGame[] = [];
+
+    const seasonYear = document?.querySelector("#schedule-season-select div.s-select__selected-option")?.textContent || 2000;
+    const gameElements = document.querySelectorAll(".s-game-card");
+    for (let i = 0; i < gameElements.length; i++) {
+        if (!gameElements[i])
+            continue
+
+        const date = gameElements[i]?.querySelector("[data-test-id='s-game-card-standard__header-game-date-details']")?.textContent?.trim() || "";
+        const time = gameElements[i]?.querySelector("[aria-label='Event Time']")?.textContent?.trim() || "";
+        const opponent = gameElements[i]?.querySelector("[data-test-id='s-game-card-standard__header-team-opponent-link']")?.textContent?.trim() || "Unknown Opponent";
+        const opponentLogo = opponentLogoSanitizer(gameElements[i]?.querySelector("[data-test-id='s-game-card-opponent-logo__link'] img")?.src, forceFetch);
+
+        const opponentLogoAlt = gameElements[i]?.querySelector("[data-test-id='s-game-card-opponent-logo__link'] img")?.alt || "";
+        const location = [
+            gameElements[i]?.querySelector("[data-test-id='s-game-card-facility-and-location__standard-location-details']")?.textContent?.trim() || "",
+            gameElements[i]?.querySelector("[data-test-id='s-game-card-facility-and-location__game-facility-title-link']")?.textContent?.trim() || ""
+        ].filter((e) => {
+            return 0 < e.length
+        }).join(" | ");
+        const homeGame = gameElements[i]?.querySelector("[data-test-id='s-stamp__root']")?.textContent === "vs" || false;
+        const neutralSite = false;
+        const fullGameDate = calculateGameDate(date, seasonYear, time);
+
+        games.push({
+            date: fullGameDate,
+            opponent,
+            opponentLogo,
+            opponentLogoAlt,
+            location,
+            homeGame,
+            neutralSite,
+        });
+    }
+
+    return games;
+}
+
+function parseSidearmSite(document: Document, forceFetch: boolean) {
+    const games: ScheduledGame[] = [];
+
     const seasonYear = document.querySelector("#sidearm-schedule-select-season [data-current='1']")?.textContent?.trim()?.split("-")[0] || 2000;
     const gameElements = document.querySelectorAll(".sidearm-schedule-games-container > .sidearm-schedule-game");
     for (let i = 0; i < gameElements.length; i++) {
@@ -35,20 +105,12 @@ function parsesSchedulePage(data: string, forceFetch: boolean) {
         const date = gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-date span")?.textContent?.trim() || "";
         const time = gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-date span:last-child")?.textContent?.trim() || "";
         const opponent = gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-name")?.textContent?.trim() || "Unknown Opponent";
-        const opponentLogo =
-            `/api/img?force=${forceFetch}&src=https://rpiathletics.com` +
-            gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-logo img")?.getAttribute('data-src')?.split("?")[0]
-            || "";
+        const opponentLogo = opponentLogoSanitizer(gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-logo img")?.getAttribute('data-src')?.split("?")[0], forceFetch);
         const opponentLogoAlt = gameElements[i]?.querySelector(".sidearm-schedule-game-opponent-logo img")?.alt || "";
         const location = gameElements[i]?.querySelector(".sidearm-schedule-game-location")?.textContent?.trim()?.replace(/\s{2,}/g, " | ") || "";
         const homeGame = gameElements[i]?.classList?.contains("sidearm-schedule-home-game");
         const neutralSite = gameElements[i]?.classList?.contains("sidearm-schedule-neutral-game");
-
-        const targetDateWeekday = date?.substring(date?.indexOf("(") + 1, date?.lastIndexOf(")")) || undefined;
-        let fullGameDate = new Date(`${date} ${seasonYear} ${time}`);
-        if (targetDateWeekday && fullGameDate.toLocaleDateString("en-us", {weekday: 'short'}) !== targetDateWeekday) {
-            fullGameDate = new Date(`${date.substring(0, date.indexOf("("))}, ${(Number(seasonYear) || 2000) + 1} ${time}`);
-        }
+        const fullGameDate = calculateGameDate(date, seasonYear, time);
 
         const game: ScheduledGame = {
             date: fullGameDate,
@@ -59,9 +121,47 @@ function parsesSchedulePage(data: string, forceFetch: boolean) {
             homeGame,
             neutralSite,
         }
-        results.games.push(game);
+        games.push(game);
     }
-    return JSON.stringify(results);
+
+    return games;
+}
+
+function parseAchaSite(document: Document, forceFetch: boolean) {
+    const games: ScheduledGame[] = [];
+
+    const seasonYear = document.querySelector("h1.p-4")?.textContent?.trim()?.split("-")[0] || 2000;
+    const gameElements = document.querySelector("table")?.querySelectorAll("tbody tr") || [];
+    console.log(gameElements)
+    for (let i = 0; i < gameElements.length; i++) {
+        if (!gameElements[i])
+            continue
+
+        const date = gameElements[i]?.querySelector(".date i")?.textContent?.trim() || "";
+        const time = "";
+        const opponent = gameElements[i]?.querySelector("h3")?.textContent?.trim() || "Unknown Opponent";
+        const opponentLogo =
+            `/api/img?force=${forceFetch}&src=` +
+            gameElements[i]?.querySelector("img")?.src // todo unconform url better
+            || "";
+        const opponentLogoAlt = "";
+        const location = gameElements[i]?.querySelector(".date a")?.textContent?.trim() || "";
+        const homeGame = opponent?.toLowerCase()?.startsWith("vs ") || false;
+        const neutralSite = false;
+        const fullGameDate = calculateGameDate(date, seasonYear, time);
+
+        games.push({
+            date: fullGameDate,
+            opponent,
+            opponentLogo,
+            opponentLogoAlt,
+            location,
+            homeGame,
+            neutralSite,
+        });
+    }
+
+    return games;
 }
 
 export default defineEventHandler(async (event) => {
@@ -104,6 +204,23 @@ export default defineEventHandler(async (event) => {
             break;
         default:
             break;
+    }
+
+    const parsesSchedulePage = (data: string, forceFetch: boolean) => {
+        const results: ScheduleResults = {
+            lastUpdated: new Date().toString(),
+            games: []
+        }
+        const document = new JSDOM(data).window.document;
+        if (configuration?.value.sport === "acha") {
+            results.games = [...parseAchaSite(document, forceFetch)];
+        } else {
+            // sidearm stats
+            const gamesA = parseSidearmSite(document, forceFetch);
+            const gamesB = parseNextgenSite(document, forceFetch);
+            results.games = [...gamesA, ...gamesB];
+        }
+        return JSON.stringify(results);
     }
 
     const resultingSchedule = await fetchTextViaCache(athleticsURL, {}, async (res) => {

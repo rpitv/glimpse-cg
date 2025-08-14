@@ -1,7 +1,8 @@
 <template>
     <UCard id="schedule-card">
         <template #header>
-            <h1 class="text-2xl">RPI Home Schedule</h1>
+            <h1 class="text-2xl">Schedule</h1>
+            <USwitch v-model="homeToggle" label="Only Show Home Games" />
         </template>
         <div v-if="loading">
             <UProgress></UProgress>
@@ -9,12 +10,16 @@
         </div>
         <div v-else>
             <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table"
-                         value-key="val" :items="schedule" v-model="selectedSchool"
+                         value-key="val" :items="schedule.filter(g => {
+                             if (homeToggle)
+                                 return g.val.homeGame
+                             return true
+                         })" v-model="selectedSchool"
                          @dblclick="() => { if (selectedSchool?.preset) emit('loadMatchup', selectedSchool?.preset) }"
             >
-                <template #label="{ item }">
+                <template #label="{ item }" >
                     <div :id="item.uni" class="flex items-center gap-2">
-                        <img class="schedule-logo" :src="item.val.opponentLogo?.src">
+                        <img class="schedule-logo" :src="item.val.opponentLogo?.src" :alt="item.val.opponentLogo?.alt" rel="preload">
                         <div>
                             <p class="text-muted text-left">{{ item.val.type === 'women' ? '(WOMEN)' : '(MEN)' }}</p>
                             <p class="text-left text-xl">{{ item.val.title }}</p>
@@ -56,6 +61,7 @@ export interface Timeline {
         description: string;
         title: string;
         type: string;
+        homeGame: boolean;
         opponentLogo?: {
             src: string;
             alt: string;
@@ -72,6 +78,7 @@ const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
 const schedule = ref<Timeline[]>([]);
 const loading = ref(false);
 const lastUpdated = ref("");
+const homeToggle = ref(true);
 let scrollToView: null | number = null;
 
 const selectedSchool = ref<Timeline['val']>();
@@ -97,6 +104,7 @@ async function refresh(force = false) {
                     hour: '2-digit',
                     minute: '2-digit'
                 }),
+                homeGame: game.homeGame,
                 title: `${game.opponent} @ ${game.location}`,
                 type: configuration.value?.type || "mens",
                 opponentLogo: {
@@ -187,6 +195,8 @@ defineExpose({
 .schedule-logo {
     filter: drop-shadow(0 0 3px rgb(0, 0, 0));
     max-height: 4rem;
+    max-width: 4rem;
+    width: 4rem;
     object-fit: contain;
 }
 
