@@ -8,7 +8,9 @@ import {
 } from '~/types/replicants';
 import Database from 'better-sqlite3';
 import {createReplicants} from "~/utils/replicants";
-import {fetchTextViaCache} from "~/utils/fetching";
+import {mkdir} from "node:fs/promises";
+import {join} from "path";
+import {writeFile} from "node:fs";
 
 export const db = new Database('./replicants.db');
 
@@ -61,20 +63,8 @@ function migrateReplicantsSchema() {
 }
 
 
-/**
- * Inits the db, and performs any migrations.
- */
-export function initDb() {
-    // Create the replicants table if it doesn't exist
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS replicants
-        (
-            name TEXT PRIMARY KEY,
-            value TEXT
-        )
-    `).run();
-
-    // creates http_cache table for ~/utils/fetching.ts
+// inits http_cache table for ~/utils/fetching.ts
+function initHttpCacheTable() {
     db.prepare(`
         CREATE TABLE IF NOT EXISTS http_cache
         (
@@ -87,8 +77,48 @@ export function initDb() {
         )
     `).run();
 
+    // flushes cache that's older than 30 days
+    db.prepare(`
+        DELETE FROM http_cache
+        WHERE next_refresh < ?
+            RETURNING *;
+    `).run(Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60));
+
+    // image cache dir
+    mkdir(join(process.cwd(), "public", "cache", "images"), {recursive: true})
+        .then(() => {
+            writeFile(join(process.cwd(), "public", "cache", "_README.txt"), `
+            Warning: Files in cache subject to automatic deletion.
+            It is safe to delete this directory if it gets too full.
+            `, (err) => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return;
+                }
+                console.log('File written successfully!');
+            })
+        })
+        .catch(console.error);
+}
+
+/**
+ * Inits the db, and performs any migrations.
+ */
+export function initDb() {
+    // Create the replicants table if it doesn't exist
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS replicants
+        (
+            name TEXT PRIMARY KEY,
+            value TEXT
+        )
+    `).run();
     createReplicants();
     migrateReplicantsSchema();
+
+    initHttpCacheTable();
+
+    db.prepare(`VACUUM`).run();
 }
 
 
