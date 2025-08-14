@@ -77,13 +77,6 @@ function initHttpCacheTable() {
         )
     `).run();
 
-    // flushes cache that's older than 30 days
-    db.prepare(`
-        DELETE FROM http_cache
-        WHERE next_refresh < ?
-            RETURNING *;
-    `).run(Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60));
-
     // image cache dir
     mkdir(join(process.cwd(), "public", "cache", "images"), {recursive: true})
         .then(() => {
