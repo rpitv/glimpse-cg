@@ -17,7 +17,7 @@
       </div>
       <UTable :ui="{ tbody: 'my-table-tbody' }" :columns="columns" :data="commentatorsRef" class="table-fixed w-full">
         <template #commentator-cell="{ row }">
-          <div style="width:clamp(140px,30vw,320px)">
+          <div style="min-width:140px; max-width: 320px;">
             <UFormField label="Name" help="The name of the commentator.">
               <DebouncedInput v-model="row.original.name" placeholder="Name" class="w-full" />
             </UFormField>
@@ -51,7 +51,7 @@
           </div>
         </template>
         <template #description-cell="{ row }">
-          <div v-if="configuration?.style !== 'espn'" style="width:clamp(140px,30vw,320px)">
+          <div v-if="configuration?.style !== 'espn'" style="min-width:140px; max-width: 320px;">
             <UFormField label="Description" help="A brief description or title for the commentator.">
               <DebouncedInput v-model="row.original.description" placeholder="Description" class="w-full" />
             </UFormField>

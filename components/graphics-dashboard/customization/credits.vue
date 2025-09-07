@@ -10,7 +10,7 @@
       </div>
       <UTable :ui="{ tbody: 'my-table-tbody' }" :columns :data="credits.credit" class="table-fixed w-full">
         <template #title-cell="{ row }">
-          <div style="width:clamp(140px,30vw,320px)">
+          <div style="min-width:140px; max-width: 320px;">
             <UFormField label="Role Title" help="The title of the role.">
               <DebouncedInput v-model="row.original.title" placeholder="Title of the role" class="w-full" />
             </UFormField>
@@ -46,7 +46,7 @@
           </div>
         </template>
         <template #people-cell="{ row }">
-          <div style="width:clamp(140px,30vw,320px)">
+          <div style="min-width:140px; max-width: 320px;">
             <UFormField label="People" help="The people for this role.">
               <DebouncedInputTags v-model="row.original.people" placeholder="Add a person" class="w-full" />
             </UFormField>
