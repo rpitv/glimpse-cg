@@ -21,16 +21,17 @@ const commentators = computed(() => replicants.value?.commentators);
 const commentatorsImage = computed((): CSSProperties => {
 	return {
 		bottom: commentators.value!.offsetY + "vh",
+    left: commentators.value!.offsetX + "vw",
 	}
 });
 const commentatorsContainer = computed((): CSSProperties => {
 	return {
 		alignItems: "center",
-		bottom: commentators.value!.offsetY+ 17 + "vh",
+		bottom: commentators.value!.offsetY + 17 + "vh",
 		display: "flex",
 		height: "5vh",
 		justifyContent: "space-around",
-		left: "14vw",
+		left: commentators.value!.offsetX + 14 + "vw",
 		position: "absolute",
 		width: "72vw",
 	}
@@ -52,5 +53,8 @@ img {
 	width: 100vw;
 	height: 100vh;
 	transition: opacity 1s;
+}
+.commentator {
+  position: relative
 }
 </style>

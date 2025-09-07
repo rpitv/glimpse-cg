@@ -1,4 +1,5 @@
-import { socket } from "~/utils/socket"
+import { useDebounce } from "@vueuse/core";
+import { socket } from "~/utils/socket";
 
 const replicantCache = new Map<string, ReturnType<typeof ref>>();
 
@@ -6,6 +7,7 @@ export async function useReplicant<T>(name: string): Promise<ReturnType<typeof r
   if (replicantCache.has(name)) {
     return replicantCache.get(name);
   }
+
   const value = ref<T | undefined>(undefined);
 
   let resolveFirst: ((v: typeof value) => void) | null = null;
@@ -13,7 +15,18 @@ export async function useReplicant<T>(name: string): Promise<ReturnType<typeof r
     resolveFirst = resolve;
   });
 
-  socket.emit('replicant:subscribe', { name });
+  // Listener function so we can later remove it
+  const listener = (incoming: T) => {
+    if (JSON.stringify(value.value) !== JSON.stringify(incoming)) {
+      value.value = incoming;
+      if (resolveFirst) {
+        resolveFirst(value);
+        resolveFirst = null;
+      }
+    }
+  };
+
+  socket.emit("replicant:subscribe", { name });
   socket.on(`replicant:update:${name}`, (incoming: T) => {
     if (JSON.stringify(value.value) !== JSON.stringify(incoming)) {
       value.value = incoming;
@@ -24,14 +37,23 @@ export async function useReplicant<T>(name: string): Promise<ReturnType<typeof r
     }
   });
 
-  watch(value, (newVal) => {
-    if (newVal !== undefined) {
-      socket.emit('replicant:set', { name, value: newVal });
-    }
-  }, { deep: true });
-  // Wait for the first value to be set before returning
+  // Wait until the first value arrives
   await firstValue;
   await nextTick();
-  replicantCache.set(name, value);  
+
+  const debounced = useDebounce(value, 300);
+
+  // Now that we have the initial value, start watching for changes
+  const stopWatcher = watch(
+    debounced,
+    (newVal) => {
+      if (newVal !== undefined) {
+        socket.emit("replicant:set", { name, value: newVal });
+      }
+    },
+    { deep: true }
+  );
+
+  replicantCache.set(name, value);
   return value;
 }

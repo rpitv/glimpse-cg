@@ -33,7 +33,7 @@ const copyrightTextContainer = computed((): CSSProperties => {
 });
 const copyrightText = computed((): CSSProperties => {
   return {
-    color: copyright!.value.textColor,
+    color: copyright!.value.textColor || "#3f403b",
     fontSize: copyright!.value.textSize + 3.8 + "vh",
   }
 });

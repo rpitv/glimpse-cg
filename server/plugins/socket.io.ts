@@ -16,18 +16,27 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   migrateReplicantsSchema();
 
   io.on("connection", (socket) => {
-    
+    const unsubscribers: (() => void)[] = [];
+
     // Expecting { name }
     socket.on('replicant:subscribe', ({ name }: { name: string }) => {
       const rep = getReplicant(name);
       if (!rep) return;
-      rep.subscribe((val) => socket.emit(`replicant:update:${name}`, val));
+      const unsubscribe = rep.subscribe((val) => {
+        socket.emit(`replicant:update:${name}`, val);
+      });
+      unsubscribers.push(unsubscribe);
     });
 
     // Expecting { name, value }
     socket.on('replicant:set', ({ name, value }: { name: string; value: unknown }) => {
       const rep = getReplicant(name);
       rep?.set(value);
+    });
+
+    socket.on("disconnect", () => {
+      unsubscribers.forEach((fn) => fn());
+      unsubscribers.length = 0;
     });
   });
 

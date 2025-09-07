@@ -30,13 +30,13 @@ onMounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@500;700;900&display=swap');
 </style>
 
-<style lang="scss">
+<style scoped lang="scss">
 html {
 	overflow: hidden !important;
 }
 
 body {
-	overflow: hidden;
+	overflow: hidden !important;
 	margin: 0;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <StandingsTombstone :class="channels![channelIndex].standings ? 'show' : 'hide'" />
+  <StandingsTombstone :class="channels![channelIndex].standings ? 'show' : 'hide'" />
 </template>
 
 <script setup lang="ts">

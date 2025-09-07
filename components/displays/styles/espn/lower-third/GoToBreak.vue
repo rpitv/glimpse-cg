@@ -46,7 +46,7 @@ const scalingText = ref<HTMLSpanElement>();
 
 const awayTeamName = computed((): CSSProperties => { return {
 	alignItems: "center",
-	color: goToBreak.value.awayTeam.nameColor,
+	color: goToBreak.value.awayTeam.nameColor || "#3f403b",
 	display: "flex",
 	flexWrap: "nowrap",
 	fontSize: goToBreak.value.awayTeam.nameSize + 3.7 + "vh",
@@ -60,7 +60,7 @@ const awayTeamName = computed((): CSSProperties => { return {
 const awayTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "21.7vh",
-	color: goToBreak.value.awayTeam.scoreColor,
+	color: goToBreak.value.awayTeam.scoreColor || "#3f403b",
 	display: "flex",
 	fontSize: goToBreak.value.awayTeam.scoreSize +  5.7 + "vh",
 	height: "8.3vh",
@@ -70,7 +70,7 @@ const awayTeamScore = computed((): CSSProperties => { return {
 }});
 const homeTeamName = computed((): CSSProperties => { return {
 	alignItems: "center",
-	color: goToBreak.value.homeTeam.nameColor,
+	color: goToBreak.value.homeTeam.nameColor || "#3f403b",
 	display: "flex",
 	flexWrap: "nowrap",
 	fontSize: goToBreak.value.homeTeam.nameSize + 3.7 + "vh",
@@ -84,7 +84,7 @@ const homeTeamName = computed((): CSSProperties => { return {
 const homeTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "21.7vh",
-	color: goToBreak.value.homeTeam.scoreColor,
+	color: goToBreak.value.homeTeam.scoreColor || "#3f403b",
 	display: "flex",
 	fontSize: goToBreak.value.homeTeam.scoreSize + 5.7 + "vh",
 	height: "8.3vh",
@@ -95,7 +95,7 @@ const homeTeamScore = computed((): CSSProperties => { return {
 const description = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "11.5vh",
-	color: goToBreak.value.description.fontColor,
+	color: goToBreak.value.description.fontColor || "#3f403b",
 	display: "flex",
 	fontSize: goToBreak.value.description.fontSize + 2.36 + "vh",
 	fontStyle: "italic",

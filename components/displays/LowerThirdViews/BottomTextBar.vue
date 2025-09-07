@@ -1,5 +1,5 @@
 <template>
-  <div :class="channels![channelIndex].bottomTextBar || preview ? 'show' : 'hide'">
+  <div :class="(channels![channelIndex].bottomTextBar && !route.query.preview) || preview ? 'show' : 'hide'">
     <div class="container">
       <div :class="channels![channelIndex].bottomGrayText || preview ? 'show' : 'hide'">
         <span class="abs top-text" :style="greyTextStyle">{{ bottomTextBar!.greyText.text }}</span>

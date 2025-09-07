@@ -1,5 +1,5 @@
 <template>
-	<div :class="channels![channelIndex].copyright || preview ? 'show' : 'hide'">
+	<div :class="(channels![channelIndex].copyright && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNCopyright v-if="espnStyles.indexOf(configuration!.style) !== -1" />
 		<RPITVCopyright v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
 	</div>

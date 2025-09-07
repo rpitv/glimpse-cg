@@ -9,9 +9,6 @@
 
 <script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui'
-const router = useRouter();
-
-
 
 const items = ref<NavigationMenuItem[][]>([[
   {
@@ -32,19 +29,18 @@ const items = ref<NavigationMenuItem[][]>([[
 ],
 [
   {
-    label: 'Channels',
-    icon: 'i-heroicons-tv-20-solid',
-    slot: 'channels' as const
-  },
-  {
     label: 'Preview',
     icon: 'i-heroicons-eye-20-solid',
-    onSelect: () => {
-      router.push({
+    onSelect: async () => {
+      await navigateTo({
         path: '/display',
         query: {
           dev: '1'
-        }
+        },
+      }, {
+        open: {
+          target: '_blank',
+        },
       });
     }
   }

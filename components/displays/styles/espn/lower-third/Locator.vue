@@ -46,7 +46,7 @@ const awayTeamPrimaryColor = computed((): CSSProperties => {return {
 }});
 const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 	alignItems: "center",
-	backgroundColor: locator!.value.homeTeam.primaryColor|| locator!.value.homeTeam.primaryColor,
+	backgroundColor: locator!.value.homeTeam.primaryColor|| homeTeam.value.primaryColor,
 	bottom: "22.1vh",
 	display: "flex",
 	height: "9.6vh",
@@ -55,7 +55,7 @@ const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 	width: "11.9vw",
 }});
 const homeTeamSecondaryColor = computed((): CSSProperties => {return {
-	backgroundColor: locator!.value.homeTeam.secondaryColor || locator!.value.homeTeam.secondaryColor,
+	backgroundColor: locator!.value.homeTeam.secondaryColor || homeTeam.value.secondaryColor,
 	bottom: "22.1vh",
 	height: "9.6vh",
 	left: "67.6vw",
@@ -87,7 +87,8 @@ const awayTeamName = computed((): CSSProperties => {return {
 }});
 const homeTeamName = computed((): CSSProperties => {return {
 	alignItems: "center",
-	color: locator!.value.homeTeam.nameColor,
+	color: locator!.value.homeTeam.nameColor || "black",
+  display: "flex",
 	flexWrap: "nowrap",
 	fontSize: locator!.value.homeTeam.nameSize + 3.7 + "vh",
 	height: "5.55vh",

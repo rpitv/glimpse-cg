@@ -1,5 +1,5 @@
 <template>
-	<div :class="channels![channelIndex].bug || preview ? 'show' : 'hide'">
+	<div :class="(channels![channelIndex].bug && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNBug v-if="espnStyles.indexOf(configuration!.style) !== -1" />
 		<RPITVBug v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
 	</div>

@@ -13,7 +13,7 @@
 	<div :style="info" class="info">
 		<span v-for="(item, i) in infoItemsFiltered" :class="{
 			'info-item': true,
-			'border': (i < (infoItemsFiltered.length - 1)),
+			'espn-border': (i < (infoItemsFiltered.length - 1)),
 			'padding-left': i !== 0,
 		}">
 			{{ item }}
@@ -24,16 +24,10 @@
 <script setup lang="ts">
 import PlayerBio from "~/assets/espn/playerBio.png";
 import { computed, type CSSProperties } from "vue";
-import type { Channels, Configuration, LowerThird } from "~/types/replicants";
-
-const route = useRoute();
-let channelIndex = ref(0);
-if (route.query.channel)
-	channelIndex.value = parseInt(route.query.channel as string);
+import type { Configuration, LowerThird } from "~/types/replicants";
 
 const lowerThird = await useReplicant<LowerThird>("lowerThird");
 const configuration = await useReplicant<Configuration>("configuration");
-const channels = await useReplicant<Channels>("channels");
 const playerBio = computed(() => lowerThird.value!.playerBio);
 const awayTeam = computed(() => configuration.value?.awayTeam);
 const homeTeam = computed(() => configuration.value?.homeTeam);
@@ -61,18 +55,18 @@ const action = computed((): CSSProperties => {
 		display: "flex",
 		alignItems: "center",
 		position: "absolute",
-		bottom: playerBio.value.offsetY + (channels.value![channelIndex.value].playerBio ? 12 : 10) + "vh",
+		bottom: playerBio.value.offsetY + (playerBio.value.info.show ? 12 : 10) + "vh",
 		height: "9.7vh",
 		left: playerBio.value.offsetX + 26.5 + 'vw',
 		marginLeft: "1vw",
 		width: "58.5vw",
-		fontSize: playerBio.value.fontSize + (channels.value![channelIndex.value].playerBio ? 3 : 5) + "vh",
+		fontSize: playerBio.value.fontSize + (playerBio.value.info.show ? 3 : 5) + "vh",
 	}
 });
 
 const info = computed((): CSSProperties => {
 	return {
-		opacity: channels.value![channelIndex.value].playerBio ? 100 : 0,
+		opacity: playerBio.value.info.show ? 100 : 0,
 		color: "#3F3F3F",
 		display: "flex",
 		alignItems: "center",
@@ -89,11 +83,11 @@ const info = computed((): CSSProperties => {
 
 const infoItemsFiltered = computed(() => {
 	return [
-		playerBio.value.height,
-		playerBio.value.year,
-		playerBio.value.weight,
-		playerBio.value.hometown
-	].filter(item => item !== "")
+		playerBio.value.info.height,
+		playerBio.value.info.year,
+		playerBio.value.info.weight,
+		playerBio.value.info.hometown
+	].filter(item => item && item !== "")
 })
 </script>
 
@@ -134,7 +128,7 @@ div {
 	padding-right: 0.5vw;
 }
 
-.info-item.border {
+.info-item.espn-border {
 	box-shadow: 0 0 0 0 #b9b9b9, 0.2vw 0 0 0 #b9b9b9;
 }
 

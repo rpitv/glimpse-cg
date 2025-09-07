@@ -1,5 +1,5 @@
 <template>
-  <UCard id="schedule-card">
+  <UCard class="rounded-none" id="schedule-card">
     <template #header>
       <h1 class="text-2xl">RPI Home Schedule</h1>
     </template>
@@ -16,7 +16,7 @@
           <div :id="item.uni" class="flex items-center gap-2">
             <img class="schedule-logo" :src="item.val.opponentLogo?.src"></img>
             <div>
-              <p class="text-muted text-left">{{ item.val.type === 'women' ? '(WOMEN)' : '(MEN)' }}</p>
+              <p class="text-muted text-left">{{ configuration?.type === 'men' ? '(MEN)' : '(WOMEN)' }}</p>
               <p class="text-left text-xl">{{ item.val.title }}</p>
               <p class="text-muted text-left">{{ item.val.description }}</p>
             </div>
@@ -40,7 +40,6 @@ interface Timeline {
   val: {
     description: string;
     title: string;
-    type: string;
     opponentLogo?: {
       src: string;
       alt: string;
@@ -51,6 +50,7 @@ interface Timeline {
 }
 
 const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
+const configuration = await useReplicant<Configuration>('configuration');
 
 const schedule = ref<Timeline[]>([]);
 const domParser = new DOMParser();
@@ -88,7 +88,6 @@ function parseSidearmsSchedule(html: string, logoHTML: string, type: string): vo
           minute:'2-digit'
         }), 
         title: opponent, 
-        type,
         opponentLogo: {
           src: `https://rpiathletics.com${opponentLogo}`,
           alt: logoElements[i]?.querySelector('img')?.getAttribute('alt') || ''

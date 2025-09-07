@@ -100,8 +100,8 @@ const props = defineProps({
 });
 
 const selectedSchool = ref<Configuration['awayTeam' | 'homeTeam']>();
-const primaryChip = computed(() => ({ backgroundColor: props.modelValue.primaryColor }))
-const secondaryChip = computed(() => ({ backgroundColor: props.modelValue.secondaryColor }))
+const primaryChip = computed(() => ({ backgroundColor: props.modelValue.primaryColor }));
+const secondaryChip = computed(() => ({ backgroundColor: props.modelValue.secondaryColor }));
 
 
 const emit = defineEmits(['update:modelValue']);

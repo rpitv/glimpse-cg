@@ -1,5 +1,5 @@
 <template>
-	<div :class="channels![channelIndex].locator || preview ? 'show' : 'hide'">
+	<div :class="(channels![channelIndex].locator && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNLocator v-if="espnStyles.indexOf(configuration!.style) !== -1" />
 		<RPITVLocator v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
 	</div>

@@ -1,7 +1,7 @@
 [
   {
     "abbr": "RPI",
-    "athletics": "https://rpiathletics.com/",
+  "athletics": "https://rpiathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fq16.png&height=200&width=200&type=webp",
     "primaryColor": "#D6001C",
     "schoolName": "Rensselaer Polytechnic Institute",
@@ -12,7 +12,7 @@
   },
   {
     "abbr": "BC",
-    "athletics": "https://bceagles.com/",
+  "athletics": "https://bceagles.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fBoston_College_200x200.png&height=200&width=200&type=webp",
     "primaryColor": "#98002E",
     "schoolName": "Boston College",
@@ -23,7 +23,7 @@
   },
   {
     "abbr": "BU",
-    "athletics": "https://goterriers.com/",
+  "athletics": "https://goterriers.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fBoston-U_logo.png&height=200&width=200&type=webp",
     "primaryColor": "#CC0000",
     "schoolName": "Boston University",
@@ -34,7 +34,7 @@
   },
   {
     "abbr": "BROWN",
-    "athletics": "https://brownbears.com/",
+  "athletics": "https://brownbears.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fBrown_logo_200x200.png&height=200&width=200&type=webp",
     "primaryColor": "#4E3629",
     "schoolName": "Brown University",
@@ -45,7 +45,7 @@
   },
   {
     "abbr": "BUF",
-    "athletics": "https://buffalostateathletics.com/",
+  "athletics": "https://buffalostateathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fc1.png&height=80&width=80&type=webp",
     "primaryColor": "#E0701D",
     "schoolName": "Buffalo State University",
@@ -56,7 +56,7 @@
   },
   {
     "abbr": "CAN",
-    "athletics": "https://gogriffs.com/",
+  "athletics": "https://gogriffs.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fcanisius_200x200.png&height=80&width=80&type=webp",
     "primaryColor": "#FFBA00",
     "schoolName": "Canisius University",
@@ -67,7 +67,7 @@
   },
   {
     "abbr": "CLK",
-    "athletics": "https://clarksonathletics.com/",
+  "athletics": "https://clarksonathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fclarkson.png&height=200&width=200&type=webp",
     "primaryColor": "#FFCD00",
     "schoolName": "Clarkson University",
@@ -78,7 +78,7 @@
   },
   {
     "abbr": "COL",
-    "athletics": "https://colgateathletics.com/",
+  "athletics": "https://colgateathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fColgate_2022.png&height=200&width=200&type=webp",
     "primaryColor": "#821019",
     "schoolName": "Colgate University",
@@ -89,7 +89,7 @@
   },
   {
     "abbr": "COR",
-    "athletics": "https://cornellbigred.com/",
+  "athletics": "https://cornellbigred.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fCornell_Block_C_Updated_Logo.png&height=200&width=200&type=webp",
     "primaryColor": "#B31B1B",
     "schoolName": "Cornell University",
@@ -100,7 +100,7 @@
   },
   {
     "abbr": "DAR",
-    "athletics": "https://dartmouthsports.com/",
+  "athletics": "https://dartmouthsports.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fDartmouth%2520200x200%2520(1).png&height=200&width=200&type=webp",
     "primaryColor": "#046A38",
     "schoolName": "Darthmouth College",
@@ -111,7 +111,7 @@
   },
   {
     "abbr": "Gue",
-    "athletics": "https://www.gryphons.ca/",
+  "athletics": "https://www.gryphons.ca",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fGuelph_2025.png&height=80&width=80&type=webp",
     "primaryColor": "#E51937",
     "schoolName": "University of Guelph",
@@ -122,7 +122,7 @@
   },
   {
     "abbr": "HAR",
-    "athletics": "https://gocrimson.com/",
+  "athletics": "https://gocrimson.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fharvardlogo.png&height=200&width=200&type=webp",
     "primaryColor": "#A41034",
     "schoolName": "Harvard University",
@@ -133,7 +133,7 @@
   },
   {
     "abbr": "HIL",
-    "athletics": "https://hilberthawks.com/",
+  "athletics": "https://hilberthawks.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fhilbert-logo.png&height=80&width=80&type=webp",
     "primaryColor": "#2D6DBE",
     "schoolName": "Hilbert College",
@@ -144,7 +144,7 @@
   },
   {
     "abbr": "HOB",
-    "athletics": "https://hwsathletics.com/",
+  "athletics": "https://hwsathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2f2019%2f8%2f19%2fHobart_Primary_Icon_200x200.png&height=80&width=80&type=webp",
     "primaryColor": "#45275E",
     "schoolName": "Hobart College",
@@ -155,7 +155,7 @@
   },
   {
     "abbr": "HC",
-    "athletics": "https://goholycross.com/",
+  "athletics": "https://goholycross.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fHoly-Cross.png&height=200&width=200&type=webp",
     "primaryColor": "#602D89",
     "schoolName": "Holy Cross",
@@ -166,7 +166,7 @@
   },
   {
     "abbr": "ITH",
-    "athletics": "https://athletics.ithaca.edu/",
+  "athletics": "https://athletics.ithaca.edu",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fIthaca_.png&height=80&width=80&type=webp",
     "primaryColor": "#013159",
     "schoolName": "Ithaca College",
@@ -177,7 +177,7 @@
   },
   {
     "abbr": "MER",
-    "athletics": "https://hurstathletics.com/",
+  "athletics": "https://hurstathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fM_University.png&height=80&width=80&type=webp",
     "primaryColor": "#07594D",
     "schoolName": "Mercyhurst University",
@@ -188,7 +188,7 @@
   },
   {
     "abbr": "MIAMI (OH)",
-    "athletics": "https://miamiredhawks.com/",
+  "athletics": "https://miamiredhawks.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fMiami-OH.png&height=200&width=200&type=webp",
     "primaryColor": "#B61E2E",
     "schoolName": "Miami University (OH)",
@@ -199,7 +199,7 @@
   },
   {
     "abbr": "MSU",
-    "athletics": "https://msumavericks.com/",
+  "athletics": "https://msumavericks.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fMSUM_2024.png&height=200&width=200&type=webp",
     "primaryColor": "#480059",
     "schoolName": "Minnesota State University, Mankato",
@@ -210,7 +210,7 @@
   },
   {
     "abbr": "NIA",
-    "athletics": "https://purpleeagles.com/",
+  "athletics": "https://purpleeagles.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fVintageMonte2024.png&height=200&width=200&type=webp",
     "primaryColor": "#582C83",
     "schoolName": "Niagra University",
@@ -221,7 +221,7 @@
   },
   {
     "abbr": "NU",
-    "athletics": "https://nuhuskies.com/",
+  "athletics": "https://nuhuskies.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fnortheastern_logo_new.png&height=200&width=200&type=webp",
     "primaryColor": "#D41B2C",
     "schoolName": "Northeastern University",
@@ -232,7 +232,7 @@
   },
   {
     "abbr": "PC",
-    "athletics": "https://friars.com/",
+  "athletics": "https://friars.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fProvidence_College_200x200.png&height=200&width=200&type=webp",
     "primaryColor": "#8A8D8F",
     "schoolName": "Providence College",
@@ -243,7 +243,7 @@
   },
   {
     "abbr": "PRI",
-    "athletics": "http://www.goprincetontigers.com/",
+  "athletics": "http://www.goprincetontigers.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fPrinceton_Tigers.png&height=200&width=200&type=webp",
     "primaryColor": "#FF671F",
     "schoolName": "Princeton University",
@@ -254,7 +254,7 @@
   },
   {
     "abbr": "QUI",
-    "athletics": "https://gobobcats.com/",
+  "athletics": "https://gobobcats.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fGrowler_Halo_3C_DBG.png&height=200&width=200&type=webp",
     "primaryColor": "#FFB81C",
     "schoolName": "Quinnipiac University",
@@ -265,7 +265,7 @@
   },
   {
     "abbr": "RM",
-    "athletics": "https://rmucolonials.com/",
+  "athletics": "https://rmucolonials.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fRobert_Morris.png&height=200&width=200&type=webp",
     "primaryColor": "#14234B",
     "schoolName": "Robert Morris University",
@@ -276,7 +276,7 @@
   },
   {
     "abbr": "SHU",
-    "athletics": "https://sacredheartpioneers.com/",
+  "athletics": "https://sacredheartpioneers.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fSacred-Heart.png&height=200&width=200&type=webp",
     "primaryColor": "#CE1141",
     "schoolName": "Sacred Heart University",
@@ -287,7 +287,7 @@
   },
   {
     "abbr": "SLU",
-    "athletics": "https://saintsathletics.com/",
+  "athletics": "https://saintsathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fSt_Lawrence_NY.png&height=200&width=200&type=webp",
     "primaryColor": "#BE2032",
     "schoolName": "St. Lawrence University",
@@ -298,7 +298,7 @@
   },
   {
     "abbr": "SU",
-    "athletics": "https://cuse.com/",
+  "athletics": "https://cuse.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fSyracuse.png&height=200&width=200&type=webp",
     "primaryColor": "#F76900",
     "schoolName": "Syracuse University",
@@ -309,7 +309,7 @@
   },
   {
     "abbr": "UMASS",
-    "athletics": "http://www.umassathletics.com/",
+  "athletics": "http://www.umassathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fUMASS.png&height=80&width=80&type=webp",
     "primaryColor": "#971B2F",
     "schoolName": "University of Massachusetts",
@@ -320,7 +320,7 @@
   },
   {
     "abbr": "UMASS",
-    "athletics": "https://goriverhawks.com/",
+  "athletics": "https://goriverhawks.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fUMassLowell.png&height=200&width=200&type=webp",
     "primaryColor": "#0067B1",
     "schoolName": "University of Massachusetts Lowell",
@@ -331,7 +331,7 @@
   },
   {
     "abbr": "UOM",
-    "athletics": "http://www.goblackbears.com/",
+  "athletics": "http://www.goblackbears.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fMaine.png&height=80&width=80&type=webp",
     "primaryColor": "#B0D7FF",
     "schoolName": "University of Maine",
@@ -342,7 +342,7 @@
   },
   {
     "abbr": "UOR",
-    "athletics": "https://uofrathletics.com/",
+  "athletics": "https://uofrathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fRochester.png&height=80&width=80&type=webp",
     "primaryColor": "#FACF07",
     "schoolName": "University of Rochester",
@@ -353,7 +353,7 @@
   },
   {
     "abbr": "UVM",
-    "athletics": "https://uvmathletics.com/",
+  "athletics": "https://uvmathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fw20.png&height=200&width=200&type=webp",
     "primaryColor": "#154734",
     "schoolName": "University of Vermont",
@@ -364,7 +364,7 @@
   },
   {
     "abbr": "UNH",
-    "athletics": "https://unhwildcats.com/",
+  "athletics": "https://unhwildcats.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2funh-logo.png&height=200&width=200&type=webp",
     "primaryColor": "#041E42",
     "schoolName": "Univeristy of New Hampshire",
@@ -375,7 +375,7 @@
   },
   {
     "abbr": "UNION",
-    "athletics": "https://unionathletics.com/",
+  "athletics": "https://unionathletics.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fBlock%2520U%2520(1).png&height=200&width=200&type=webp",
     "primaryColor": "#762334",
     "schoolName": "Union College",
@@ -386,7 +386,7 @@
   },
   {
     "abbr": "UTICA",
-    "athletics": "https://uticapioneers.com/",
+  "athletics": "https://uticapioneers.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fMoose_FulClrB_WhtBG%2520(2)%2520(1).png&height=80&width=80&type=webp",
     "primaryColor": "#0A2240",
     "schoolName": "Utica University",
@@ -397,7 +397,7 @@
   },
   {
     "abbr": "WPI",
-    "athletics": "https://athletics.wpi.edu/",
+  "athletics": "https://athletics.wpi.edu",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fWPI.png&height=80&width=80&type=webp",
     "primaryColor": "#C4122E",
     "schoolName": "Worcester Polytechnic Institute",
@@ -408,7 +408,7 @@
   },
   {
     "abbr": "YALE",
-    "athletics": "https://yalebulldogs.com/",
+  "athletics": "https://yalebulldogs.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fYALE_LOGO_2020.png&height=200&width=200&type=webp",
     "primaryColor": "#00356B",
     "schoolName": "Yale University",

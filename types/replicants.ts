@@ -6,7 +6,7 @@ export const defaultLowerThird = {
     greyText: {
       text: "",
       alignment: 'center' as 'left' | 'center' | 'right',
-      textSize: 100,
+      textSize: 0,
       offsetX: 0,
       offsetY: 0,
       textColor: '#FFFFFF',
@@ -15,7 +15,7 @@ export const defaultLowerThird = {
     redText: {
       text: "",
       alignment: "center" as 'left' | 'center' | 'right',
-      textSize: 100,
+      textSize: 0,
       offsetX: 0,
       offsetY: 0,
       textColor: '#FFFFFF',
@@ -35,8 +35,8 @@ export const defaultLowerThird = {
     offsetX: 0,
     offsetY: 0,
     text: `©${new Date().getFullYear()} RPI TV`,
-    textColor: '#000000',
-    textSize: 100,
+    textColor: '',
+    textSize: 0,
   },
   endGraphics: {
     disabled: false,
@@ -51,33 +51,33 @@ export const defaultLowerThird = {
     description: {
       clock: false,
       fontSize: 0,
-      fontColor: '#000000',
+      fontColor: '',
       text: '',
       autoFit: false,
     },
     awayTeam : {
       name: '',
       nameColor: '',
-      nameSize: 100,
+      nameSize: 0,
       logo: '',
       logoSize: 100,
       logoColor: '',
       score: 0,
       scoreColor: '',
-      scoreSize: 100,
+      scoreSize: 0,
       primaryColor: '',
       secondaryColor: '',
     },
     homeTeam : {
       name: '',
       nameColor: '',
-      nameSize: 100,
+      nameSize: 0,
       logo: '',
       logoSize: 100,
       logoColor: '',
       score: 0,
       scoreColor: '',
-      scoreSize: 100,
+      scoreSize: 0,
       primaryColor: '',
       secondaryColor: '',
     },
@@ -90,7 +90,7 @@ export const defaultLowerThird = {
     awayTeam : {
       name: '',
       nameColor: '',
-      nameSize: 100,
+      nameSize: 0,
       logo: '',
       logoSize: 100,
       logoColor: '',
@@ -100,7 +100,7 @@ export const defaultLowerThird = {
     homeTeam : {
       name: '',
       nameColor: '',
-      nameSize: 100,
+      nameSize: 0,
       logo: '',
       logoSize: 100,
       logoColor: '',
@@ -110,7 +110,7 @@ export const defaultLowerThird = {
     location: {
       name: '',
       nameColor: '',
-      nameSize: 100,
+      nameSize: 0,
     },
     // Swaps the default team positions
     teamSwap: false,
@@ -122,23 +122,35 @@ export const defaultLowerThird = {
     playerNumber: '',
     playerColor: '',
     imageURL: '',
+    position: '',
     teamside: 'awayTeam' as 'awayTeam' | 'homeTeam',
     offsetX: 0,
     offsetY: 0,
-    height: 0,
-    year: 0,
-    weight: 0,
-    hometown: ''
+    info: {
+      show: false,
+      height: '',
+      year: '',
+      weight: '',
+      hometown: ''
+    }
   }
 }
 
-interface Commentator {
-  name: string
-  nameColor: string
-  nameSize: number
-  description: string
-  descriptionColor: string
-  descriptionSize: number
+export class Commentator {
+  public name: string
+  public nameColor: string
+  public nameSize: number
+  public description: string
+  public descriptionColor: string
+  public descriptionSize: number
+  public constructor() {
+    this.name = "";
+    this.nameColor = "";
+    this.nameSize = 0;
+    this.description = "";
+    this.descriptionColor = "";
+    this.descriptionSize = 0;
+  }
 }
 
 export const defaultConfiguration = {
@@ -218,28 +230,28 @@ export const defaultScoreboard = {
   awayTeam: {
     announcement: [] as Announcement[],
     name: '',
-    nameColor: '#000000',
-    nameSize: 100,
+    nameColor: '',
+    nameSize: 0,
     logo: '',
     logoSize: 100,
     score: 0,
-    scoreColor: '#000000',
-    scoreSize: 100,
-    primaryColor: '#000000',
-    secondaryColor: '#FFFFFF',
+    scoreColor: '',
+    scoreSize: 0,
+    primaryColor: '',
+    secondaryColor: '',
   },
   homeTeam: {
     announcement: [] as Announcement[],
     name: '',
-    nameColor: '#000000',
-    nameSize: 100,
+    nameColor: '',
+    nameSize: 0,
     logo: '',
     logoSize: 100,
     score: 0,
-    scoreColor: '#000000',
-    scoreSize: 100,
-    primaryColor: '#000000',
-    secondaryColor: '#FFFFFF',
+    scoreColor: '',
+    scoreSize: 0,
+    primaryColor: '',
+    secondaryColor: '',
   },
   teamSwap: false, // Swaps the default team positions
   period: {
@@ -340,10 +352,10 @@ export class Credit {
 	public constructor() {
 		this.people = [];
 		this.peopleColor = "";
-		this.peopleSize = 100;
+		this.peopleSize = 0;
 		this.title = "";
 		this.titleColor = "";
-		this.titleSize = 100;
+		this.titleSize = 0;
 	}
 }
 
@@ -396,7 +408,7 @@ export class Channel {
   }
 }
 
-export const defaultChannels: Channel[] = [];
+export const defaultChannels: Channel[] = [new Channel()];
 
 export type LowerThird = typeof defaultLowerThird;
 export type Configuration = typeof defaultConfiguration;

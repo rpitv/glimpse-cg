@@ -8,7 +8,7 @@ type Replicant<T> = {
   value: T;
   listeners: Set<(val: T) => void>;
   set: (val: T) => void;
-  subscribe: (cb: (val: T) => void) => void;
+  subscribe: (cb: (val: T) => void) => (() => void);
 };
 
 // Map structure: name -> Replicant
@@ -31,6 +31,11 @@ export function createReplicant<T>(name: string, defaultValue: T): Replicant<T> 
     subscribe(cb) {
       rep.listeners.add(cb);
       cb(rep.value);
+
+      // Return unsubscribe function
+      return () => {
+        rep.listeners.delete(cb);
+      };
     }
   };
   rep.set(value);
