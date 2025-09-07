@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { computed, watch, ref, nextTick, onMounted, onBeforeUnmount } from "vue";
 import type { CSSProperties } from "vue";
-import ESPNGoToBreak from "~/assets/espn/Scoreboard.png";
+import ESPNGoToBreak from "assets/espn/GoToBreeak.png";
 import type { Scoreboard, Configuration, LowerThird } from "~/types/replicants";
 
 const lowerThird = await useReplicant<LowerThird>("lowerThird");
