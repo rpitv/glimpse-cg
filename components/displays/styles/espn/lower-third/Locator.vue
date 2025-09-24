@@ -2,14 +2,14 @@
 	<img class="locator" :src="Locator">
 	<div :style="awayTeamSecondaryColor"></div>
 	<div :style="awayTeamPrimaryColor">
-		<img :style="awayTeamLogo" :src="locator!.awayTeam.logo || awayTeam.logo">
+		<img :style="awayTeamLogo" :src="locator.awayTeam.logo || awayTeam.logo">
 	</div>
 	<div :style="homeTeamSecondaryColor"></div>
 	<div :style="homeTeamPrimaryColor">
 		<img :style="homeTeamLogo" :src="locator.homeTeam.logo || homeTeam.logo">
 	</div>
-	<div :style="awayTeamName">{{ locator!.awayTeam.name || awayTeam.shortName }}</div>
-	<div :style="homeTeamName">{{ locator!.homeTeam.name || homeTeam.shortName }}</div>
+	<div :style="awayTeamName">{{ locator.awayTeam.name || awayTeam.shortName }}</div>
+	<div :style="homeTeamName">{{ locator.homeTeam.name || homeTeam.shortName }}</div>
 	<div :style="location	">
 	</div>
 </template>
@@ -20,15 +20,14 @@ import type { CSSProperties } from "vue";
 import { computed } from "vue";
 import type { Configuration, LowerThird } from "~/types/replicants";
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const configuration = await useReplicant<Configuration>("configuration");
+const replicants = await useReplicants();
 
-const locator = computed(() => lowerThird.value!.locator);
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
+const locator = replicants.lowerThird.locator;
+const awayTeam = replicants.configuration.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
 
 const awayTeamSecondaryColor = computed((): CSSProperties => {return {
-	backgroundColor: locator!.value.awayTeam.secondaryColor || awayTeam.value.secondaryColor,
+	backgroundColor: locator.awayTeam.secondaryColor || awayTeam.secondaryColor,
 	bottom: "22.1vh",
 	height: "9.6vh",
 	left: "29.3vw",
@@ -36,7 +35,7 @@ const awayTeamSecondaryColor = computed((): CSSProperties => {return {
 }});
 const awayTeamPrimaryColor = computed((): CSSProperties => {return {
 	alignItems: "center",
-	backgroundColor: locator!.value.awayTeam.primaryColor || awayTeam.value.primaryColor,
+	backgroundColor: locator.awayTeam.primaryColor || awayTeam.primaryColor,
 	bottom: "22.1vh",
 	display: "flex",
 	height: "9.6vh",
@@ -46,7 +45,7 @@ const awayTeamPrimaryColor = computed((): CSSProperties => {return {
 }});
 const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 	alignItems: "center",
-	backgroundColor: locator!.value.homeTeam.primaryColor|| homeTeam.value.primaryColor,
+	backgroundColor: locator.homeTeam.primaryColor|| homeTeam.primaryColor,
 	bottom: "22.1vh",
 	display: "flex",
 	height: "9.6vh",
@@ -55,30 +54,30 @@ const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 	width: "11.9vw",
 }});
 const homeTeamSecondaryColor = computed((): CSSProperties => {return {
-	backgroundColor: locator!.value.homeTeam.secondaryColor || homeTeam.value.secondaryColor,
+	backgroundColor: locator.homeTeam.secondaryColor || homeTeam.secondaryColor,
 	bottom: "22.1vh",
 	height: "9.6vh",
 	left: "67.6vw",
 	width: "2.7vw",
 }});
 const awayTeamLogo = computed((): CSSProperties => {return {
-	height: locator!.value.awayTeam.logoSize + "%",
+	height: locator.awayTeam.logoSize + "%",
 	maxHeight: "9.5vh",
 	maxWidth: "11.9vw",
 	position: "relative",
 }});
 const homeTeamLogo = computed((): CSSProperties => {return {
-	height: locator!.value.homeTeam.logoSize + "%",
+	height: locator.homeTeam.logoSize + "%",
 	maxHeight: "9.5vh",
 	maxWidth: "11.9vw",
 	position: "relative",
 }});
 const awayTeamName = computed((): CSSProperties => {return {
 	alignItems: "center",
-	color: locator!.value.awayTeam.nameColor || "black",
+	color: locator.awayTeam.nameColor || "black",
 	display: "flex",
 	flexWrap: "nowrap",
-	fontSize: locator!.value.awayTeam.nameSize + 3.7 + "vh",
+	fontSize: locator.awayTeam.nameSize + 3.7 + "vh",
 	height: "5.55vh",
 	justifyContent: "center",
 	left: "30.84vw",
@@ -87,10 +86,10 @@ const awayTeamName = computed((): CSSProperties => {return {
 }});
 const homeTeamName = computed((): CSSProperties => {return {
 	alignItems: "center",
-	color: locator!.value.homeTeam.nameColor || "black",
+	color: locator.homeTeam.nameColor || "black",
   display: "flex",
 	flexWrap: "nowrap",
-	fontSize: locator!.value.homeTeam.nameSize + 3.7 + "vh",
+	fontSize: locator.homeTeam.nameSize + 3.7 + "vh",
 	height: "5.55vh",
 	justifyContent: "center",
 	left: "54.78vw",

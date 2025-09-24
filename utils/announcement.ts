@@ -11,7 +11,7 @@ export class Announcement {
 	public readonly id: string;
 	public message: string;
 	public type: string;
-	public timer: AnnouncementTimer|null;
+	public timer: AnnouncementTimer | null;
 
 	public constructor(message: string, type: string, timer?: AnnouncementTimer) {
 		this.id = v4();

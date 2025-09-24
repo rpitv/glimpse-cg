@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import type { PropType } from "vue";
-import type { Configuration, Scoreboard } from "~/types/replicants";
 
 const props = defineProps({
 	team: {
@@ -27,11 +26,11 @@ const props = defineProps({
 	}
 })
 
-const configuration = await useReplicant<Configuration>("configuration");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const scoreboardTeam = computed(() => scoreboard.value![props.team]);
-const team = computed(() => configuration.value![props.team]);
-const logoBgColor = ref(scoreboardTeam.value.primaryColor);
+const replicants = await useReplicants();
+
+const scoreboardTeam = replicants.scoreboard[props.team];
+const team = replicants.configuration[props.team];
+const logoBgColor = ref(scoreboardTeam.primaryColor);
 </script>
 
 <style scoped lang="scss">

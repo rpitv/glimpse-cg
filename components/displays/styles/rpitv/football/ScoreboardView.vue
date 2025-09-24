@@ -37,15 +37,16 @@ import rpitvBug from "~/assets/football/rpitv_logo.png";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
-import type { Configuration, Scoreboard } from "~/types/replicants";
 
 gsap.registerPlugin(CustomEase);
-const configuration = await useReplicant<Configuration>("configuration");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
-const clock = computed(() => scoreboard.value!.clock);
-const period = computed(() => scoreboard.value!.period);
+const replicants = await useReplicants();
+
+const scoreboard = replicants.scoreboard;
+const configuration = replicants.configuration;
+const awayTeam = configuration.awayTeam;
+const homeTeam = configuration.homeTeam;
+const clock = computed(() => scoreboard.clock);
+const period = computed(() => scoreboard.period);
 
 const backgroundColor1 = ref<string>("#FFF700");
 const backgroundColor2 = ref<string>("#807C00");
@@ -54,32 +55,32 @@ const announcementTextColor = ref<string>("white");
 const announcement = computed(() => {
 	let currentState = "";
 	let linearGrad: string;
-	if (scoreboard.value!.awayTeam.announcement[0]?.message) {
-		currentState = scoreboard.value!.awayTeam.announcement[0]?.message;
-		linearGrad = calcLinearGrad(awayTeam.value!.primaryColor);
-		if (isLighter(awayTeam.value.primaryColor, linearGrad)) {
-			backgroundColor1.value = awayTeam.value!.primaryColor;
+	if (scoreboard.awayTeam.announcement[0]?.message) {
+		currentState = scoreboard.awayTeam.announcement[0]?.message;
+		linearGrad = calcLinearGrad(awayTeam.primaryColor);
+		if (isLighter(awayTeam.primaryColor, linearGrad)) {
+			backgroundColor1.value = awayTeam.primaryColor;
 			backgroundColor2.value = linearGrad;
 		} else {
 			backgroundColor1.value = linearGrad;
-			backgroundColor2.value = awayTeam.value!.primaryColor;
+			backgroundColor2.value = awayTeam.primaryColor;
 		}
-	} else if (scoreboard.value!.homeTeam.announcement[0]?.message) {
-		currentState =  scoreboard.value!.homeTeam.announcement[0]?.message;
-		linearGrad = calcLinearGrad(homeTeam.value!.primaryColor);
-		if (isLighter(homeTeam.value!.primaryColor, linearGrad)) {
-			backgroundColor1.value = homeTeam.value!.primaryColor;
+	} else if (scoreboard.homeTeam.announcement[0]?.message) {
+		currentState =  scoreboard.homeTeam.announcement[0]?.message;
+		linearGrad = calcLinearGrad(homeTeam.primaryColor);
+		if (isLighter(homeTeam.primaryColor, linearGrad)) {
+			backgroundColor1.value = homeTeam.primaryColor;
 			backgroundColor2.value = linearGrad;
 		} else {
 			backgroundColor1.value = linearGrad;
-			backgroundColor2.value = homeTeam.value!.primaryColor;
+			backgroundColor2.value = homeTeam.primaryColor;
 		}
 	} else {
 		backgroundColor1.value = "#FFF700";
 		backgroundColor2.value = "#807C00";
 	}
-	if (scoreboard.value!.announcement[0].message) {
-		currentState = scoreboard.value!.announcement[0].message;
+	if (scoreboard.announcement[0].message) {
+		currentState = scoreboard.announcement[0].message;
 		backgroundColor1.value = "#FFF700";
 		backgroundColor2.value = "#807C00";
 	}
@@ -104,7 +105,7 @@ function getSuffix(n: number, period=false) {
 		return "";
 	let ytg: string = "";
 	if (!period)
-		ytg = ` & ${scoreboard.value!.football.yardsToGo}`;
+		ytg = ` & ${scoreboard.football.yardsToGo}`;
 	if(n == 1) {
 		return `${n}ST` + ytg;
 	} else if(n == 2) {
@@ -146,7 +147,7 @@ function grabScoreType (n: number, teamName: "awayTeam" | "homeTeam"): string[] 
 		animationText[0] = "TOUCHDOWN";
 	if (n == 3)
 		animationText[0] = "FIELD GOAL"
-	animationText[1] = configuration.value![teamName].shortName;
+	animationText[1] = configuration[teamName].shortName;
 	return animationText;
 }
 
@@ -190,21 +191,21 @@ const teamColor2 = ref<string>("");
 
 const nameColor = ref<string>("");
 
-const awayTeamScore = computed(() => scoreboard.value!.awayTeam.score);
-const homeTeamScore = computed(() => scoreboard.value!.homeTeam.score);
+const awayTeamScore = computed(() => scoreboard.awayTeam.score);
+const homeTeamScore = computed(() => scoreboard.homeTeam.score);
 
 watch(awayTeamScore, (n, o) => {
 	scoreType.value = grabScoreType(n - o, "awayTeam");
 	if (!scoreType.value[0])
 		return;
-	scoreImage.value = awayTeam.value.logo;
-	const linearGradient = calcLinearGrad(awayTeam.value.primaryColor);
-	if (!isLighter(awayTeam.value.primaryColor, linearGradient)) {
-		teamColor2.value = awayTeam.value.primaryColor;
+	scoreImage.value = awayTeam.logo;
+	const linearGradient = calcLinearGrad(awayTeam.primaryColor);
+	if (!isLighter(awayTeam.primaryColor, linearGradient)) {
+		teamColor2.value = awayTeam.primaryColor;
 		teamColor1.value = linearGradient;
 		nameColor.value =  isLightColor(teamColor2.value) ? "white" : "black";
 	} else {
-		teamColor1.value = awayTeam.value.primaryColor;
+		teamColor1.value = awayTeam.primaryColor;
 		teamColor2.value = linearGradient;
 		nameColor.value =  isLightColor(teamColor1.value) ? "white" : "black";
 	}
@@ -215,14 +216,14 @@ watch(homeTeamScore, (n, o) => {
 	scoreType.value = grabScoreType(n - o, "homeTeam");
 	if (!scoreType.value[0])
 		return;
-	scoreImage.value = homeTeam.value.logo;
-	const linearGradient = calcLinearGrad(homeTeam.value.primaryColor);
-	if (!isLighter(homeTeam.value.primaryColor, linearGradient)) {
-		teamColor2.value = homeTeam.value.primaryColor;
+	scoreImage.value = homeTeam.logo;
+	const linearGradient = calcLinearGrad(homeTeam.primaryColor);
+	if (!isLighter(homeTeam.primaryColor, linearGradient)) {
+		teamColor2.value = homeTeam.primaryColor;
 		teamColor1.value = linearGradient;
 		nameColor.value =  isLightColor(teamColor2.value) ? "white" : "black";
 	} else {
-		teamColor1.value = homeTeam.value.primaryColor;
+		teamColor1.value = homeTeam.primaryColor;
 		teamColor2.value = linearGradient;
 		nameColor.value =  isLightColor(teamColor1.value) ? "white" : "black";
 	}
@@ -231,25 +232,25 @@ watch(homeTeamScore, (n, o) => {
 
 const possessionColors = computed(() => {
 	const colors = ["#2b2b2b", "#dfdfdf", "black"];
-	if (scoreboard.value!.football.possession === '<') {
-		const linearGradient = calcLinearGrad(awayTeam.value.primaryColor);
-		if (!isLighter(awayTeam.value.primaryColor, linearGradient)) {
-			colors[0] = awayTeam.value.primaryColor;
+	if (scoreboard.football.possession === '<') {
+		const linearGradient = calcLinearGrad(awayTeam.primaryColor);
+		if (!isLighter(awayTeam.primaryColor, linearGradient)) {
+			colors[0] = awayTeam.primaryColor;
 			colors[1] = linearGradient;
 			colors[2] = isLightColor(colors[0]) ? "white" : "black";
 		} else {
-			colors[1] = awayTeam.value.primaryColor;
+			colors[1] = awayTeam.primaryColor;
 			colors[0] = linearGradient;
 			colors[2] =  isLightColor(colors[1]) ? "white" : "black";
 		}
-	} else if (scoreboard.value?.football.possession === '>') {
-		const linearGradient = calcLinearGrad(homeTeam.value.primaryColor);
-		if (!isLighter(homeTeam.value.primaryColor, linearGradient)) {
-			colors[0] = homeTeam.value.primaryColor;
+	} else if (scoreboard.football.possession === '>') {
+		const linearGradient = calcLinearGrad(homeTeam.primaryColor);
+		if (!isLighter(homeTeam.primaryColor, linearGradient)) {
+			colors[0] = homeTeam.primaryColor;
 			colors[1] = linearGradient;
 			colors[2] = isLightColor(colors[0]) ? "white" : "black";
 		} else {
-			colors[1] = homeTeam.value.primaryColor;
+			colors[1] = homeTeam.primaryColor;
 			colors[0] = linearGradient;
 			colors[2] =  isLightColor(colors[1]) ? "white" : "black";
 		}

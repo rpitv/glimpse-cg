@@ -9,7 +9,6 @@
 import { espnStyles, rpiTVStyles} from "../util";
 import ESPNLocator from "../styles/espn/lower-third/Locator.vue";
 import RPITVLocator from "../styles/rpitv/lower-third/Locator.vue";
-import type { Channels, Configuration } from "~/types/replicants";
 
 defineProps({
 	preview: {
@@ -20,14 +19,15 @@ defineProps({
 });
 
 const route = useRoute();
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "locator" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">

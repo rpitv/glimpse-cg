@@ -28,20 +28,18 @@
 </template>
 
 <script setup lang="ts">
-import type { Channels, Configuration, Scoreboard } from '~/types/replicants';
 
 const route = useRoute();
+const replicants = await useReplicants();
 let channelIndex = ref(0);
 if (route.query.channel)
 	channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>('channels');
-const configuration = await useReplicant<Configuration>('configuration');
-const scoreboard = await useReplicant<Scoreboard>('scoreboard');
+const channels = replicants.channels;
+const scoreboard = replicants.scoreboard;
 
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
-
+const awayTeam = replicants.configuration.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
 
 </script>
 

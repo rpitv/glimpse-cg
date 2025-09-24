@@ -20,14 +20,15 @@ defineProps({
 });
 
 const route = useRoute();
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "copyright" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">

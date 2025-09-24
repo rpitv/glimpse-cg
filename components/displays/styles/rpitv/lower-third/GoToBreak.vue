@@ -8,58 +8,56 @@
 		<img :style="rightTeamLogo" :src="gtbAwayTeam.logo || awayTeam.logo" :alt="awayTeam.shortName">
 		<div :style="rightTeamName"> {{ gtbAwayTeam.name || awayTeam.shortName }}</div>
 	</div>
-	<div :style="homeTeamScore"> {{ gtbHomeTeam.score || scoreboard!.homeTeam.score }}</div>
-	<div :style="rightTeamScore"> {{ gtbAwayTeam.score || scoreboard!.awayTeam.score }}</div>
+	<div :style="homeTeamScore"> {{ gtbHomeTeam.score || scoreboard.homeTeam.score }}</div>
+	<div :style="rightTeamScore"> {{ gtbAwayTeam.score || scoreboard.awayTeam.score }}</div>
 	<div :style="description">
 		{{ goToBreak.description.text || period }}
-		{{ goToBreak.description.clock && scoreboard!.clock.time ? `(${formattedClockTime})` : ''}}
+		{{ goToBreak.description.clock && clock.time ? `(${formattedClockTime})` : ''}}
 	</div>
 </template>
 
 <script setup lang="ts">
 import ScoreboardGraphic from "~/assets/rpitv-modern/Scoreboard.png"
 import type { CSSProperties } from "vue";
-import type { Configuration, LowerThird, Scoreboard } from "~/types/replicants";
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const configuration = await useReplicant<Configuration>("configuration");
-const goToBreak = computed(() => lowerThird.value!.goToBreak);
-const gtbHomeTeam = computed(() => goToBreak.value.homeTeam);
-const gtbAwayTeam = computed(() => goToBreak.value.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
-const awayTeam = computed(() => configuration.value!.awayTeam);
+const replicants = await useReplicants();
+const scoreboard = replicants.scoreboard;
+const goToBreak = replicants.lowerThird.goToBreak;
+const gtbHomeTeam = goToBreak.homeTeam;
+const gtbAwayTeam = goToBreak.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
+const awayTeam = replicants.configuration.awayTeam;
 
 
 const homeTeamName = computed((): CSSProperties => { return {
-	color: gtbHomeTeam.value.nameColor,
-	fontSize: gtbHomeTeam.value.nameSize + 2.5 + "vh",
+	color: gtbHomeTeam.nameColor,
+	fontSize: gtbHomeTeam.nameSize + 2.5 + "vh",
 	position: "relative",
 	textAlign: "center",
 }});
 const homeTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "16.6vh",
-	color: gtbHomeTeam.value.scoreColor,
+	color: gtbHomeTeam.scoreColor,
 	display: "flex",
-	fontSize: gtbHomeTeam.value.scoreSize + 11 + "vh",
+	fontSize: gtbHomeTeam.scoreSize + 11 + "vh",
 	height: "17.4vh",
 	justifyContent: "space-around",
 	left: "39.5vw",
 	width: "10.5vw",
 }});
 const rightTeamName = computed((): CSSProperties => { return {
-	color: gtbAwayTeam.value.nameColor,
-	fontSize: gtbAwayTeam.value.nameSize + 2.5 + "vh",
+	color: gtbAwayTeam.nameColor,
+	fontSize: gtbAwayTeam.nameSize + 2.5 + "vh",
 	position: "relative",
 	textAlign: "center",
 }});
 const rightTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "16.6vh",
-	color: gtbAwayTeam.value.scoreColor,
+	color: gtbAwayTeam.scoreColor,
 	display: "flex",
-	fontSize: gtbAwayTeam.value.scoreSize + 11 + "vh",
+	fontSize: gtbAwayTeam.scoreSize + 11 + "vh",
 	height: "17.4vh",
 	justifyContent: "space-around",
 	left: "50vw",
@@ -68,9 +66,9 @@ const rightTeamScore = computed((): CSSProperties => { return {
 const description = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "11.5vh",
-	color: goToBreak.value.description.fontColor,
+	color: goToBreak.description.fontColor,
 	display: "flex",
-	fontSize: goToBreak.value.description.fontSize + 2.2 + "vh",
+	fontSize: goToBreak.description.fontSize + 2.2 + "vh",
 	height: "3.4vh",
 	justifyContent: "center",
 	left: "42.7vw",
@@ -78,7 +76,7 @@ const description = computed((): CSSProperties => { return {
 }})
 const homeTeamPrimaryColor = computed((): CSSProperties => { return {
 	alignItems: "center",
-	backgroundColor: gtbHomeTeam.value.primaryColor,
+	backgroundColor: gtbHomeTeam.primaryColor,
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "center",
@@ -87,7 +85,7 @@ const homeTeamPrimaryColor = computed((): CSSProperties => { return {
 }});
 const awayTeamPrimaryColor = computed((): CSSProperties => { return {
 	alignItems: "center",
-	backgroundColor: gtbAwayTeam.value.primaryColor,
+	backgroundColor: gtbAwayTeam.primaryColor,
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "center",
@@ -95,20 +93,20 @@ const awayTeamPrimaryColor = computed((): CSSProperties => { return {
 	width: "9.2vw"
 }});
 const homeTeamLogo = computed((): CSSProperties => { return {
-	height: gtbHomeTeam.value.logoSize + "%",
+	height: gtbHomeTeam.logoSize + "%",
 	maxHeight: "14vh",
 }});
 const rightTeamLogo = computed((): CSSProperties => { return {
-	height: gtbAwayTeam.value.logoSize + "%",
+	height: gtbAwayTeam.logoSize + "%",
 	maxHeight: "14vh",
 }});
 
-const clock = computed(() => scoreboard.value!.clock);
+const clock = replicants.scoreboard.clock;
 
 const formattedClockTime = computed<string>(() => {
-	const minutes = Math.floor(clock.value.time / 60000).toString();
-	let seconds = Math.floor((clock.value.time % 60000) / 1000).toString();
-	const millis = Math.floor((clock.value.time % 1000) / 100).toString();
+	const minutes = Math.floor(clock.time / 60000).toString();
+	let seconds = Math.floor((clock.time % 60000) / 1000).toString();
+	const millis = Math.floor((clock.time % 1000) / 100).toString();
 	if (minutes === '0') {
 		return `${seconds}.${millis}`;
 	} else {

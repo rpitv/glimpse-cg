@@ -1,5 +1,5 @@
 <template>
-  <div id="graphics-dashboard" @keydown.enter.prevent="console.log('enter pressed')">
+  <div id="graphics-dashboard" >
     <GraphicsList v-model="selectedGraphic" />
     <Customization>
       <component :is="selectedGraphic.component" />
@@ -11,8 +11,7 @@
 <script lang="ts" setup>
 import GraphicsList from '~/components/graphics-dashboard/lower-thirds/index.vue';
 import Customization from '~/components/graphics-dashboard/customization/index.vue';
-import Preview from '~/components/graphics-dashboard/preview.vue';
-
+import Preview from '~/components/graphics-dashboard/Preview.vue';
 
 const selectedGraphic = ref({
   component: null as Component | null,
@@ -23,7 +22,7 @@ const selectedGraphic = ref({
 <style>
 #graphics-dashboard {
   display: grid;
-  grid-template-columns: 2fr 3fr 2fr;
+  grid-template-columns: 2fr 5fr 3fr;
 }
 
 </style>

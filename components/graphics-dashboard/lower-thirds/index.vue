@@ -27,7 +27,7 @@
               <div class="text-left">
                 <div class="flex justify-between">
                   <p class="text-xl">{{ item.label }}</p>
-                  <DebouncedSwitch v-model="(currentChannel[item.val.reference as keyof Channel] as boolean)" :debounce="75" />
+                  <USwitch v-model="(channels[0][item.val.reference as keyof Channel] as boolean)" :debounce="75" />
                 </div>
               </div>
             </template>
@@ -39,28 +39,25 @@
 </template>
 
 <script setup lang="ts">
-import type { Configuration, Channel, Channels } from '~/types/replicants';
-import Bug from '../customization/bug.vue';
-import Commentators from '../customization/commentators.vue';
-import Copyright from '../customization/copyright.vue';
-import EndGraphics from '../customization/endgraphics.vue';
-import GoToBreak from '../customization/gotobreak.vue';
-import Locator from '../customization/locator.vue';
-import PlayerBio from '../customization/playerbio.vue';
-import Credits from '../customization/credits.vue';
+import type { Channel } from '~/types/replicants';
+import Bug from '../customization/Bug.vue';
+import Commentators from '../customization/Commentators.vue';
+import Copyright from '../customization/Copyright.vue';
+import EndGraphics from '../customization/EndGraphics.vue';
+import GoToBreak from '../customization/GoToBreak.vue';
+import Locator from '../customization/Locator.vue';
+import PlayerBio from '../customization/PlayerBio.vue';
+import Credits from '../customization/Credits.vue';
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const replicants = await useReplicants();
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 
 const model = defineModel({
   type: Object as PropType<{
     name: string;
     component: Component | null;
   }>
-});
-
-const currentChannel = computed(() => {
-  return channels.value![0];
 });
 
 interface Graphic {
@@ -129,11 +126,9 @@ const graphics: Graphic[] = [
 const computedGraphics = computed(() => {
   return graphics.filter((graphic) => {
     if (graphic.restrictions.length === 0) return true;
-    return graphic.restrictions.includes(configuration.value!.style);
+    return graphic.restrictions.includes(configuration.style);
   });
 });
-
-const selectedLowerThird = ref();
 
 </script>
 

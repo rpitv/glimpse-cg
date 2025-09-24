@@ -6,20 +6,19 @@
 
 <script setup lang="ts">
 import { espnStyles, rpiTVStyles } from "../util";
-import type { Configuration, Channels } from '~/types/replicants';
 import ESPNCredits from "../styles/espn/fullscreen/Credits.vue";
 
 
 const route = useRoute();
-
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "credits" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">

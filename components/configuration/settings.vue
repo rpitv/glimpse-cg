@@ -12,13 +12,13 @@
       <USeparator orientation="horizontal" :class="height" />
       <div>
         <UFormField label="Sport">
-          <USelect :class="width" :items="sports" v-model="configuration.sport" @update:model-value="$emit('update:config')" />
+          <USelect :class="width" :items="sports" v-model="configuration.sport" @update:model-value="() => $emit('update:config')" />
         </UFormField>
       </div>
       <USeparator v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'" orientation="horizontal" :class="height" />
       <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
         <UFormField label="Type (Important for Rosters)">
-          <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="$emit('update:config')"/>
+          <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="() => $emit('update:config')"/>
         </UFormField>
       </div>
       <USeparator orientation="horizontal" :class="height" />
@@ -32,12 +32,12 @@
 
 <script lang="ts" setup>
 import TeamConfig from './teamConfig.vue';
-import type { Configuration } from '~/types/replicants';
 
 const awayTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('awayTeamConfig');
 const homeTeamConfig = useTemplateRef<InstanceType<typeof TeamConfig>>('homeTeamConfig');
 
-const configuration = await useReplicant<Configuration>('configuration');
+const replicants = await useReplicants();
+const configuration = replicants.configuration;
 const width = 'w-48';
 const height = 'h-5'
 
@@ -85,7 +85,8 @@ const type = [{
 }];
 
 
-const emit = defineEmits(['update:config'])
+const emit = defineEmits(['update:config']);
+
 defineExpose({
   awayTeamConfig: awayTeamConfig,
   homeTeamConfig: homeTeamConfig

@@ -1,9 +1,8 @@
-import type { Configuration, LowerThird } from "~/types/replicants";
-import { getReplicant } from "~/utils/replicants";
+import { replicants } from "~/utils/replicants";
 
 export default defineEventHandler(async (event) => {
-  const configuration = getReplicant<Configuration>("configuration");
-  const { awayTeam, homeTeam, type, sport } = configuration!.value;
+  const configuration = replicants.configuration;
+  const { awayTeam, homeTeam, type, sport } = configuration;
   
   let awayPlayers = awayTeam.athletics;
   let homePlayers = homeTeam.athletics;

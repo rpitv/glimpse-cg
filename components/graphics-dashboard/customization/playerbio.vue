@@ -2,20 +2,28 @@
   <div class="overflow-auto">
     <div class="flex gap-4">
       <UFormField label="Description" help="Text accompanying the player bio graphic.">
-        <DebouncedInput v-model="playerBio.description" />
+        <UInput v-model="playerBio.description" />
       </UFormField>
       <UFormField label="Font Size" help="Adjust the font size of the player bio text.">
-          <DebouncedInputNumber v-model="playerBio.fontSize" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
+          <UInputNumber v-model="playerBio.fontSize" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
       </UFormField>
     </div>
     <UFormField class="mt-4" label="Info" help="Additional information about the player to display below their name and number.">
-      <DebouncedSwitch v-model="playerBio.info.show" label="Show Additional Info" />
+      <USwitch v-model="playerBio.info.show" label="Show Additional Info" />
     </UFormField>
     <USeparator class="mt-4" size="md"/>
     <div class="mt-4 flex gap-4 max-height">
       <div v-if="!loading" v-for="i in 2" :key="i" class="w-full">
-        <DebouncedInput v-if="i === 1" v-model="awaySearchPlayer" class="mt-2 w-full" icon="i-lucide-search" size="md" variant="outline" placeholder="Search away player" />
-        <DebouncedInput v-else-if="i === 2" v-model="homeSearchPlayer" class="mt-2 w-full" icon="i-lucide-search" size="md" variant="outline" placeholder="Search home player" />
+        <UInput v-if="i === 1" v-model="awaySearchPlayer" class="mt-2 w-full" size="md" variant="outline" placeholder="Search away player">
+          <template #leading>
+            <FontAwesomeIcon :icon="['fa', 'magnifying-glass']" class="inline-block align-middle" />
+          </template>
+        </UInput>
+        <UInput v-else-if="i === 2" v-model="homeSearchPlayer" class="mt-2 w-full" size="md" variant="outline" placeholder="Search home player">
+          <template #leading>
+            <FontAwesomeIcon :icon="['fa', 'magnifying-glass']" class="inline-block align-middle" />
+          </template>
+        </UInput>
         <URadioGroup :color="i === 1 ? 'error' : 'success'" class="w-full mt-4"
           :items="i === 1 ? filteredAwayPlayers.map((player) => ({ name: player.name, value: { ...player } })) : filteredHomePlayers.map((player) => ({ name: player.name, value: { ...player } }))" label-key="name" variant="table" indicator="hidden" 
           :ui="{
@@ -26,10 +34,10 @@
         >
           <template #label="{ item }">
             <div class="flex items-center gap-2">
-              <img :src="item.value.image" alt="Player Image" class="w-12 h-12 object-cover rounded" />
+              <img :src="item.value!.image" alt="Player Image" class="w-12 h-12 object-cover rounded" />
               <div class="text-left">
-                <div class="font-bold"><span class="text-sm">#{{ item.value.number }}</span> {{ item.value.name }}</div>
-                <div class="text-sm ">{{ item.value.position }} - {{ item.value.year }}</div>
+                <div class="font-bold"><span class="text-sm">#{{ item.value!.number }}</span> {{ item.value!.name }}</div>
+                <div class="text-sm ">{{ item.value!.position }} - {{ item.value!.year }}</div>
               </div>
             </div>
           </template>
@@ -61,10 +69,11 @@ interface Player {
   year: string;
 }
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const configuration = await useReplicant<Configuration>("configuration");
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
+const replicants = await useReplicants();
+
+const configuration = replicants.configuration;
+const awayTeam = computed(() => configuration.awayTeam);
+const homeTeam = computed(() => configuration.homeTeam);
 const awayPlayers = ref<Player[]>([]);
 const homePlayers = ref<Player[]>([]);
 const selectedPlayer = ref<Player | null>(null);
@@ -72,7 +81,7 @@ const awaySearchPlayer = ref("");
 const homeSearchPlayer = ref("");
 const loading = ref(true);
 
-const playerBio = computed(() => lowerThird.value!.playerBio);
+const playerBio = computed(() => replicants.lowerThird.playerBio);
 const domParser = new DOMParser();
 
 async function refresh() {

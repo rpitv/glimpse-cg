@@ -14,18 +14,16 @@
 <script setup lang="ts">
 import { computed, ref, type CSSProperties} from "vue";
 import {calcLinearGrad, isLighter, isLightColor} from "../../../util";
-import type { Configuration, LowerThird } from "~/types/replicants";
 
-const configuration = await useReplicant<Configuration>("configuration");
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const playerBio = computed(() => lowerThird.value!.playerBio);
-const awayTeam = computed(() => configuration.value?.awayTeam);
-const homeTeam = computed(() => configuration.value?.homeTeam);
+const replicants = await useReplicants();
+const playerBio = replicants.lowerThird.playerBio;
+const awayTeam = replicants.configuration.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
 
 const linearGrad = ref<string>("");
 
 const teamColor = computed(() => {
-	const color = playerBio.value.playerColor || playerBio.value.teamside === "awayTeam" ? awayTeam.value!.primaryColor : homeTeam.value!.primaryColor;
+	const color = playerBio.playerColor || playerBio.teamside === "awayTeam" ? awayTeam.primaryColor : homeTeam.primaryColor;
 	linearGrad.value = calcLinearGrad(color);
 	return color;
 })
@@ -35,10 +33,10 @@ const scoreboard = computed((): CSSProperties => {
 		position: "fixed",
         color: isLightColor(teamColor.value) ? "white" : "black",
 		background: isLighter(teamColor.value, linearGrad.value) ? `linear-gradient(${teamColor.value}, ${(linearGrad.value)})` : `linear-gradient(${linearGrad.value}, ${(teamColor.value)})`,
-		bottom: playerBio.value.offsetY + 5.93 + "vh",
+		bottom: playerBio.offsetY + 5.93 + "vh",
 		display: "flex",
 		height: "10.2vh",
-    left: playerBio.value.offsetX + 'vw',
+    left: playerBio.offsetX + 'vw',
 		overflow: "hidden",
 		width: "77.35vw",
 	}
@@ -49,11 +47,11 @@ const action = computed((): CSSProperties => {
 		color: "white",
 		display: "flex",
 		alignItems: "center",
-		bottom: playerBio.value.offsetY + 10 + "vh",
+		bottom: playerBio.offsetY + 10 + "vh",
 		height: "9.7vh",
-    left: playerBio.value.offsetX + 'vw',
+    left: playerBio.offsetX + 'vw',
 		marginLeft: "3vw",
-		fontSize: playerBio.value.fontSize + 7 + "vh",
+		fontSize: playerBio.fontSize + 7 + "vh",
 	}
 });
 

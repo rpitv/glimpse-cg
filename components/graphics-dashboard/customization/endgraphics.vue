@@ -25,11 +25,8 @@
 </template>
 
 <script lang="ts" setup>
-import { UForm, UTextarea } from '#components';
-import type { LowerThird } from '~/types/replicants';
-
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const endGraphics = computed(() => lowerThird.value!.endGraphics);
+const replicants = await useReplicants();
+const endGraphics = replicants.lowerThird.endGraphics;
 
 </script>
 

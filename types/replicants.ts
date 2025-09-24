@@ -1,5 +1,6 @@
-import type { Announcement } from "~/utils/announcement"
-import type { StandingsTeam } from "~/utils/standings"
+import type { Announcement } from "~/utils/announcement";
+import type { StandingsTeam } from "~/utils/standings";
+import { v4 } from "uuid";
 
 export const defaultLowerThird = {
   bottomTextBar: {
@@ -137,6 +138,7 @@ export const defaultLowerThird = {
 }
 
 export class Commentator {
+  public _id: string
   public name: string
   public nameColor: string
   public nameSize: number
@@ -144,6 +146,7 @@ export class Commentator {
   public descriptionColor: string
   public descriptionSize: number
   public constructor() {
+    this._id = v4();
     this.name = "";
     this.nameColor = "";
     this.nameSize = 0;
@@ -307,7 +310,8 @@ export const defaultScoreboard = {
     down: 1,
     yardsToGo: 10,
     possession: '',
-    playClock: 0,
+    playClock: 0, // The initial value of the play clock
+    playClockRunning: false, // Whether the play clock is currently running
     timeouts: 3
   }
 }
@@ -342,6 +346,7 @@ interface CustomGraphic {
 }
 
 export class Credit {
+  public _id: string;
 	public people: string[];
 	public peopleColor: string;
 	public peopleSize: number;
@@ -350,6 +355,7 @@ export class Credit {
 	public titleSize: number;
 
 	public constructor() {
+    this._id = v4();
 		this.people = [];
 		this.peopleColor = "";
 		this.peopleSize = 0;
@@ -410,9 +416,19 @@ export class Channel {
 
 export const defaultChannels: Channel[] = [new Channel()];
 
+export const defaultReplicants = {
+  lowerThird: defaultLowerThird,
+  configuration: defaultConfiguration,
+  scoreboard: defaultScoreboard,
+  fullscreen: defaultFullscreen,
+  external: defaultExternal,
+  channels: defaultChannels,
+}
+
 export type LowerThird = typeof defaultLowerThird;
 export type Configuration = typeof defaultConfiguration;
 export type Scoreboard = typeof defaultScoreboard;
 export type Fullscreen = typeof defaultFullscreen;
 export type External = typeof defaultExternal;
 export type Channels = typeof defaultChannels;
+export type Replicants = typeof defaultReplicants;

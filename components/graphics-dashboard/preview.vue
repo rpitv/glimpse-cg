@@ -9,8 +9,9 @@
         <UProgress indeterminate />
         <p class="text-center">Loading Preview...</p>
       </div>
-      <iframe :src="`/display/?preview=${selectedGraphic.name}&dev=1`" @load="loading = false">
+      <iframe v-if="selectedGraphic.name" :src="`/display/?preview=${selectedGraphic.name}&dev=1`" @load="loading = false">
       </iframe>
+      <p v-else>No Graphic Selected</p>
     </UCard>
   </div>
 </template>
@@ -31,6 +32,10 @@ const props = defineProps({
 watch(props, (newValue) => {
   if (newValue) loading.value = true;
 }, { deep: true });
+
+onMounted(() => {
+  loading.value = false;
+});
 </script>
 
 <style>

@@ -12,25 +12,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Channels, LowerThird } from '~/types/replicants';
-
 const route = useRoute();
+const replicants = await useReplicants();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channels = await useReplicant<Channels>("channels");
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const endGraphics = computed(() => lowerThird.value!.endGraphics);
+const channels = replicants.channels;
+const endGraphics = replicants.lowerThird.endGraphics;
 const showCrawl = ref(false);
 
-const endGraphicActive = computed(() => channels.value![channelIndex.value].endGraphic);
+const endGraphicActive = computed(() => channels[channelIndex.value].endGraphic);
 
 watch(endGraphicActive, (newValue, oldValue) => {
 	if (oldValue) {
-		endGraphics.value.disabled = true;
+		endGraphics.disabled = true;
 		setTimeout(() => {
-			endGraphics.value.disabled = false;
-      channels.value![channelIndex.value].endGraphic = false;
+			endGraphics.disabled = false;
+      channels[channelIndex.value].endGraphic = false;
 			showCrawl.value = false;
 		}, 1000)
 	} else

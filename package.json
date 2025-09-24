@@ -10,6 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/pro-duotone-svg-icons": "^7.0.1",
+    "@fortawesome/pro-light-svg-icons": "^7.0.1",
+    "@fortawesome/pro-regular-svg-icons": "^7.0.1",
+    "@fortawesome/pro-solid-svg-icons": "^7.0.1",
+    "@fortawesome/pro-thin-svg-icons": "^7.0.1",
+    "@fortawesome/vue-fontawesome": "^3.1.2",
     "@nuxt/content": "^3.6.3",
     "@nuxt/eslint": "^1.5.2",
     "@nuxt/fonts": "^0.11.4",
@@ -32,6 +39,9 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@nuxtjs/fontawesome": "^1.1.2",
     "@types/better-sqlite3": "^7.6.13",
     "sass-embedded": "^1.90.0"
   }

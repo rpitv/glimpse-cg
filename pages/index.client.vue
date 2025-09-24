@@ -19,6 +19,11 @@ function setPresets(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
   settings.value?.homeTeamConfig?.loadPreset(schools[0]);
 }
 
+const replicants = await useReplicants();
+onMounted(() => {
+  console.log(replicants);
+});
+
 </script>
 
 <style>

@@ -6,7 +6,7 @@
           Customization
         </p>
       </template>
-      <div style="max-height: 75vh; overflow-y: auto;">
+      <div style="max-height: 75vh; overflow-y: auto; scrollbar-gutter: stable;">
         <slot />
       </div>
     </UCard>

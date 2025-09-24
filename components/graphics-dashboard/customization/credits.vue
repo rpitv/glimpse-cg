@@ -1,18 +1,22 @@
 <template>
   <div>
-    <div v-if="!credits.credit.length" class="flex flex-col items-center justify-center">
-      <i>There no credits at the moment</i>
+    <div class="flex justify-end mb-2">
       <UButton @click="addCredit">Add Credit</UButton>
     </div>
-    <div v-else>
-      <div class="flex justify-end mb-2">
-        <UButton @click="addCredit">Add Credit</UButton>
-      </div>
-      <UTable :ui="{ tbody: 'my-table-tbody' }" :columns :data="credits.credit" class="table-fixed w-full">
-        <template #title-cell="{ row }">
-          <div style="min-width:140px; max-width: 320px;">
+    <div v-show="false">{{ creditsRef }}</div>
+    <table class="w-full">
+      <thead>
+        <tr>
+          <th class="text-left p-2">Title</th>
+          <th class="text-left p-2">People</th>
+          <th class="text-right p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="my-table-tbody">
+        <tr v-if="creditsRef.length > 0" v-for="(credit, index) in creditsRef" :key="index">
+          <td>
             <UFormField label="Role Title" help="The title of the role.">
-              <DebouncedInput v-model="row.original.title" placeholder="Title of the role" class="w-full" />
+              <UInput v-model="creditsRef[index].title" placeholder="Title of the role" class="w-full" @update:model-value="creditsRef = creditsRef" />
             </UFormField>
             <UPopover arrow>
               <UButton
@@ -23,32 +27,19 @@
               />
               <template #content>
                 <div class="p-2" style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;">
-                  <UFormField class="mt-4" label="Color" help="The color for the role title.">
-                    <DebouncedInput v-model="row.original.titleColor" placeholder="Currently Default">
-                      <template #leading>
-                        <UPopover>
-                          <span :style="`background-color: ${row.original.titleColor}`" class="size-5 rounded-full" />
-                          <template #content>
-                            <UColorPicker :throttle="500" v-model="row.original.titleColor" />
-                          </template>
-                        </UPopover>
-                      </template>
-                    </DebouncedInput>
-                  </UFormField>
+                  <ColorPicker v-model="creditsRef[index].titleColor" @update:model-value="creditsRef = creditsRef" label="Title Color" help="The color for the title." />
                   <UFormField class="mt-4" label="Name Size" help="Adjust the size of the role title.">
-                    <DebouncedInputNumber v-model="row.original.titleSize" :step="0.1" :format-options="{
+                    <UInputNumber v-model="creditsRef[index].titleSize" @update:model-value="creditsRef = creditsRef" :step="0.1" :format-options="{
                       minimumFractionDigits: 1,
                     }" />
                   </UFormField>
                 </div>
               </template>
             </UPopover>
-          </div>
-        </template>
-        <template #people-cell="{ row }">
-          <div style="min-width:140px; max-width: 320px;">
+          </td>
+          <td>
             <UFormField label="People" help="The people for this role.">
-              <DebouncedInputTags v-model="row.original.people" placeholder="Add a person" class="w-full" />
+              <UInputTags v-model="creditsRef[index].people" placeholder="Add a person" class="w-full" @update:model-value="creditsRef = creditsRef" />
             </UFormField>
             <UPopover arrow>
               <UButton
@@ -59,72 +50,61 @@
               />
               <template #content>
                 <div class="p-2" style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;">
-                  <UFormField class="mt-4" label="Color" help="The color for the credit title.">
-                    <DebouncedInput v-model="row.original.peopleColor" placeholder="Currently Default">
-                      <template #leading>
-                        <UPopover>
-                          <span :style="`background-color: ${row.original.peopleColor}`" class="size-5 rounded-full" />
-                          <template #content>
-                            <UColorPicker :throttle="500" v-model="row.original.peopleColor" />
-                          </template>
-                        </UPopover>
-                      </template>
-                    </DebouncedInput>
-                  </UFormField>
-                  <UFormField class="mt-4" label="Name Size" help="Adjust the size of the credit title.">
-                    <DebouncedInputNumber v-model="row.original.peopleSize" :step="0.1" :format-options="{
+                  <ColorPicker v-model="creditsRef[index].peopleColor" label="People Text Color" @update:model-value="creditsRef = creditsRef" help="The color for the people text." />
+                  <UFormField class="mt-4" label="Name Size" help="Adjust the size of the names of the people.">
+                    <UInputNumber v-model="creditsRef[index].peopleSize" @update:model-value="creditsRef = creditsRef" :step="0.1" :format-options="{
                       minimumFractionDigits: 1,
                     }" />
                   </UFormField>
                 </div>
               </template>
             </UPopover>
-          </div>
-        </template>
-        <template #actions-cell="{ row }">
-          <div class="flex gap-2 justify-end">
-            <UButton size="sm" color="error" @click="creditsRef.splice(row.index, 1)">Delete</UButton>
-          </div>
-        </template>
-      </UTable>
-    </div>
+          </td>
+          <td>
+            <div class="flex gap-2 justify-end">
+              <UButton size="sm" color="error" @click="deleteCredit(index)">Delete</UButton>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { type Fullscreen, Credit } from '~/types/replicants';
+import { Credit } from '~/types/replicants';
 import { useSortable } from "@vueuse/integrations/useSortable.mjs"
 
-const fullscreen = await useReplicant<Fullscreen>("fullscreen");
-const credits = computed(() => fullscreen.value!.credits);
-const creditsRef = ref<Credit[]>(fullscreen.value!.credits.credit)
-const columns = [
-  {
-    accessorKey: "title",
-    header: "Title",
-  },
-  {
-    accessorKey: "people",
-    header: "People",
-  },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-  }
-]
+const replicants = await useReplicants();
+const credits = replicants.fullscreen.credits;
+const creditsRef = computed({
+  get: () => credits.credit,
+  set: (val) => (credits.credit = val),
+});
 
 function addCredit() {
   creditsRef.value.push(new Credit());
+  creditsRef.value = creditsRef.value;
+}
+function deleteCredit(index: number) {
+  creditsRef.value.splice(index, 1);
+  creditsRef.value = creditsRef.value;
 }
 
-useSortable(".my-table-tbody", creditsRef, { animation: 150 });
+let sortableInstance = useSortable(".my-table-tbody", creditsRef, { animation: 150 });
 
-watch(creditsRef, (newVal) => {
-  fullscreen.value!.credits.credit = newVal;
-}, { deep: true });
-
+watch(creditsRef, () => {
+  if (creditsRef.value.length === 0) {
+    sortableInstance.stop();
+  } else {
+    sortableInstance.start();
+  }
+}, { immediate: true });
 </script>
 
-<style>
-
+<style scoped>
+td {
+  border-top: 1px solid rgb(160 160 160);
+  padding: 8px 10px;
+}
 </style>

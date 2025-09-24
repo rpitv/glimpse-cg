@@ -1,20 +1,20 @@
 <template>
-	<img :style="bugStyle" :src="bug">
+	<img :style="bugStyle" :src="rpitvBug">
 </template>
 
 <script setup lang="ts">
-import bug from "~/assets/rpitv-modern/rpitvBug.png";
+import rpitvBug from "~/assets/rpitv-modern/rpitvBug.png";
 import { computed, type CSSProperties } from "vue";
-import type { LowerThird } from "~/types/replicants";
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const replicants = await useReplicants();
+const bug = replicants.lowerThird.bug;
 
 const bugStyle = computed((): CSSProperties => {
 	return {
 		height: "100vh",
-		left: lowerThird.value!.bug.offsetX + "vw",
+		left: bug.offsetX + "vw",
 		position: "absolute",
-		bottom: lowerThird.value!.bug.offsetY + "vh",
+		bottom: bug.offsetY + "vh",
 		width: "100vw",
 	}
 });

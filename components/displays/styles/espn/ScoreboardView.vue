@@ -74,26 +74,26 @@ import TeamView from "./TeamView.vue";
 import { Announcement } from "~/utils/announcement";
 
 const route = useRoute();
-
+const replicants = await useReplicants();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
-const channel = await useReplicant<Channels>("channels");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const configuration = await useReplicant<Configuration>("configuration")
-const hockeyAwayTeam = computed(() => scoreboard.value!.hockey.awayTeam);
-const hockeyHomeTeam = computed(() => scoreboard.value!.hockey.homeTeam);
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
-const awayTeamColor = computed(() => awayTeam.value.primaryColor);
-const homeTeamColor = computed(() => homeTeam.value.primaryColor);
-const clock = computed(() => scoreboard.value!.clock);
-const period = computed(() => scoreboard.value!.period);
+
+const channel = replicants.channels;
+const scoreboard = replicants.scoreboard;
+const hockeyAwayTeam = scoreboard.hockey.awayTeam;
+const hockeyHomeTeam = scoreboard.hockey.homeTeam;
+const awayTeam = replicants.configuration.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
+const awayTeamColor = awayTeam.primaryColor;
+const homeTeamColor = homeTeam.primaryColor;
+const clock = scoreboard.clock;
+const period = scoreboard.period;
 
 const formattedClockTime = computed<string>(() => {
-	const minutes = Math.floor(clock.value.time / 60000).toString();
-	let seconds = Math.floor((clock.value.time % 60000) / 1000).toString();
-	const millis = Math.floor((clock.value.time % 1000) / 100).toString();
+	const minutes = Math.floor(clock.time / 60000).toString();
+	let seconds = Math.floor((clock.time % 60000) / 1000).toString();
+	const millis = Math.floor((clock.time % 1000) / 100).toString();
 	if (minutes === '0') {
 		return `${seconds}.${millis}`;
 	} else {
@@ -101,12 +101,12 @@ const formattedClockTime = computed<string>(() => {
 		seconds = seconds.padStart(2, '0');
 		return `${minutes}:${seconds}`;
 	}
-})
+});
 
 const formattedPeriod = computed<string>(() => {
-	if(period.value.count > period.value.length) {
-		const overtimePeriod = period.value.count - period.value.length;
-		if (period.value.count > period.value.overtime.length + period.value.length)
+	if(period.count > period.length) {
+		const overtimePeriod = period.count - period.length;
+		if (period.count > period.overtime.length + period.length)
 			return 'S/O';
 		if(overtimePeriod === 1) {
 			return 'OT';
@@ -115,25 +115,25 @@ const formattedPeriod = computed<string>(() => {
 		}
 	}
 
-	if(period.value.count === undefined) {
+	if(period.count === undefined) {
 		return '1st';
 	}
 
 	// Teens for some reason all end in "th" in English.
-	if(period.value.count > 10 && period.value.count < 20) {
-		return period.value + 'th';
+	if(period.count > 10 && period.count < 20) {
+		return period + 'th';
 	}
 
 	// For all other numbers up to 99, we need to figure out the suffix.
-	const lastNumberOfPeriod = period.value.count % 10;
+	const lastNumberOfPeriod = period.count % 10;
 	if(lastNumberOfPeriod === 1) {
-		return `${period.value}st`;
+		return `${period}st`;
 	} else if(lastNumberOfPeriod === 2) {
-		return `${period.value}nd`;
+		return `${period}nd`;
 	} else if(lastNumberOfPeriod === 3) {
-		return `${period.value}rd`;
+		return `${period}rd`;
 	} else {
-		return `${period.value}th`;
+		return `${period}th`;
 	}
 });
 
@@ -150,8 +150,8 @@ function pickTextColorBasedOnBgColorSimple(bgColor: string, lightColor: string, 
 		darkColor : lightColor;
 }
 
-const homeTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(homeTeam.value.primaryColor, '#ffffff', '#000000'))
-const awayTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(awayTeam.value.primaryColor, '#ffffff', '#000000'))
+const homeTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(homeTeam.primaryColor, '#ffffff', '#000000'))
+const awayTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(awayTeam.primaryColor, '#ffffff', '#000000'))
 
 
 function computedMessage(message: Announcement) {
@@ -159,7 +159,7 @@ function computedMessage(message: Announcement) {
 		if(!message.timer || !message.timer.visible) {
 			return message.message;
 		} else {
-			const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.value!.clock.time);
+			const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.clock.time);
 
 			const minutes = Math.max(0, Math.floor(timeRemaining / 60000)).toString();
 			// noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
@@ -181,10 +181,10 @@ const powerplaySync = computed(() => {
     status: "",
     type: "",
   }
-	if (hockeyAwayTeam.value.penalty.player1.number && hockeyAwayTeam.value.penalty.player2.number) {
+	if (hockeyAwayTeam.penalty.player1.number && hockeyAwayTeam.penalty.player2.number) {
 		// If two home players are on penalty
-		if (hockeyHomeTeam.value.penalty.player1.number) {
-      if (hockeyHomeTeam.value.penalty.player2.number) {
+		if (hockeyHomeTeam.penalty.player1.number) {
+      if (hockeyHomeTeam.penalty.player2.number) {
         powerplay.type = "global";
         powerplay.status = "3 on 3";
       } else {
@@ -197,10 +197,10 @@ const powerplaySync = computed(() => {
     }
 	}
 	// If two home players are on penalty...
-	else if (hockeyHomeTeam.value.penalty.player1.number && hockeyHomeTeam.value.penalty.player2.number) {
+	else if (hockeyHomeTeam.penalty.player1.number && hockeyHomeTeam.penalty.player2.number) {
 		// If two away players are on penalty
-    if (hockeyAwayTeam.value.penalty.player1.number) {
-      if (hockeyAwayTeam.value.penalty.player2.number) {
+    if (hockeyAwayTeam.penalty.player1.number) {
+      if (hockeyAwayTeam.penalty.player2.number) {
         powerplay.type = "global";
         powerplay.status = "3 on 3";
       } else {
@@ -213,9 +213,9 @@ const powerplaySync = computed(() => {
     }
 	}
 	// If either away player is on a penalty...
-	else if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
+	else if (hockeyAwayTeam.penalty.player1.number || hockeyAwayTeam.penalty.player2.number) {
 		// If either home player is on a penalty...
-		if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+		if (hockeyHomeTeam.penalty.player1.number || hockeyHomeTeam.penalty.player2.number) {
        powerplay.type = "global";
        powerplay.status = "4 on 4";
     } else {
@@ -224,9 +224,9 @@ const powerplaySync = computed(() => {
     }
 	}
 	// If either home player is on a penalty...
-	else if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+	else if (hockeyHomeTeam.penalty.player1.number || hockeyHomeTeam.penalty.player2.number) {
     // If either away player is on a penalty...
-    if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
+    if (hockeyAwayTeam.penalty.player1.number || hockeyAwayTeam.penalty.player2.number) {
       powerplay.type = "global";
       powerplay.status = "4 on 4";
     } else {
@@ -239,8 +239,8 @@ const powerplaySync = computed(() => {
 
 const powerPlayClock = computed(() => {
 	let smallestTime = "";
-	const times = [hockeyHomeTeam.value.penalty.player1.timer, hockeyHomeTeam.value.penalty.player2.timer,
-    hockeyAwayTeam.value.penalty.player1.timer, hockeyAwayTeam.value.penalty.player2.timer];
+	const times = [hockeyHomeTeam.penalty.player1.timer, hockeyHomeTeam.penalty.player2.timer,
+    hockeyAwayTeam.penalty.player1.timer, hockeyAwayTeam.penalty.player2.timer];
 
 	for (const time of times) {
 		if (!time)

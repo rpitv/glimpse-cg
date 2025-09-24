@@ -50,7 +50,8 @@ interface Timeline {
 }
 
 const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
-const configuration = await useReplicant<Configuration>('configuration');
+const replicants = await useReplicants();
+const configuration = replicants.configuration;
 
 const schedule = ref<Timeline[]>([]);
 const domParser = new DOMParser();

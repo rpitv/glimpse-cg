@@ -63,23 +63,23 @@ import TeamView from "./TeamView.vue";
 import gsap from "gsap";
 import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
 import { CustomEase } from "gsap/CustomEase";
-import type { Channels, Configuration, Scoreboard } from "~/types/replicants";
 import type { Announcement } from "~/utils/announcement";
 
 const route = useRoute();
+const replicants = await useReplicants();
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
 gsap.registerPlugin(CustomEase);
 
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const configuration = await useReplicant<Configuration>("configuration");
-const channels = await useReplicant<Channels>("channels");
-const clock = computed(() => scoreboard.value!.clock);
-const period = computed(() => scoreboard.value!.period);
-const awayTeam = computed(() => configuration.value!.awayTeam);
-const homeTeam = computed(() => configuration.value!.homeTeam);
+const scoreboard = replicants.scoreboard;
+const configuration = replicants.configuration;
+const channels = replicants.channels;
+const clock = scoreboard.clock;
+const period = scoreboard.period;
+const awayTeam = scoreboard.awayTeam;
+const homeTeam = scoreboard.homeTeam;
 
 const announcementsPos = ref("21vw");
 const awayTeamPos = ref("11.5vh");
@@ -122,7 +122,7 @@ function hideTeam(teamPos: Ref<string>, element: string) {
 }
 
 function runAnimation(team: "awayTeam" | "homeTeam") {
-	scoreboardColor.value = configuration.value![team].primaryColor;
+	scoreboardColor.value = configuration[team].primaryColor;
 	animationText.value = isLightColor(scoreboardColor.value) ? "white" : "black";
 	const t1 = gsap.timeline();
 	const t2 = gsap.timeline();
@@ -142,15 +142,15 @@ function runAnimation(team: "awayTeam" | "homeTeam") {
 	})
 	t4.to(".text1", {left: "75vw", duration: 1}, "+=1");
 	t5.to(".text1", {filter: "blur(5vh)", duration: 1}, "-=0.5");
-	scorer.value = configuration.value![team].shortName;
+	scorer.value = configuration[team].shortName;
 	t4.fromTo(".text2", {left: "75vw", letterSpacing: 0}, {left: "0vw", duration: 1, ease: "power3.out"}, "-=1.25");
 	t1.to(".game-info", {top: "0vh", duration: disappearance}, "+=4");
 	t2.to(".team-view-1", {top: "0vh", left: "0vw", duration: disappearance}, "+=4");
 	t3.to(".team-view-2", {top: "0vh", left: "12.5vw", duration: disappearance}, "+=4");
 }
 
-const awayTeamScore = computed(() => scoreboard.value!.awayTeam.score);
-const homeTeamScore = computed(() => scoreboard.value!.homeTeam.score);
+const awayTeamScore = computed(() => scoreboard.awayTeam.score);
+const homeTeamScore = computed(() => scoreboard.homeTeam.score);
 
 watch(awayTeamScore, (n, o) => {
 	if (n - o === 1)
@@ -167,30 +167,30 @@ const awayTeamFontColor = ref("black");
 const homeTeamFontColor = ref("black");
 
 const awayTeamColor1 = computed(() => {
-	const linearGradient = calcLinearGrad(awayTeam.value.secondaryColor);
-	if (!isLighter(awayTeam.value.secondaryColor, linearGradient))
+	const linearGradient = calcLinearGrad(awayTeam.secondaryColor);
+	if (!isLighter(awayTeam.secondaryColor, linearGradient))
 		return linearGradient;
-	return awayTeam.value.secondaryColor;
+	return awayTeam.secondaryColor;
 });
 
 const awayTeamColor2 = computed(() => {
-	const linearGradient = calcLinearGrad(awayTeam.value.secondaryColor);
-	if (!isLighter(awayTeam.value.secondaryColor, linearGradient))
-		return awayTeam.value.secondaryColor;
+	const linearGradient = calcLinearGrad(awayTeam.secondaryColor);
+	if (!isLighter(awayTeam.secondaryColor, linearGradient))
+		return awayTeam.secondaryColor;
 	return linearGradient;
 });
 
 const homeTeamColor1 = computed(() => {
-	const linearGradient = calcLinearGrad(homeTeam.value.secondaryColor);
-	if (!isLighter(homeTeam.value.secondaryColor, linearGradient))
+	const linearGradient = calcLinearGrad(homeTeam.secondaryColor);
+	if (!isLighter(homeTeam.secondaryColor, linearGradient))
 		return linearGradient;
-	return homeTeam.value.secondaryColor;
+	return homeTeam.secondaryColor;
 });
 
 const homeTeamColor2 = computed(() => {
-	const linearGradient = calcLinearGrad(homeTeam.value.secondaryColor);
-	if (!isLighter(homeTeam.value.secondaryColor, linearGradient))
-		return homeTeam.value.secondaryColor;
+	const linearGradient = calcLinearGrad(homeTeam.secondaryColor);
+	if (!isLighter(homeTeam.secondaryColor, linearGradient))
+		return homeTeam.secondaryColor;
 	return linearGradient;
 });
 
@@ -217,9 +217,9 @@ watch(homeTeamColor1, (n, o) => {
 	don't want the powerplay to go down.
  */
 
-const globalAnnouncement = computed(() => scoreboard.value!.announcement);
-const awayAnnouncement = computed(() => scoreboard.value!.awayTeam.announcement);
-const homeAnnouncement = computed(() => scoreboard.value!.homeTeam.announcement);
+const globalAnnouncement = computed(() => scoreboard.announcement);
+const awayAnnouncement = computed(() => scoreboard.awayTeam.announcement);
+const homeAnnouncement = computed(() => scoreboard.homeTeam.announcement);
 
 watch(globalAnnouncement, (n, o) => {
 	if (n.length === 0 && powerPlaySync.value.type !== "global")
@@ -242,7 +242,7 @@ watch(homeAnnouncement, (n, o) => {
 		showTeam(homeTeamPos, ".homeTeam");
 })
 
-const shootout = computed(() => channels.value![channelIndex.value].shootout);
+const shootout = computed(() => channels[channelIndex.value].shootout);
 
 watch(shootout, (n, o) => {
 	if (!shootout.value) {
@@ -259,18 +259,18 @@ function forHome() {
 		showTeam(awayTeamPos, ".awayTeam");
 		awayTeamOpen = !awayTeamOpen;
 	}
-	if (homeTeamOpen && !scoreboard.value!.homeTeam.announcement.length) {
+	if (homeTeamOpen && !scoreboard.homeTeam.announcement.length) {
 		hideTeam(homeTeamPos, ".homeTeam");
 		homeTeamOpen = !homeTeamOpen;
 	}
-	if (globalOpen && !scoreboard.value!.announcement.length) {
+	if (globalOpen && !scoreboard.announcement.length) {
 		hideGlobal();
 		globalOpen = !globalOpen;
 	}
 }
 
 function forAway() {
-	if (awayTeamOpen && !scoreboard.value!.awayTeam.announcement.length) {
+	if (awayTeamOpen && !scoreboard.awayTeam.announcement.length) {
 		hideTeam(awayTeamPos, ".awayTeam");
 		awayTeamOpen = !awayTeamOpen;
 	}
@@ -278,18 +278,18 @@ function forAway() {
 		showTeam(homeTeamPos, ".homeTeam");
 		homeTeamOpen = !homeTeamOpen;
 	}
-	if (globalOpen && !scoreboard.value!.announcement.length) {
+	if (globalOpen && !scoreboard.announcement.length) {
 		hideGlobal();
 		globalOpen = !globalOpen;
 	}
 }
 
 function forGlobal() {
-	if (awayTeamOpen && !scoreboard.value!.awayTeam.announcement.length) {
+	if (awayTeamOpen && !scoreboard.awayTeam.announcement.length) {
 		hideTeam(awayTeamPos, ".awayTeam");
 		awayTeamOpen = !awayTeamOpen;
 	}
-	if (homeTeamOpen && !scoreboard.value!.homeTeam.announcement.length) {
+	if (homeTeamOpen && !scoreboard.homeTeam.announcement.length) {
 		hideTeam(homeTeamPos, ".homeTeam");
 		homeTeamOpen = !homeTeamOpen;
 	}
@@ -300,32 +300,32 @@ function forGlobal() {
 }
 
 function forNone() {
-	if (awayTeamOpen && !scoreboard.value!.awayTeam.announcement.length) {
+	if (awayTeamOpen && !scoreboard.awayTeam.announcement.length) {
 		hideTeam(awayTeamPos, ".awayTeam");
 		awayTeamOpen = !awayTeamOpen;
 	}
-	if (homeTeamOpen && !scoreboard.value!.homeTeam.announcement.length) {
+	if (homeTeamOpen && !scoreboard.homeTeam.announcement.length) {
 		hideTeam(homeTeamPos, ".homeTeam");
 		homeTeamOpen = !homeTeamOpen;
 	}
-	if (globalOpen && !scoreboard.value!.announcement.length) {
+	if (globalOpen && !scoreboard.announcement.length) {
 		hideGlobal();
 		globalOpen = !globalOpen;
 	}
 }
 
-const hockeyAwayTeam = computed(() => scoreboard.value!.hockey.awayTeam);
-const hockeyHomeTeam = computed(() => scoreboard.value!.hockey.homeTeam);
+const hockeyAwayTeam = scoreboard.hockey.awayTeam;
+const hockeyHomeTeam = scoreboard.hockey.homeTeam;
 
 const powerPlaySync = computed(() => {
   let powerplay = {
     status: "",
     type: "",
   }
-	if (hockeyAwayTeam.value.penalty.player1.number && hockeyAwayTeam.value.penalty.player2.number) {
+	if (hockeyAwayTeam.penalty.player1.number && hockeyAwayTeam.penalty.player2.number) {
 		// If two home players are on penalty
-		if (hockeyHomeTeam.value.penalty.player1.number) {
-      if (hockeyHomeTeam.value.penalty.player2.number) {
+		if (hockeyHomeTeam.penalty.player1.number) {
+      if (hockeyHomeTeam.penalty.player2.number) {
         powerplay.type = "global";
         powerplay.status = "3 on 3";
         forGlobal();
@@ -341,10 +341,10 @@ const powerPlaySync = computed(() => {
     }
 	}
 	// If two home players are on penalty...
-	else if (hockeyHomeTeam.value.penalty.player1.number && hockeyHomeTeam.value.penalty.player2.number) {
+	else if (hockeyHomeTeam.penalty.player1.number && hockeyHomeTeam.penalty.player2.number) {
 		// If two away players are on penalty
-    if (hockeyAwayTeam.value.penalty.player1.number) {
-      if (hockeyAwayTeam.value.penalty.player2.number) {
+    if (hockeyAwayTeam.penalty.player1.number) {
+      if (hockeyAwayTeam.penalty.player2.number) {
         powerplay.type = "global";
         powerplay.status = "3 on 3";
         forGlobal();
@@ -360,9 +360,9 @@ const powerPlaySync = computed(() => {
     }
 	}
 	// If either away player is on a penalty...
-	else if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
+	else if (hockeyAwayTeam.penalty.player1.number || hockeyAwayTeam.penalty.player2.number) {
 		// If either home player is on a penalty...
-		if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+		if (hockeyHomeTeam.penalty.player1.number || hockeyHomeTeam.penalty.player2.number) {
        powerplay.type = "global";
        powerplay.status = "4 on 4";
        forGlobal();
@@ -373,9 +373,9 @@ const powerPlaySync = computed(() => {
     }
 	}
 	// If either home player is on a penalty...
-	else if (hockeyHomeTeam.value.penalty.player1.number || hockeyHomeTeam.value.penalty.player2.number) {
+	else if (hockeyHomeTeam.penalty.player1.number || hockeyHomeTeam.penalty.player2.number) {
     // If either away player is on a penalty...
-    if (hockeyAwayTeam.value.penalty.player1.number || hockeyAwayTeam.value.penalty.player2.number) {
+    if (hockeyAwayTeam.penalty.player1.number || hockeyAwayTeam.penalty.player2.number) {
       powerplay.type = "global";
       powerplay.status = "4 on 4";
       forGlobal();
@@ -392,8 +392,8 @@ const powerPlaySync = computed(() => {
 
 const powerPlayClock = computed(() => {
 	let smallestTime = "";
-	const times = [hockeyAwayTeam.value.penalty.player1.timer, hockeyAwayTeam.value.penalty.player2.timer,
-		hockeyHomeTeam.value.penalty.player1.timer, hockeyHomeTeam.value.penalty.player1.timer];
+	const times = [hockeyAwayTeam.penalty.player1.timer, hockeyAwayTeam.penalty.player2.timer,
+		hockeyHomeTeam.penalty.player1.timer, hockeyHomeTeam.penalty.player1.timer];
 
 	for (const time of times) {
 		if (!time)
@@ -420,9 +420,9 @@ const powerPlayClock = computed(() => {
 })
 
 const formattedClockTime = computed<string>(() => {
-	const minutes = Math.floor(clock.value.time / 60000).toString();
-	let seconds = Math.floor((clock.value.time % 60000) / 1000).toString();
-	const millis = Math.floor((clock.value.time % 1000) / 100).toString();
+	const minutes = Math.floor(clock.time / 60000).toString();
+	let seconds = Math.floor((clock.time % 60000) / 1000).toString();
+	const millis = Math.floor((clock.time % 1000) / 100).toString();
 	if (minutes === '0') {
 		return `${seconds}.${millis}`;
 	} else {
@@ -433,9 +433,9 @@ const formattedClockTime = computed<string>(() => {
 })
 
 const formattedPeriod = computed<string>(() => {
-	if(period.value.count > period.value.length) {
-		const overtimePeriod = period.value.count - period.value.length;
-		if (period.value.count > period.value.overtime.length + period.value.length)
+	if(period.count > period.length) {
+		const overtimePeriod = period.count - period.length;
+		if (period.count > period.overtime.length + period.length)
 			return 'S/O';
 		if(overtimePeriod === 1) {
 			return 'OT';
@@ -444,25 +444,25 @@ const formattedPeriod = computed<string>(() => {
 		}
 	}
 
-	if(period.value === undefined) {
+	if(period === undefined) {
 		return '1st';
 	}
 
 	// Teens for some reason all end in "th" in English.
-	if(period.value.count > 10 && period.value.count < 20) {
-		return period.value + 'th';
+	if(period.count > 10 && period.count < 20) {
+		return period + 'th';
 	}
 
   // For all other numbers up to 99, we need to figure out the suffix.
-	const lastNumberOfPeriod = period.value.count % 10;
+	const lastNumberOfPeriod = period.count % 10;
 	if(lastNumberOfPeriod === 1) {
-		return `${period.value}st`;
+		return `${period}st`;
 	} else if(lastNumberOfPeriod === 2) {
-		return `${period.value}nd`;
+		return `${period}nd`;
 	} else if(lastNumberOfPeriod === 3) {
-		return `${period.value}rd`;
+		return `${period}rd`;
 	} else {
-		return `${period.value}th`;
+		return `${period}th`;
 	}
 });
 
@@ -471,7 +471,7 @@ function computedMessage(message: Announcement) {
 		if(!message.timer || !message.timer.visible) {
 			return message.message;
 		} else {
-			const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.value!.clock.time);
+			const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.clock.time);
 
 			const minutes = Math.max(0, Math.floor(timeRemaining / 60000)).toString();
 			// noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
@@ -488,15 +488,15 @@ function computedMessage(message: Announcement) {
 
 
 onMounted(() => {
-	if (powerPlaySync.value.type === "global" || scoreboard.value!.announcement.length > 0) {
+	if (powerPlaySync.value.type === "global" || scoreboard.announcement.length > 0) {
 		globalOpen = true;
 		showGlobal();
 	}
-  if (powerPlaySync.value.type === "away" || scoreboard.value!.awayTeam.announcement.length > 0) {
+  if (powerPlaySync.value.type === "away" || scoreboard.awayTeam.announcement.length > 0) {
 		awayTeamOpen = true;
 		showTeam(awayTeamPos, ".awayTeam");
 	}
-	if (powerPlaySync.value.type === "home" || scoreboard.value!.homeTeam.announcement.length > 0) {
+	if (powerPlaySync.value.type === "home" || scoreboard.homeTeam.announcement.length > 0) {
 		homeTeamOpen = true;
 		showTeam(homeTeamPos, ".homeTeam");
 	}

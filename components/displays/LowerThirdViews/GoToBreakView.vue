@@ -9,7 +9,6 @@
 import { espnStyles, rpiTVStyles} from "../util";
 import ESPNGoToBreak from "../styles/espn/lower-third/GoToBreak.vue";
 import RPITVGoToBreak from "../styles/rpitv/lower-third/GoToBreak.vue";
-import type { Channels, Configuration } from "~/types/replicants";
 
 defineProps({
 	preview: {
@@ -20,14 +19,15 @@ defineProps({
 });
 
 const route = useRoute();
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "gotobreak" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">
