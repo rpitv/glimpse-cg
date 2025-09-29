@@ -15,7 +15,7 @@ export default defineAppConfig({
 
       // Actions
       check: 'fa:check',
-      close: 'fa:times',          // FA Pro solid alternative
+      close: 'fa:times',
       plus: 'fa:plus',
       minus: 'fa:minus',
 

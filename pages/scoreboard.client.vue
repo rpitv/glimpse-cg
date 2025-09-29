@@ -1,8 +1,8 @@
 <template>
-  <UCard>
-    <USwitch v-model="channels![0].scoreboard" size="xl" unchecked-icon="fa6-solid:xmark" checked-icon="fa6-solid:check" label="Scoreboard" description="Turn on or off the scoreboard" /> -->
+  <div class="p-6">
+    <USwitch v-model="channels[0]!.scoreboard" size="xl" unchecked-icon="fa6-solid:xmark" checked-icon="fa6-solid:check" label="Scoreboard" description="Turn on or off the scoreboard" />
     <General />
-  </UCard>
+  </div>
 </template>
 
 <script lang="ts" setup>

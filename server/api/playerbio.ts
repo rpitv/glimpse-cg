@@ -43,7 +43,6 @@ export default defineEventHandler(async (event) => {
 
   awayPlayers += suffix;
   homePlayers += suffix;
-  console.log("Away Players URL:", awayPlayers);
   return {
     awayPlayers: await fetch(awayPlayers)
       .then(async (response) => await response.text()),

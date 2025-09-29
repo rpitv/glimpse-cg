@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { defineEventHandler } from "h3";
 import { replicants, subscribe } from "~/utils/replicants";
 import { setDeep, deleteDeep } from "~/utils/pathHelpers";
+import { handler } from "../utils/handler";
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
@@ -18,6 +19,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     // Handle patches from client
     socket.on("patch", ({ path, value }) => {
       setDeep(replicants, path, value)
+      handler();
       io.emit("patch", { path, value }) // broadcast to everyone
     })
 
@@ -27,6 +29,15 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
       io.emit("delete", { path }) // broadcast to everyone
     })
 
+  });
+
+  subscribe((change) => {
+    // change: { type: 'patch' | 'delete', path: string[], value?: any }
+    if (change.type === "patch") {
+      io.emit("patch", { path: change.path, value: change.value });
+    } else if (change.type === "delete") {
+      io.emit("delete", { path: change.path });
+    }
   });
 
   nitroApp.router.use("/socket.io/", defineEventHandler({
