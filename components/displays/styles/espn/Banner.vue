@@ -1,5 +1,5 @@
 <template>
-	<div class="banner" :class="{show: channels![channelIndex].scoreboard, hide: !channels![channelIndex].scoreboard}">
+	<div class="banner" :class="{show: channels[channelIndex]!.scoreboard, hide: !channels[channelIndex]!.scoreboard}">
 		<div class="title">SHOTS ON GOAL</div>
 		<div class="bottom"></div>
 		<div class="upward-line"></div>

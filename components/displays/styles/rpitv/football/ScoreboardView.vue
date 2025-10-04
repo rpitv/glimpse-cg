@@ -79,8 +79,8 @@ const announcement = computed(() => {
 		backgroundColor1.value = "#FFF700";
 		backgroundColor2.value = "#807C00";
 	}
-	if (scoreboard.announcement[0].message) {
-		currentState = scoreboard.announcement[0].message;
+	if (scoreboard.announcement[0]?.message) {
+		currentState = scoreboard.announcement[0]?.message;
 		backgroundColor1.value = "#FFF700";
 		backgroundColor2.value = "#807C00";
 	}

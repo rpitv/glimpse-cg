@@ -1,5 +1,5 @@
 <template>
-	<div :class="(channels![channelIndex].scoreboard && !route.query.preview) || preview ? 'show' : 'hide'">
+	<div :class="(channels![channelIndex]!.scoreboard && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNScoreboard v-if="configuration!.style === 'espn'" />
 		<RPITV v-if="configuration!.style === 'rpitv'" />
 		<RPITVFootball v-if="configuration!.style === 'football'" />

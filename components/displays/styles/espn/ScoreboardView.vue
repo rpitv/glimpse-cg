@@ -10,10 +10,10 @@
 				</div>
 				<div v-if="scoreboard!.awayTeam.announcement.length > 0" class="announcement-section awayTeam">
 					<p>
-						{{ computedMessage(scoreboard!.awayTeam.announcement[0]).value }}
+						{{ computedMessage(scoreboard!.awayTeam.announcement[0]!).value }}
 					</p>
 				</div>
-				<div v-if="channel![channelIndex].shootout" class="announcement-section awayTeam">
+				<div v-if="channel[channelIndex]!.shootout" class="announcement-section awayTeam">
 					<p>
             <span v-for="shot of hockeyAwayTeam.score">
               {{ shot ? '✅' : '❌' }}
@@ -30,10 +30,10 @@
 				</div>
 				<div v-if="scoreboard!.homeTeam.announcement.length > 0" class="announcement-section homeTeam">
 					<p>
-						{{ computedMessage(scoreboard!.homeTeam.announcement[0]).value  }}
+						{{ computedMessage(scoreboard!.homeTeam.announcement[0]!).value  }}
 					</p>
 				</div>
-				<div v-if="channel![channelIndex].shootout" class="announcement-section homeTeam">
+				<div v-if="channel![channelIndex]!.shootout" class="announcement-section homeTeam">
 					<p>
             <span v-for="shot of hockeyHomeTeam.score">
               {{ shot ? '✅' : '❌' }}
@@ -60,7 +60,7 @@
 				</div>
 				<div v-if="scoreboard!.announcement.length > 0" class="announcement-section global">
 					<p>
-						{{ computedMessage(scoreboard!.announcement[0]).value }}
+						{{ computedMessage(scoreboard!.announcement[0]!).value }}
 					</p>
 				</div>
 			</div>
@@ -69,7 +69,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Channels, Configuration, Scoreboard } from "~/types/replicants";
 import TeamView from "./TeamView.vue";
 import { Announcement } from "~/utils/announcement";
 
@@ -121,19 +120,19 @@ const formattedPeriod = computed<string>(() => {
 
 	// Teens for some reason all end in "th" in English.
 	if(period.count > 10 && period.count < 20) {
-		return period + 'th';
+		return period.count + 'th';
 	}
 
 	// For all other numbers up to 99, we need to figure out the suffix.
 	const lastNumberOfPeriod = period.count % 10;
 	if(lastNumberOfPeriod === 1) {
-		return `${period}st`;
+		return `${period.count}st`;
 	} else if(lastNumberOfPeriod === 2) {
-		return `${period}nd`;
+		return `${period.count}nd`;
 	} else if(lastNumberOfPeriod === 3) {
-		return `${period}rd`;
+		return `${period.count}rd`;
 	} else {
-		return `${period}th`;
+		return `${period.count}th`;
 	}
 });
 
@@ -250,13 +249,13 @@ const powerPlayClock = computed(() => {
 			continue;
 		}
 		// If the minutes of the "smallest time" is less than the minute of the time, ignore it
-		if (smallestTime.split(":")[0] < time.split(":")[0])
+		if (smallestTime.split(":")[0]! < time.split(":")[0]!)
 			continue;
 
 		// If the minutes of the "smallest time" is equal to the minute of the time...
 		if (smallestTime.split(":")[0] == time.split(":")[0]) {
 			// If the seconds of the "smallest time" is less than the seconds of the time, ignore it
-			if (smallestTime.split(":")[1] < time.split(":")[1] && smallestTime.split(":")[1] != "0")
+			if (smallestTime.split(":")[1]! < time.split(":")[1]! && smallestTime.split(":")[1] != "0")
 				continue;
 			smallestTime = time;
 			continue;
@@ -271,6 +270,8 @@ const powerPlayClock = computed(() => {
 <style scoped lang="scss">
 div {
 	--scoreboard-height: 4.5vh;
+	color: rgb(73,73,68);
+
 }
 
 .center {

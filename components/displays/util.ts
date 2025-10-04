@@ -1,48 +1,6 @@
 export const espnStyles = ["espn"];
 export const rpiTVStyles = ["rpitv", "football"];
 
-/**
- * Parse an input time string into milliseconds.
- * @param time String to parse. Expected to be in one of the following forms:
- *   - mm:ss
- *   - mm:ss.S
- *   - ss.S
- *   - ss
- *   All time segments must also be non-negative.
- *
- * @throws Error if the input time string is not valid and cannot be parsed.
- */
-export function parseTimeString(time: string): number {
-	let minutesStr = '0';
-	let secondsAndMillisStr = '0.0';
-	if(time.includes(':')) {
-		[minutesStr, secondsAndMillisStr = '0.0'] = time.split(':', 2);
-	} else {
-		secondsAndMillisStr = time;
-	}
-
-	let secondsStr = '0';
-	let millisStr = '0';
-	if(secondsAndMillisStr.includes('.')) {
-		[secondsStr, millisStr = '0'] = secondsAndMillisStr.split('.', 2);
-	} else {
-		secondsStr = secondsAndMillisStr;
-	}
-
-	const minutes = parseInt(minutesStr);
-	const seconds = parseInt(secondsStr);
-	const millis = parseInt(millisStr);
-
-	if(isNaN(minutes) || isNaN(seconds) || isNaN(millis)) {
-		throw new Error(`Input ${time} is not a valid clock input. Input should be in the form "mm:ss.S".`);
-	}
-
-	if(minutes < 0 || seconds < 0 || millis < 0) {
-		throw new Error(`Input time cannot be negative or contain negative numbers.`);
-	}
-
-	return minutes * 60000 + seconds * 1000 + millis * (1000 / (10 ** (millisStr.length)))
-}
 
 /**
  * Convert millisecond-based time to a game clock string, i.e. the format mm:ss.S.
@@ -128,9 +86,9 @@ export function calcLinearGrad(hex: string): string {
 	const hexNoPound = hex.replace("#", '');
 	const colors = hexNoPound.match(/.{1,2}/g) as string[];
 	if (!colors) return "";
-	let r = parseInt(colors[0], 16);
-	let g = parseInt(colors[1], 16);
-	let b = parseInt(colors[2], 16);
+	let r = parseInt(colors[0]!, 16);
+	let g = parseInt(colors[1]!, 16);
+	let b = parseInt(colors[2]!, 16);
 
 	if (r >= 100 || g >= 100 || b >= 100) {
 		r = Math.floor(r / 2);
@@ -184,7 +142,7 @@ export const isLightColor = (hexColor: string) => {
 		return Math.pow((v + 0.055) / 1.055, 2.4)
 	})
 
-	const luminance = 0.2126 * colorArray[0] + 0.7152 * colorArray[1] + 0.0722 * colorArray[2]
+	const luminance = 0.2126 * colorArray[0]! + 0.7152 * colorArray[1]! + 0.0722 * colorArray[2]!
 
 	return luminance <= 0.179
 }

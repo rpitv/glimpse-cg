@@ -1,7 +1,7 @@
 <template>
   <UCard class="rounded-none">
     <template #header>
-      <p class="text-2xl">Clock Control</p>
+      <b class="text-2xl">Clock Control</b>
     </template>
     <template #default>
       <p class="text-center text-5xl">{{ formattedClockTime }}</p>
@@ -9,21 +9,12 @@
       <div class="mt-4 flex justify-center">
         <UFieldGroup>
           <UInput
-            type="number"
-            v-model="minutes"
-            @update:model-value="checkMinutes"
-            label="Minutes" 
-            :ui="{ base: 'text-center w-16' }"
+            placeholder="MM:SS.s"
+            v-model="time"
+            :ui="{ base: 'text-center w-24' }"
+            @keydown.enter="setTime()"
           />
-          <span class="mx-2 text-xl">:</span>
-          <UInput
-            type="number"
-            v-model="seconds"
-            @update:model-value="checkSeconds"
-            label="Seconds" 
-            :ui="{ base: 'text-center w-16' }"
-          />
-          <UButton @click="setTime">Set Time</UButton>
+          <UButton @click="setTime()">Set Time</UButton>
         </UFieldGroup>
       </div>
       <UFieldGroup class="mt-4 flex justify-center w-full" size="xl">
@@ -57,27 +48,27 @@
 </template>
 
 <script lang="ts" setup>
-
+import { parseTimeString } from '~/utils/parseTimeString';
+const toast = useToast();
 const replicants = await useReplicants();
 const scoreboard = replicants.scoreboard;
 
 const clock = scoreboard.clock;
 
-const minutes = ref(0);
-const seconds = ref(0);
+const time = ref('');
 
-function checkMinutes() {
-  if (minutes.value < 0) minutes.value = 0;
-  if (minutes.value > 99) minutes.value = 99;
-}
 
-function checkSeconds() {
-  if (seconds.value < 0) seconds.value = 0;
-  if (seconds.value > 59) seconds.value = 59;
-}
-
-function setTime() {
-  clock.time = (minutes.value * 60 + seconds.value) * 1000;
+function setTime(timeString: string = time.value) {
+  try {
+    clock.time = parseTimeString(timeString);
+  } catch (e) {
+    toast.add({
+      title: 'Error',
+      description: (e as Error).message,
+      color: 'error'
+    });
+    return;
+  }
   clock.isRunning = false;
 }
 

@@ -48,7 +48,7 @@ if (a.position > b.position)
 <style scoped lang="scss">
 @font-face {
     font-family: "swiss721_bold";
-    src: url('../../../../../assets/espn/Swiss721Medium.ttf')
+    src: url('~/assets/espn/Swiss721Medium.ttf')
 }
 
 .tombstone {

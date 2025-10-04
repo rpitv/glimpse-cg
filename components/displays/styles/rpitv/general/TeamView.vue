@@ -4,7 +4,7 @@
 			<img :src="team.logo" id="logoImg" :alt="team.schoolName">
 		</div>
 		<div class="team-name">
-			{{ team.abbr }}
+			{{ scoreboardTeam.name || team.abbr }}
 		</div>
 		<div class="team-score">
 			{{ scoreboardTeam.score }}
@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Configuration, Scoreboard } from "~/types/replicants";
 import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
 
 

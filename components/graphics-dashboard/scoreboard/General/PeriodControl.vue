@@ -1,7 +1,7 @@
 <template>
   <UCard class="rounded-none">
     <template #header>
-      <p class="text-2xl">Period Control</p>
+      <b class="text-2xl">Period Control</b>
     </template>
     <template #default>
       <p class="text-center text-2xl">{{ formattedPeriod }}</p>

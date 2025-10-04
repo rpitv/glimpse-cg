@@ -5,7 +5,7 @@
 		</div>
 		<div class="name-section">
 			<p>
-				{{ team.shortName }}
+				{{ scoreboardTeam.name || team.shortName }}
 			</p>
 		</div>
 		<div class="score-section">

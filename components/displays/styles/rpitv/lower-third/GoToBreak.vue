@@ -203,7 +203,7 @@ const period = ref<string>();
 <style scoped>
 @font-face {
 	font-family: "Rubik";
-	src: url('../../../../assets/rpitv-modern/Rubik.ttf');
+	src: url('~/assets/rpitv-modern/Rubik.ttf');
 }
 div {
 	position: absolute;

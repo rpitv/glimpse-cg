@@ -31,7 +31,7 @@
               <div class="flex justify-between">
                 <div class="w-full">
                   <UFormField label="Team Name" help="The name of the team.">
-                    <UInput v-model="teamScoreboard!.name" :placeholder="team.shortName" />
+                    <UInput v-model="teamScoreboard!.name" :placeholder="team.abbr" />
                   </UFormField>
                   <ColorPicker v-model="teamScoreboard!.nameColor" class="mt-4"  label="Team Name Color" help="The color for the team name" />
                   <UFormField class="mt-4" label="Team Name Size" help="Adjust the size of the team name.">

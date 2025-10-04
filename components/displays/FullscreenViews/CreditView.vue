@@ -1,5 +1,5 @@
 <template>
-	<div :class="(channels![channelIndex].credits && !route.query.preview) || preview ? 'show' : 'hide'">
+	<div :class="(channels[channelIndex]!.credits && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNCredits v-if="espnStyles.indexOf(configuration!.style) !== -1" />
 	</div>
 </template>

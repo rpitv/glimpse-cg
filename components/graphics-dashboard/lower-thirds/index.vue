@@ -27,7 +27,7 @@
               <div class="text-left">
                 <div class="flex justify-between">
                   <p class="text-xl">{{ item.label }}</p>
-                  <USwitch v-model="(channels[0][item.val.reference as keyof Channel] as boolean)" :debounce="75" />
+                  <USwitch v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)" :debounce="75" />
                 </div>
               </div>
             </template>

@@ -3,7 +3,7 @@
 		<div class="team-info">
 			<img :src="team.logo" class="logo">
 			<div class="team-name">
-				{{ team.abbr }}
+				{{ scoreboardTeam.name || team.abbr }}
 			</div>
 		</div>
 		<div class="team-score">
@@ -63,7 +63,7 @@ const score = computed(() => scoreboardTeam.score);
 watch(score, (n, o) => {
 	const t1 = gsap.timeline();
 	t1.to(score, { duration: 1, value: Number(n), ease: "power1.out"}, "+=8")
-})
+});
 
 </script>
 

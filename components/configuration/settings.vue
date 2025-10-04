@@ -23,8 +23,8 @@
       </div>
       <USeparator orientation="horizontal" :class="height" />
       <div class="flex gap-5">
-        <TeamConfig v-model="configuration.awayTeam" class="w-full" team-side="away" ref="awayTeamConfig" />
-        <TeamConfig v-model="configuration.homeTeam" class="w-full" team-side="home" ref="homeTeamConfig" />
+        <TeamConfig class="w-full" team-side="awayTeam" ref="awayTeamConfig" />
+        <TeamConfig class="w-full" team-side="homeTeam" ref="homeTeamConfig" />
       </div>
     </template>
   </UCard>

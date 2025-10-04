@@ -26,7 +26,7 @@
 	</div>
 	<div class="global-announcements">
 		<p v-if="scoreboard!.announcement.length > 0">
-			{{ computedMessage(scoreboard!.announcement[0]).value }}
+			{{ computedMessage(scoreboard!.announcement[0]!).value }}
 		</p>
 
 		<p v-else-if="powerPlaySync.type === 'global'">
@@ -35,23 +35,23 @@
 	</div>
 	<div class="team-announcements homeTeam">
 		<p v-if="scoreboard!.homeTeam.announcement.length > 0">
-			{{ computedMessage(scoreboard!.homeTeam.announcement[0]).value}}
+			{{ computedMessage(scoreboard!.homeTeam.announcement[0]!).value}}
 		</p>
 		<p v-else-if="powerPlaySync.type === 'home'">
 			{{ powerPlaySync.status }} {{ powerPlayClock }}
 		</p>
-		<p v-else-if="channels![channelIndex].shootout">
+		<p v-else-if="channels[channelIndex]!.shootout">
       <span v-for="shot in hockeyHomeTeam.score">{{ shot ? '✅' : '❌'}}</span>
 		</p>
 	</div>
 	<div class="team-announcements awayTeam">
 		<p v-if="scoreboard!.awayTeam.announcement.length > 0">
-			{{ computedMessage(scoreboard!.awayTeam.announcement[0]).value}}
+			{{ computedMessage(scoreboard.awayTeam.announcement[0]!).value}}
 		</p>
 		<p v-else-if="powerPlaySync.type === 'away'">
 		{{ powerPlaySync.status }} {{ powerPlayClock }}
 	</p>
-		<p v-else-if="channels![channelIndex].shootout">
+		<p v-else-if="channels[channelIndex]!.shootout">
       <span v-for="shot in hockeyAwayTeam.score">{{ shot ? '✅' : '❌'}}</span>
 		</p>
 	</div>
@@ -242,7 +242,7 @@ watch(homeAnnouncement, (n, o) => {
 		showTeam(homeTeamPos, ".homeTeam");
 })
 
-const shootout = computed(() => channels[channelIndex.value].shootout);
+const shootout = computed(() => channels[channelIndex.value]!.shootout);
 
 watch(shootout, (n, o) => {
 	if (!shootout.value) {
@@ -403,13 +403,13 @@ const powerPlayClock = computed(() => {
 			continue;
 		}
 		// If the minutes of the "smallest time" is less than the minute of the time, ignore it
-		if (smallestTime.split(":")[0] < time.split(":")[0])
+		if (smallestTime.split(":")[0]! < time.split(":")[0]!)
 			continue;
 
 		// If the minutes of the "smallest time" is equal to the minute of the time...
 		if (smallestTime.split(":")[0] == time.split(":")[0]) {
 			// If the seconds of the "smallest time" is less than the seconds of the time, ignore it
-			if (smallestTime.split(":")[1] < time.split(":")[1] && smallestTime.split(":")[1] != "0")
+			if (smallestTime.split(":")[1]! < time.split(":")[1]! && smallestTime.split(":")[1] != "0")
 				continue;
 			smallestTime = time;
 			continue;
@@ -450,19 +450,19 @@ const formattedPeriod = computed<string>(() => {
 
 	// Teens for some reason all end in "th" in English.
 	if(period.count > 10 && period.count < 20) {
-		return period + 'th';
+		return period.count + 'th';
 	}
 
   // For all other numbers up to 99, we need to figure out the suffix.
 	const lastNumberOfPeriod = period.count % 10;
 	if(lastNumberOfPeriod === 1) {
-		return `${period}st`;
+		return `${period.count}st`;
 	} else if(lastNumberOfPeriod === 2) {
-		return `${period}nd`;
+		return `${period.count}nd`;
 	} else if(lastNumberOfPeriod === 3) {
-		return `${period}rd`;
+		return `${period.count}rd`;
 	} else {
-		return `${period}th`;
+		return `${period.count}th`;
 	}
 });
 
@@ -507,12 +507,12 @@ onMounted(() => {
 <style scoped scss>
 @font-face {
 	font-family: "Malgun Gothic Bold";
-	src: url("../../../../assets/rpitv-modern/MalgunGothicBold.ttf") format('truetype');
+	src: url("~/assets/rpitv-modern/MalgunGothicBold.ttf") format('truetype');
 }
 
 @font-face {
 	font-family: "Roboto Condensed";
-	src: url("../../../../assets/football/RobotoCondensed-Bold.ttf") format('truetype');
+	src: url("~/assets/football/RobotoCondensed-Bold.ttf") format('truetype');
 }
 
 .scoreboard {

@@ -90,7 +90,7 @@ const redTextStyle = computed((): CSSProperties => {
 <style scoped lang="scss">
 @font-face {
     font-family: "Malgun Gothic Bold";
-    src: url("../../../assets/rpitv-modern/MalgunGothicBold.ttf") format('truetype');
+    src: url("~/assets/rpitv-modern/MalgunGothicBold.ttf") format('truetype');
 }
 
 .container {

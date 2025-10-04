@@ -1,7 +1,7 @@
 import { Announcement } from "~/utils/announcement";
 import { replicants } from "~/utils/replicants";
 
-const { clock } = replicants.scoreboard
+const { clock, awayTeam, homeTeam } = replicants.scoreboard
 let scoreboardTimer: NodeJS.Timeout | null = null;
 let scoreboardTimerLastModified: number | null = null;
 
@@ -63,23 +63,23 @@ export function announcementTimersTick() {
 
 		const timeRemaining = announcement.timer.length - (announcement.timer.startedAt - currentClockTime);
 		if(timeRemaining <= 0) {
-			if(announcement.timer.timerEndsAction === "removeAnnouncement") {
-				removeAnnouncement(announcement);
-			} else if(announcement.timer.timerEndsAction === "removeTimer") {
-				announcement.timer = null;
-			}
+			// if(announcement.timer.timerEndsAction === "removeAnnouncement") {
+      removeAnnouncement(announcement);
+			// } else if(announcement.timer.timerEndsAction === "removeTimer") {
+				// announcement.timer = null;
+			// }
 		}
 	}
 }
 
 function removeAnnouncement(announcement: Announcement) {
 	if(replicants.scoreboard.announcement.find(a => a.id === announcement.id)) {
-		replicants.scoreboard.announcement = replicants.scoreboard.announcement.filter(a => a !== announcement);
+		replicants.scoreboard.announcement = replicants.scoreboard.announcement.filter(a => a.id !== announcement.id);
 	}
-	if(replicants.scoreboard.awayTeam.announcement.find(a => a.id === announcement.id)) {
-		replicants.scoreboard.awayTeam.announcement = replicants.scoreboard.awayTeam.announcement.filter(a => a !== announcement);
+	if(awayTeam.announcement.find(a => a.id === announcement.id)) {
+		awayTeam.announcement = awayTeam.announcement.filter(a => a.id !== announcement.id);
 	}
-	if(replicants.scoreboard.homeTeam.announcement.find(a => a.id === announcement.id)) {
-		replicants.scoreboard.homeTeam.announcement = replicants.scoreboard.homeTeam.announcement.filter(a => a !== announcement);
+	if(homeTeam.announcement.find(a => a.id === announcement.id)) {
+		homeTeam.announcement = homeTeam.announcement.filter(a => a.id !== announcement.id);
 	}
 }

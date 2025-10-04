@@ -16,14 +16,8 @@ const settings = useTemplateRef<InstanceType<typeof Settings>>('settings');
 
 function setPresets(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
   settings.value?.awayTeamConfig?.loadPreset(teamConfig);
-  settings.value?.homeTeamConfig?.loadPreset(schools[0]);
+  settings.value?.homeTeamConfig?.loadPreset(schools[0]!);
 }
-
-const replicants = await useReplicants();
-onMounted(() => {
-  console.log(replicants);
-});
-
 </script>
 
 <style>

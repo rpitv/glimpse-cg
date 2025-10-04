@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
 
 @font-face {
 	font-family: "swiss721_heavy";
-	src: url('../../../../../assets/espn/Swiss721Heavy.ttf')
+	src: url('~/assets/espn/Swiss721Heavy.ttf')
 }
 
 div {
