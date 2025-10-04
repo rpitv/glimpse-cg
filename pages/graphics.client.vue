@@ -12,11 +12,27 @@
 import GraphicsList from '~/components/graphics-dashboard/lower-thirds/index.vue';
 import Customization from '~/components/graphics-dashboard/customization/index.vue';
 import Preview from '~/components/graphics-dashboard/Preview.vue';
+import { useGraphicsStore } from '~/store/graphics';
+
+const graphicsStore = useGraphicsStore();
 
 const selectedGraphic = ref({
   component: null as Component | null,
   name: ''
 });
+
+onMounted(() => {
+  if (graphicsStore.selectedGraphic) {
+    selectedGraphic.value = graphicsStore.selectedGraphic;
+  }
+});
+
+watch(selectedGraphic, (newGraphic) => {
+  if (newGraphic) {
+    graphicsStore.setGraphic(newGraphic);
+  }
+});
+
 </script>
 
 <style>
