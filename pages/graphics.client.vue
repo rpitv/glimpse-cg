@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import GraphicsList from '~/components/graphics-dashboard/lower-thirds/index.vue';
 import Customization from '~/components/graphics-dashboard/customization/index.vue';
-import Preview from '~/components/graphics-dashboard/Preview.vue';
+import Preview from '~/components/graphics-dashboard/preview.vue';
 import { useGraphicsStore } from '~/store/graphics';
 
 const graphicsStore = useGraphicsStore();

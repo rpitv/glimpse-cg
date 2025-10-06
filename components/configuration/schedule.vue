@@ -10,12 +10,12 @@
         </div>
         <div v-else>
             <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table"
-                         value-key="val" :items="schedule.filter(g => {
-                             if (homeToggle)
-                                 return g.val.homeGame
-                             return true
-                         })" v-model="selectedSchool"
-                         @dblclick="() => { if (selectedSchool?.preset) emit('loadMatchup', selectedSchool?.preset) }"
+              value-key="val" :items="schedule.filter(g => {
+                  if (homeToggle)
+                      return g.val.homeGame
+                  return true
+              })" v-model="selectedSchool"
+              @dblclick="() => { if (selectedSchool?.preset) emit('loadMatchup', selectedSchool?.preset) }"
             >
                 <template #label="{ item }" >
                     <div :id="item.uni" class="flex items-center gap-2">
@@ -53,7 +53,7 @@
 import schools from '~/assets/schools.json';
 import type {Configuration} from '~/types/replicants';
 import {URadioGroup} from '#components';
-import type {ScheduleResults} from "~/server/api/schedule";
+import type { ScheduleResults } from "~/server/api/schedule";
 
 
 export interface Timeline {

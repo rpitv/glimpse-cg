@@ -3,7 +3,7 @@ import {join} from "path";
 import {writeFileSync} from "fs";
 import {createHash} from "crypto";
 import {existsSync} from "node:fs";
-import {db} from "~/utils/db";
+import {db} from "~/server/utils/db";
 import type {http_cache} from "~/utils/fetching";
 import {basename} from "pathe";
 

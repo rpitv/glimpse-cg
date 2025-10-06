@@ -1,4 +1,4 @@
-import {db} from "~/utils/db";
+import { db } from "~/server/utils/db";
 import {createHash} from "node:crypto";
 
 // =======================

@@ -53,9 +53,17 @@
             </div>
           </template>
         </URadioGroup>
+        <div class="flex items-center justify-between gap-2">
         <UTooltip :disabled="!!selectedSchool?.preset" text="This school does not have a preset available." :delay-duration="0">
           <UButton class="mt-2" :disabled="!selectedSchool || !selectedSchool.preset" @click="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }">Load Matchup</UButton>
         </UTooltip>
+          <span v-if="lastUpdated != ''" class="flex items-center gap-2" id="lastUpdated">
+            <span>Last Updated: {{ lastUpdated }}</span>
+            <UButton @click="refresh(true)">
+              <UIcon name="material-symbols-light:sync" class="size-full"/>
+            </UButton>
+          </span>
+        </div>
       </div>
     </UCard>
   </div>
@@ -66,12 +74,15 @@ import type { Configuration } from '~/types/replicants';
 import schools from '~/assets/schools.json';
 import TeamConfig from '~/components/configuration/teamConfig.vue';
 import { URadioGroup } from '#components';
+import type { ScheduleResults } from "~/server/api/schedule";
 
 const toast = useToast();
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const width = 'w-48';
-const height = 'h-5'
+const height = 'h-5';
+const lastUpdated = ref("");
+const homeToggle = ref(true);
 
 const styles = [{
   label: 'RPI TV',
@@ -138,46 +149,41 @@ const loading = ref(false);
 let scrollToView: null | number = null;
 
 const selectedSchool = ref<Timeline['val']>();
-function parseSidearmsSchedule(html: string, logoHTML: string, type: string): void {
-  const grid = domParser.parseFromString(html, "text/html");
-  const gridTable = grid.querySelector('.sidearm-table');
-  const games = gridTable?.querySelectorAll('.sidearm-schedule-game') || [];
 
-  const logos = domParser.parseFromString(logoHTML, "text/html");
-  const logoElements = logos.querySelectorAll('.sidearm-schedule-game-opponent-logo');
+async function refresh(force=false) {
+  loading.value = true;
+  schedule.value = [];
+  const data: ScheduleResults = await $fetch(`/api/schedule?force=${force}`, {}).catch((error) => {
+      console.error("Error fetching.ts schedule:", error);
+  });
+
   let current = false;
-  for (let i = 0; i < games.length; i++) {
-    if (!games[i].className.includes('sidearm-schedule-home-game'))
-      continue;
-    // Column Order:
-    // Date | Time | At | Opponent | Location | TV | Radio | Result | Links
-    const columns = games[i].querySelectorAll('td');
-    const date = columns[0].textContent?.trim() || '';
-    let time = toMilitaryTime(columns[1].textContent?.trim() || '');
-    const opponent = columns[3].textContent?.trim() || '';
-    const opponentLogo = logoElements[i]?.querySelector('img')?.getAttribute('data-src') || '';
-    const preset = schools.find(s => opponent.includes(s.schoolName) || opponent.includes(s.shortName) || opponent.includes(s.abbr));
+  for (let i = 0; i < data.games.length; i++) {
+    const game = data.games[i];
 
-    const opponentData: Timeline = { 
+    const preset = schools.find(s => game.opponent.includes(s.schoolName) || game.opponent.includes(s.shortName) || game.opponent.includes(s.abbr));
+    const opponentData: Timeline = {
       val: {
-        description: new Date(`${date} ${time}`).toLocaleString([], {
-          month: 'short', 
+        description: new Date(game.date).toLocaleString([], {
+          month: 'short',
           day: 'numeric',
           year: 'numeric',
-          hour: '2-digit', 
-          minute:'2-digit'
-        }), 
-        title: opponent, 
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        homeGame: game.homeGame,
+        title: `${game.opponent} @ ${game.location}`,
+        type: configuration.value?.type || "mens",
         opponentLogo: {
-          src: `https://rpiathletics.com${opponentLogo}`,
-          alt: logoElements[i]?.querySelector('img')?.getAttribute('alt') || ''
+          src: game.opponentLogo,
+          alt: game.opponentLogoAlt
         },
         preset: preset || null as Configuration['awayTeam' | 'homeTeam'] | null,
       },
       uni: i.toString()
     };
     if (!current) {
-      if (new Date(`${date} ${time}`).getTime() >= Date.now()) { 
+      if (new Date(game.date).getTime() >= Date.now()) {
         current = true;
         selectedSchool.value = opponentData.val;
         scrollToView = i;
@@ -185,31 +191,7 @@ function parseSidearmsSchedule(html: string, logoHTML: string, type: string): vo
     }
     schedule.value.push(opponentData);
   }
-}
-
-function toMilitaryTime(t: string): string {
-  const match = t.match(/^(\d{1,2}):(\d{2})(AM|PM)$/i);
-  if (!match) return t;
-  let hour = parseInt(match[1], 10);
-  const minute = match[2];
-  const period = match[3].toUpperCase();
-  if (period === 'PM' && hour !== 12) hour += 12;
-  if (period === 'AM' && hour === 12) hour = 0;
-  return `${hour.toString().padStart(2, '0')}:${minute}`;
-}
-
-async function refresh() {
-  loading.value = true;
-  schedule.value = [];
-  const data = await $fetch(`/api/schedule`, {
-  }).catch((error) => {
-    console.error("Error fetching schedule:", error);
-  });
-  const { data: dataHTML, logos } = data as {
-    data: string;
-    logos: string;
-  }
-  parseSidearmsSchedule(dataHTML, logos, 'men');
+  lastUpdated.value = new Date(data.lastUpdated).toLocaleString();
   loading.value = false;
 }
 
