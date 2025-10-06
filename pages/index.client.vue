@@ -31,7 +31,8 @@
     </UCard>
     <UCard class="rounded-none" id="schedule-card">
       <template #header>
-        <h1 class="text-2xl">RPI Home Schedule</h1>
+        <h1 class="text-2xl">Schedule</h1>
+        <USwitch v-model="homeToggle" label="Only Show Home Games" />
       </template>
       <div v-if="loading">
         <UProgress></UProgress>
@@ -39,14 +40,18 @@
       </div>
       <div v-else>
         <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table" 
-          value-key="val" :items="schedule" v-model="selectedSchool" 
+          value-key="val" :items="schedule.filter(g => {
+            if (homeToggle)
+              return g.val.homeGame
+            return true
+          })" v-model="selectedSchool"
           @dblclick="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }"
         >
           <template #label="{ item }">
             <div :id="item.uni" class="flex items-center gap-2">
               <img class="schedule-logo" :src="item.val.opponentLogo?.src"></img>
               <div>
-                <p class="text-muted text-left">{{ configuration?.type === 'men' ? '(MEN)' : '(WOMEN)' }}</p>
+                <p class="text-muted text-left">{{ configuration?.type === 'men' || (configuration.sport === 'acha' || configuration.sport === 'football') ? '(MEN)' : '(WOMEN)' }}</p>
                 <p class="text-left text-xl">{{ item.val.title }}</p>
                 <p class="text-muted text-left">{{ item.val.description }}</p>
               </div>
@@ -128,10 +133,12 @@ const type = [{
 }];
 
 
-interface Timeline {
+export interface Timeline {
   val: {
     description: string;
     title: string;
+    type: string;
+    homeGame: boolean;
     opponentLogo?: {
       src: string;
       alt: string;
@@ -282,6 +289,7 @@ watch((radioSchedule), () => {
 
 .schedule-logo {
   filter: drop-shadow(0 0 3px rgb(0, 0, 0));
+  width: 100px;
 }
 
 .schedule-content {
