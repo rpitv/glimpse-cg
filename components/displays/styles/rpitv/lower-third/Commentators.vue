@@ -29,8 +29,8 @@
 import Commentators from "~/assets/rpitv-modern/RPITVCommentator.png"
 import type { LowerThird } from "~/types/replicants";
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const commentators = computed(() => lowerThird.value!.commentators);
+const replicants = await useReplicants();
+const commentators = replicants.lowerThird.commentators;
 
 </script>
 

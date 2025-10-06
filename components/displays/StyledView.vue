@@ -32,9 +32,9 @@ import ScoreboardView from "./ScoreboardView.vue";
 import PlayerBioView from "./LowerThirdViews/PlayerBioView.vue";
 import ESPNTombstone from "./styles/espn/tomestone/Tombstone.vue";
 import BottomTextBar from "./LowerThirdViews/BottomTextBar.vue";
-import type { Configuration } from "~/types/replicants";
 
-const configuration = await useReplicant<Configuration>("configuration");
+const replicants = await useReplicants();
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">

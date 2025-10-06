@@ -1,23 +1,44 @@
 <template>
-  <div id="graphics-dashboard">
-    <div>
-      <LowerThirds />
-    </div>
-    <div>
-      <Preview />
-    </div>
+  <div id="graphics-dashboard" >
+    <GraphicsList v-model="selectedGraphic" />
+    <Customization>
+      <component :is="selectedGraphic.component" />
+    </Customization>
+    <Preview :selectedGraphic />
   </div>
 </template>
 
 <script lang="ts" setup>
-import LowerThirds from '~/components/graphics-dashboard/lower-thirds/index.vue';
-import Preview from '~/components/graphics-dashboard/preview.vue';
+import GraphicsList from '~/components/graphics-dashboard/lower-thirds/index.vue';
+import Customization from '~/components/graphics-dashboard/customization/index.vue';
+import Preview from '~/components/graphics-dashboard/Preview.vue';
+import { useGraphicsStore } from '~/store/graphics';
+
+const graphicsStore = useGraphicsStore();
+
+const selectedGraphic = ref({
+  component: null as Component | null,
+  name: ''
+});
+
+onMounted(() => {
+  if (graphicsStore.selectedGraphic) {
+    selectedGraphic.value = graphicsStore.selectedGraphic;
+  }
+});
+
+watch(selectedGraphic, (newGraphic) => {
+  if (newGraphic) {
+    graphicsStore.setGraphic(newGraphic);
+  }
+});
+
 </script>
 
 <style>
 #graphics-dashboard {
   display: grid;
-  grid-template-columns: 3fr 2fr;
+  grid-template-columns: 2fr 5fr 3fr;
 }
 
 </style>

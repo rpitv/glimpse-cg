@@ -14,16 +14,16 @@
 <script setup lang="ts">
 import ESPN_Copyright from "~/assets/espn/ESPN_Copyright.png"
 import RPITV_LOGO from "~/assets/rpitv-modern/rpitv_logo.svg"
-import type { Channels } from "~/types/replicants";
 
 const route = useRoute();
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "produced" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
+const channels = replicants.channels;
 
 </script>
 

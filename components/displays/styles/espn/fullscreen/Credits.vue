@@ -17,11 +17,10 @@ import FullScreen from "~/assets/espn/FullScreen.png";
 import RPITVLogo from "~/assets/rpitv-modern/rpitv_logo.svg";
 import type { CSSProperties } from "vue";
 import { computed } from "vue";
-import type { Fullscreen } from "~/types/replicants";
 
-const configuration = await useReplicant<Fullscreen>("fullscreen");
-const credits = computed(() => configuration.value!.credits);
-
+const replicants = await useReplicants();
+const credits = replicants.fullscreen.credits;
+const creditPeople = ref(credits.credit);
 
 const header = computed((): CSSProperties => {
 	return {
@@ -48,7 +47,7 @@ const creditsContainer = computed((): CSSProperties => {
 
 const people = computed((): CSSProperties[] => {
 	const styles: CSSProperties[] = [];
-	for (const credit of credits.value.credit) {
+	for (const credit of credits.credit) {
 		styles.push({
 			color: credit.peopleColor,
 			fontSize: credit.peopleSize + 2.4 + "vh",
@@ -59,7 +58,7 @@ const people = computed((): CSSProperties[] => {
 
 const title = computed((): CSSProperties[] => {
 	const styles: CSSProperties[] = [];
-	for (const credit of credits.value.credit) {
+	for (const credit of credits.credit) {
 		styles.push({
 			color: credit.titleColor,
 			fontSize: credit.titleSize + 3.3 + "vh",
@@ -67,6 +66,10 @@ const title = computed((): CSSProperties[] => {
 	}
 	return styles;
 });
+
+watch(() => credits, () => {
+  creditPeople.value = credits.credit;
+}, { deep: true });
 
 </script>
 

@@ -10,13 +10,11 @@ export interface AnnouncementTimer {
 export class Announcement {
 	public readonly id: string;
 	public message: string;
-	public type: string;
-	public timer: AnnouncementTimer|null;
+	public timer: AnnouncementTimer | null;
 
-	public constructor(message: string, type: string, timer?: AnnouncementTimer) {
+	public constructor(message: string, timer?: AnnouncementTimer) {
 		this.id = v4();
 		this.message = message;
-		this.type = type;
 		this.timer = timer ?? null;
 	}
 }

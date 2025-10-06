@@ -19,22 +19,21 @@
 import { type CSSProperties } from "vue";
 import type { LowerThird } from "~/types/replicants";
 
-
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const endGraphics = computed(() => lowerThird.value!.endGraphics);
-const copyright = computed(() => lowerThird.value!.copyright);
+const replicants = await useReplicants();
+const endGraphics = replicants.lowerThird.endGraphics;
+const copyright = replicants.lowerThird.copyright;
 
 const copyrightContainer = computed((): CSSProperties => {
 	return {
-		bottom: copyright.value.offsetY + 10 + "vh",
-		left: copyright.value.offsetX + "vw",
+		bottom: copyright.offsetY + 10 + "vh",
+		left: copyright.offsetX + "vw",
 		position: "absolute",
 	}
 });
 const copyrightText = computed((): CSSProperties => {
 	return {
-		color: copyright.value.textColor || "white",
-		fontSize: copyright.value.textSize + 3 + "vh",
+		color: copyright.textColor || "white",
+		fontSize: copyright.textSize + 3 + "vh",
 		wordWrap: "normal"
 	}
 });

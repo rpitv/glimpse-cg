@@ -9,7 +9,9 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxt/ui',
+    '@pinia/nuxt',
   ],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   nitro: {
     experimental: {
       websocket: true

@@ -14,18 +14,16 @@
 <script setup lang="ts">
 import Locator from "~/assets/rpitv-modern/Locator.png"
 import type { CSSProperties } from "vue";
-import type { Configuration, LowerThird } from "~/types/replicants";
 
 // background color of the gray in use rgb(133,133,133);
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const configuration = await useReplicant<Configuration>("configuration");
-const locator = computed(() => lowerThird.value!.locator);
-const homeTeam = computed(() => configuration.value!.homeTeam);
-const awayTeam = computed(() => configuration.value!.awayTeam);
+const replicants = await useReplicants();
+const locator = replicants.lowerThird.locator;
+const homeTeam = replicants.configuration.homeTeam;
+const awayTeam = replicants.configuration.awayTeam;
 
 const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 	alignItems: "center",
-	backgroundColor: locator.value.homeTeam.primaryColor || homeTeam.value.primaryColor,
+	backgroundColor: locator.homeTeam.primaryColor || homeTeam.primaryColor,
 	bottom: "15.7vh",
 	display: "flex",
 	height: "17.4vh",
@@ -36,7 +34,7 @@ const homeTeamPrimaryColor = computed((): CSSProperties => {return {
 }});
 const awayTeamPrimaryColor = computed((): CSSProperties => {return {
 	alignItems: "center",
-	backgroundColor: locator.value.awayTeam.primaryColor || awayTeam.value.primaryColor,
+	backgroundColor: locator.awayTeam.primaryColor || awayTeam.primaryColor,
 	bottom: "15.7vh",
 	display: "flex",
 	height: "17.4vh",
@@ -46,22 +44,22 @@ const awayTeamPrimaryColor = computed((): CSSProperties => {return {
 	width: "9.2vw",
 }});
 const homeTeamLogo = computed((): CSSProperties => {return {
-	height: locator.value.homeTeam.logoSize + "%",
+	height: locator.homeTeam.logoSize + "%",
 	maxHeight: "12.3vh",
 }});
 const awayTeamLogo = computed((): CSSProperties => {return {
-	height: locator.value.awayTeam.logoSize + "%",
+	height: locator.awayTeam.logoSize + "%",
 	maxHeight: "12.3vh",
 }});
 const homeTeamName = computed((): CSSProperties => {return {
-	color: locator.value.homeTeam.nameColor || "black",
-	fontSize: locator.value.homeTeam.nameSize + 1.7 + "vw",
+	color: locator.homeTeam.nameColor || "black",
+	fontSize: locator.homeTeam.nameSize + 1.7 + "vw",
 	position: "relative",
 	textAlign: "center"
 }});
 const awayTeamName = computed((): CSSProperties => {return {
-	color: locator.value.awayTeam.nameColor || "black",
-	fontSize: locator.value.awayTeam.nameSize + 1.7 + "vw",
+	color: locator.awayTeam.nameColor || "black",
+	fontSize: locator.awayTeam.nameSize + 1.7 + "vw",
 	position: "relative",
 	textAlign: "center"
 }});
@@ -69,10 +67,10 @@ const location = computed((): CSSProperties => {
 	return {
 		alignItems: "center",
 		backgroundColor: "black",
-		color: locator.value.location.nameColor || "#d6001c",
+		color: locator.location.nameColor || "#d6001c",
 		bottom: "10.7vh",
 		display: "flex",
-		fontSize: locator.value.location.nameSize + 2.5 + "vh",
+		fontSize: locator.location.nameSize + 2.5 + "vh",
 		fontWeight: "bolder",
 		justifyContent: "center",
 		left: "40vw",

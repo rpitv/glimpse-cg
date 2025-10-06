@@ -4,7 +4,7 @@
 			<img :src="team.logo" id="logoImg" :alt="team.schoolName">
 		</div>
 		<div class="team-name">
-			{{ team.abbr }}
+			{{ scoreboardTeam.name || team.abbr }}
 		</div>
 		<div class="team-score">
 			{{ scoreboardTeam.score }}
@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Configuration, Scoreboard } from "~/types/replicants";
 import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
 
 
@@ -23,24 +22,23 @@ const props = defineProps({
     required: true
   }
 });
-const configuration = await useReplicant<Configuration>("configuration");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const team = computed(() => configuration.value![props.team]);
-const scoreboardTeam = computed(() => scoreboard.value![props.team]);
+const replicants = await useReplicants();
+const team = replicants.configuration[props.team];
+const scoreboardTeam = replicants.scoreboard[props.team];
 
 const fontColor = ref("black");
 
 const color1 = computed(() => {
-	const linearGradient = calcLinearGrad(team.value.primaryColor);
-	if (!isLighter(team.value.primaryColor, linearGradient))
+	const linearGradient = calcLinearGrad(team.primaryColor);
+	if (!isLighter(team.primaryColor, linearGradient))
 		return linearGradient;
-	return team.value.primaryColor;
+	return team.primaryColor;
 })
 
 const color2 = computed(() => {
-	const linearGradient = calcLinearGrad(team.value.primaryColor);
-	if (!isLighter(team.value.primaryColor, linearGradient))
-		return team.value.primaryColor;
+	const linearGradient = calcLinearGrad(team.primaryColor);
+	if (!isLighter(team.primaryColor, linearGradient))
+		return team.primaryColor;
 	return linearGradient;
 })
 

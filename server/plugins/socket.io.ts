@@ -1,36 +1,47 @@
-import type {NitroApp} from "nitropack";
-import {Server as Engine} from "engine.io";
-import {Server} from "socket.io";
-import {defineEventHandler} from "h3";
-import {getReplicant} from '~/utils/replicants';
-import {initDb} from "~/utils/db";
+import type { NitroApp } from "nitropack";
+import { Server as Engine } from "engine.io";
+import { Server } from "socket.io";
+import { defineEventHandler } from "h3";
+import { replicants, subscribe } from "~/utils/replicants";
+import { setDeep, deleteDeep } from "~/utils/pathHelpers";
+import { clockHandler } from "../utils/clock";
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
   const io = new Server();
 
   io.bind(engine);
-  initDb();
 
   io.on("connection", (socket) => {
+    // Send full state on connect
+    socket.emit("init", replicants)
 
-    // Expecting { name }
-    socket.on('replicant:subscribe', ({ name }: { name: string }) => {
-      const rep = getReplicant(name);
-      if (!rep) return;
-      rep.subscribe((val) => socket.emit(`replicant:update:${name}`, val));
-    });
+    // Handle patches from client
+    socket.on("patch", ({ path, value }) => {
+      setDeep(replicants, path, value)
+      clockHandler();
+      socket.broadcast.emit("patch", { path, value }) // broadcast to everyone
+    })
 
-    // Expecting { name, value }
-    socket.on('replicant:set', ({ name, value }: { name: string; value: unknown }) => {
-      const rep = getReplicant(name);
-      rep?.set(value);
-    });
+    // Handle deletes from client
+    socket.on("delete", ({ path }) => {
+      deleteDeep(replicants, path)
+      io.emit("delete", { path }) // broadcast to everyone
+    })
+
+  });
+
+  subscribe((change) => {
+    // change: { type: 'patch' | 'delete', path: string[], value?: any }
+    if (change.type === "patch") {
+      io.emit("patch", { path: change.path, value: change.value });
+    } else if (change.type === "delete") {
+      io.emit("delete", { path: change.path });
+    }
   });
 
   nitroApp.router.use("/socket.io/", defineEventHandler({
     handler(event) {
-      // @ts-expect-error
       engine.handleRequest(event.node.req, event.node.res);
       event._handled = true;
     },

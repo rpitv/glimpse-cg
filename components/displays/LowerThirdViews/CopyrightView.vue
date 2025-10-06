@@ -1,5 +1,5 @@
 <template>
-	<div :class="channels![channelIndex].copyright || preview ? 'show' : 'hide'">
+	<div :class="(channels![channelIndex].copyright && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNCopyright v-if="espnStyles.indexOf(configuration!.style) !== -1" />
 		<RPITVCopyright v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
 	</div>
@@ -20,14 +20,15 @@ defineProps({
 });
 
 const route = useRoute();
+const replicants = await useReplicants();
 const preview = ref(route.query.preview === "copyright" || false);
 
 let channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
-const channels = await useReplicant<Channels>("channels");
-const configuration = await useReplicant<Configuration>("configuration");
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 </script>
 
 <style scoped lang="scss">

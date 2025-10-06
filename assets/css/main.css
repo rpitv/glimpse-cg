@@ -19,6 +19,11 @@
   --color-green-950: #052E16;
 }
 
+body {
+  padding: 10px;
+  height: 100vh;
+}
+
 h1 {
   font-size: 2rem;
 }

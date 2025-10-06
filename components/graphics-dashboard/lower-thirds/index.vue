@@ -1,15 +1,36 @@
 <template>
   <div>
-    <UCard>
+    <UCard class="rounded-none">
       <template #header>
         <p class="text-2xl">
-          Lower Third
+          Graphics List
         </p>
       </template>
       <template #default>
         <div>
-          <URadioGroup :loop="true" indicator="hidden" variant="table">
-            
+          <URadioGroup
+            v-model="model"
+            :items="computedGraphics"
+            value-key="val"
+            indicator="hidden"
+            variant="table"
+            :ui="{
+              item: [
+                'has-data-[state=checked]:bg-transparent has-data-[state=checked]:border-muted has-data-[state=checked]:z-0',
+                'has-[[role=radio][data-state=checked]]:bg-primary/10',
+                'has-[[role=radio][data-state=checked]]:border-primary/50',
+                'has-[[role=radio][data-state=checked]]:z-[1]'
+              ].join(' ')
+            }"
+          >
+            <template #label="{ item }">
+              <div class="text-left">
+                <div class="flex justify-between">
+                  <p class="text-xl">{{ item.label }}</p>
+                  <USwitch v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)" :debounce="75" />
+                </div>
+              </div>
+            </template>
           </URadioGroup>
         </div>
       </template>
@@ -18,9 +39,96 @@
 </template>
 
 <script setup lang="ts">
+import type { Channel } from '~/types/replicants';
+import Bug from '../customization/Bug.vue';
+import Commentators from '../customization/Commentators.vue';
+import Copyright from '../customization/Copyright.vue';
+import EndGraphics from '../customization/EndGraphics.vue';
+import GoToBreak from '../customization/GoToBreak.vue';
+import Locator from '../customization/Locator.vue';
+import PlayerBio from '../customization/PlayerBio.vue';
+import Credits from '../customization/Credits.vue';
 
-const lowerThirds = [];
+const replicants = await useReplicants();
+const channels = replicants.channels;
+const configuration = replicants.configuration;
 
+const model = defineModel({
+  type: Object as PropType<{
+    name: string;
+    component: Component | null;
+  }>
+});
+
+interface Graphic {
+  label: string;
+  val: {
+    name: string;
+    component: any;
+    reference: string;
+  };
+  restrictions: string[];
+}
+
+const graphics: Graphic[] = [
+  {
+    label: "Bottom Text Bar",
+    val: { name: "bottomtextbar", component: null, reference: "bottomTextBar" },
+    restrictions: ["rpitv"],
+  },
+  {
+    label: "Bug",
+    val: { name: "bug", component: markRaw(Bug), reference: "bug" },
+    restrictions: [],
+  },
+  {
+    label: "Commentators",
+    val: { name: "commentators", component: markRaw(Commentators), reference: "commentators" },
+    restrictions: [],
+  },
+  {
+    label: "Copyright",
+    val: { name: "copyright", component: markRaw(Copyright), reference: "copyright" },
+    restrictions: [],
+  },
+  {
+    label: "End Graphics",
+    val: { name: "endgraphics", component: markRaw(EndGraphics), reference: "endGraphic" },
+    restrictions: [],
+  },
+  {
+    label: "Go To Break",
+    val: { name: "gotobreak", component: markRaw(GoToBreak), reference: "goToBreak" },
+    restrictions: [],
+  },
+  {
+    label: "Locator",
+    val: { name: "locator", component: markRaw(Locator), reference: "locator" },
+    restrictions: [],
+  },
+  {
+    label: "Player Bios",
+    val: { name: "playerbio", component: markRaw(PlayerBio), reference: "playerBio" },
+    restrictions: [],
+  },
+  {
+    label: "Credits",
+    val: { name: "credits", component: markRaw(Credits), reference: "credits" },
+    restrictions: [],
+  },
+  {
+    label: "Standings",
+    val: { name: "standings", component: null, reference: "standings" },
+    restrictions: [],
+  },
+];
+
+const computedGraphics = computed(() => {
+  return graphics.filter((graphic) => {
+    if (graphic.restrictions.length === 0) return true;
+    return graphic.restrictions.includes(configuration.style);
+  });
+});
 
 </script>
 

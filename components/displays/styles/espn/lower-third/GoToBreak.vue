@@ -7,7 +7,7 @@
 		{{ goToBreak.awayTeam.score || scoreboard!.awayTeam.score }}
 	</div>
 	<div :style="homeTeamName">
-		<p>{{ goToBreak.homeTeam.name || homeTeam!.shortName}}</p>
+		<p>{{ goToBreak.homeTeam.name || homeTeam!.shortName }}</p>
 	</div>
 	<div :style="homeTeamScore">
 		{{ goToBreak.homeTeam.score || scoreboard!.homeTeam.score }}
@@ -19,37 +19,35 @@
 		</span>
 	</div>
 	<div class="colors" :style="awayTeamPrimaryColor">
-		<img :style="awayTeamLogo" :src="lowerThird?.goToBreak.awayTeam.logo || awayTeam!.logo">
+		<img :style="awayTeamLogo" :src="goToBreak.awayTeam.logo || awayTeam!.logo">
 	</div>
 	<div class="colors" :style="awayTeamSecondaryColor"></div>
 	<div class="colors" :style="homeTeamPrimaryColor">
-		<img :style="homeTeamLogo" :src="lowerThird?.goToBreak.homeTeam.logo || homeTeam!.logo">
+		<img :style="homeTeamLogo" :src="goToBreak.homeTeam.logo || homeTeam!.logo">
 	</div>
 	<div class="colors" :style="rightTeamSecondaryColor"></div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch, ref, nextTick, onMounted, onBeforeUnmount } from "vue";
 import type { CSSProperties } from "vue";
-import ESPNGoToBreak from "~/assets/espn/Scoreboard.png";
-import type { Scoreboard, Configuration, LowerThird } from "~/types/replicants";
+import ESPNGoToBreak from "assets/espn/GoToBreeak.png";
 
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
-const configuration = await useReplicant<Configuration>("configuration");
-const scoreboard = await useReplicant<Scoreboard>("scoreboard");
-const goToBreak = computed(() => lowerThird.value!.goToBreak);
-const awayTeam = computed(() => configuration.value?.awayTeam);
-const homeTeam = computed(() => configuration.value?.homeTeam);
+const replicants = await useReplicants();
+const scoreboard = replicants.scoreboard;
+
+const goToBreak = replicants.lowerThird.goToBreak;
+const awayTeam = replicants.configuration.awayTeam;
+const homeTeam = replicants.configuration.homeTeam;
 
 const scalingDiv = ref<HTMLDivElement>();
 const scalingText = ref<HTMLSpanElement>();
 
 const awayTeamName = computed((): CSSProperties => { return {
 	alignItems: "center",
-	color: goToBreak.value.awayTeam.nameColor,
+	color: goToBreak.awayTeam.nameColor || "#3f403b",
 	display: "flex",
 	flexWrap: "nowrap",
-	fontSize: goToBreak.value.awayTeam.nameSize + 3.7 + "vh",
+	fontSize: goToBreak.awayTeam.nameSize + 3.7 + "vh",
 	height: "5.55vh",
 	justifyContent: "center",
 	left: "30.84vw",
@@ -60,9 +58,9 @@ const awayTeamName = computed((): CSSProperties => { return {
 const awayTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "21.7vh",
-	color: goToBreak.value.awayTeam.scoreColor,
+	color: goToBreak.awayTeam.scoreColor || "#3f403b",
 	display: "flex",
-	fontSize: goToBreak.value.awayTeam.scoreSize +  5.7 + "vh",
+	fontSize: goToBreak.awayTeam.scoreSize +  5.7 + "vh",
 	height: "8.3vh",
 	justifyContent: "center",
 	left: "39.1vw",
@@ -70,10 +68,10 @@ const awayTeamScore = computed((): CSSProperties => { return {
 }});
 const homeTeamName = computed((): CSSProperties => { return {
 	alignItems: "center",
-	color: goToBreak.value.homeTeam.nameColor,
+	color: goToBreak.homeTeam.nameColor || "#3f403b",
 	display: "flex",
 	flexWrap: "nowrap",
-	fontSize: goToBreak.value.homeTeam.nameSize + 3.7 + "vh",
+	fontSize: goToBreak.homeTeam.nameSize + 3.7 + "vh",
 	height: "5.55vh",
 	justifyContent: "center",
 	left: "54.75vw",
@@ -84,9 +82,9 @@ const homeTeamName = computed((): CSSProperties => { return {
 const homeTeamScore = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "21.7vh",
-	color: goToBreak.value.homeTeam.scoreColor,
+	color: goToBreak.homeTeam.scoreColor || "#3f403b",
 	display: "flex",
-	fontSize: goToBreak.value.homeTeam.scoreSize + 5.7 + "vh",
+	fontSize: goToBreak.homeTeam.scoreSize + 5.7 + "vh",
 	height: "8.3vh",
 	justifyContent: "center",
 	left: "54.5vw",
@@ -95,9 +93,9 @@ const homeTeamScore = computed((): CSSProperties => { return {
 const description = computed((): CSSProperties => { return {
 	alignItems: "center",
 	bottom: "11.5vh",
-	color: goToBreak.value.description.fontColor,
+	color: goToBreak.description.fontColor || "#3f403b",
 	display: "flex",
-	fontSize: goToBreak.value.description.fontSize + 2.36 + "vh",
+	fontSize: goToBreak.description.fontSize + 2.36 + "vh",
 	fontStyle: "italic",
 	height: "4vh",
 	justifyContent: "center",
@@ -105,13 +103,13 @@ const description = computed((): CSSProperties => { return {
 	width: "11vw",
 }})
 const awayTeamSecondaryColor = computed((): CSSProperties => { return {
-	backgroundColor: goToBreak.value.awayTeam.secondaryColor || awayTeam.value!.secondaryColor,
+	backgroundColor: goToBreak.awayTeam.secondaryColor || awayTeam.secondaryColor,
 	left: "28.6vw",
 	width: "1.84vw"
 }});
 const awayTeamPrimaryColor = computed((): CSSProperties => { return {
 	alignItems: "center",
-	backgroundColor: goToBreak.value.awayTeam.primaryColor || awayTeam.value!.primaryColor,
+	backgroundColor: goToBreak.awayTeam.primaryColor || awayTeam.primaryColor,
 	display: "flex",
 	justifyContent: "center",
 	left: "30.7vw",
@@ -119,32 +117,32 @@ const awayTeamPrimaryColor = computed((): CSSProperties => { return {
 }});
 const homeTeamPrimaryColor = computed((): CSSProperties => { return {
 	alignItems: "center",
-	backgroundColor: goToBreak.value.homeTeam.primaryColor || homeTeam.value!.primaryColor,
+	backgroundColor: goToBreak.homeTeam.primaryColor || homeTeam.primaryColor,
 	display: "flex",
 	justifyContent: "center",
 	left: "61.1vw",
 	width: "8.1vw"
 }});
 const rightTeamSecondaryColor = computed((): CSSProperties => { return {
-	backgroundColor: goToBreak.value.homeTeam.secondaryColor || homeTeam.value!.secondaryColor,
+	backgroundColor: goToBreak.homeTeam.secondaryColor || homeTeam.secondaryColor,
 	left: "69.3vw",
 	width: "1.93vw",
 }});
 
 const awayTeamLogo = computed((): CSSProperties => { return {
-	height: goToBreak.value.homeTeam.logoSize + "%",
+	height: goToBreak.homeTeam.logoSize + "%",
 	maxHeight: "9.6vh",
 	position: "relative",
 	width: "auto",
 }});
 const homeTeamLogo = computed((): CSSProperties => { return {
-	height: goToBreak.value.homeTeam.logoSize + "%",
+	height: goToBreak.homeTeam.logoSize + "%",
 	maxHeight: "9.6vh",
 	position: "relative",
 	width: "auto",
 }});
 
-const clock = computed(() => scoreboard.value!.clock);
+const clock = computed(() => scoreboard.clock);
 const formattedClockTime = computed<string>(() => {
 	const minutes = Math.floor(clock.value.time / 60000).toString();
 	let seconds = Math.floor((clock.value.time % 60000) / 1000).toString();
@@ -179,13 +177,13 @@ const scaleTextToFit = () => {
 };
 
 // Watch for changes in the text prop
-// watch([goToBreak.value.description.text, clock.value.time, goToBreak.value.description.autoFit,
-// 			goToBreak.value.description.fontSize, goToBreak.value.description.clock],
+// watch([goToBreak.description.text, clock.value.time, goToBreak.description.autoFit,
+// 			goToBreak.description.fontSize, goToBreak.description.clock],
 // 	async () => {
-// 		if (!goToBreak.value.description.autoFit) {
+// 		if (!goToBreak.description.autoFit) {
 // 			const text = scalingText.value;
 // 			if (!text) return;
-// 			text.style.fontSize = goToBreak.value.description.fontSize+ 2.36 + "vh";
+// 			text.style.fontSize = goToBreak.description.fontSize+ 2.36 + "vh";
 // 			return;
 // 		}
 // 		await nextTick();
@@ -213,7 +211,7 @@ onBeforeUnmount(() => {
 
 @font-face {
 	font-family: "swiss721_heavy";
-	src: url('../../../../../assets/espn/Swiss721Heavy.ttf')
+	src: url('~/assets/espn/Swiss721Heavy.ttf')
 }
 
 div {

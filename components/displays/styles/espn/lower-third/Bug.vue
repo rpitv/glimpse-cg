@@ -1,22 +1,21 @@
 <template>
-	<img :style="bugStyle" :src="bug">
+	<img :style="bugStyle" :src="espnbug">
 </template>
 
 <script setup lang="ts">
-import bug from "~/assets/espn/espnBug.png";
+import espnbug from "~/assets/espn/espnBug.png";
 import type { CSSProperties } from "vue";
-import type { LowerThird } from "~/types/replicants";
 
-
-const lowerThird = await useReplicant<LowerThird>("lowerThird");
+const replicants = await useReplicants();
+const bug = replicants.lowerThird.bug;
 
 const bugStyle = computed((): CSSProperties => {
 	return {
 		height: "100vh",
-		left: lowerThird.value!.bug.offsetX + "vw",
+		left: bug.offsetX + "vw",
 		overflow: "hidden",
 		position: "absolute",
-		bottom: lowerThird.value!.bug.offsetY - 1 + "vh",
+		bottom: bug.offsetY - 1 + "vh",
 		width: "100vw",
 	}
 });
