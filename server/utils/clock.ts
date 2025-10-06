@@ -5,11 +5,8 @@ const { clock, awayTeam, homeTeam } = replicants.scoreboard
 let scoreboardTimer: NodeJS.Timeout | null = null;
 let scoreboardTimerLastModified: number | null = null;
 
-export function handler() {
-  clockHandler();
-}
 
-function clockHandler() {
+export function clockHandler() {
   if ((clock.isRunning && scoreboardTimer !== null) || (!clock.isRunning && scoreboardTimer === null)) {
     return;
   }

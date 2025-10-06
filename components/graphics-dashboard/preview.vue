@@ -5,7 +5,7 @@
         Preview
       </p>
       <br></br>
-      <div v-if="loading">
+      <div v-if="loading &&  selectedGraphic.name">
         <UProgress indeterminate />
         <p class="text-center">Loading Preview...</p>
       </div>

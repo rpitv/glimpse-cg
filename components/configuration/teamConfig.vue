@@ -5,7 +5,7 @@
     </template>
     <UFormField label="Preset Schools">
       <USelectMenu v-model="selectedSchool" class="input-menu" :items="schools as Configuration['awayTeam' | 'homeTeam'][]" label-key="schoolName" />
-      <UButton class="mt-2" @click="loadPreset(selectedSchool as Configuration['awayTeam' | 'homeTeam'])">
+      <UButton class="mt-2" @click="() => { if (selectedSchool) $emit('loadPreset', teamSide, selectedSchool as Configuration['awayTeam' | 'homeTeam']) }">
         Load Preset
       </UButton>
     </UFormField>
@@ -118,9 +118,7 @@ function loadPreset(school: Configuration['awayTeam' | 'homeTeam']) {
   });
 }
 
-defineExpose({
-  loadPreset
-});
+defineEmits(['loadPreset']);
 
 </script>
 

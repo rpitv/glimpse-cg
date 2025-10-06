@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import { defineEventHandler } from "h3";
 import { replicants, subscribe } from "~/utils/replicants";
 import { setDeep, deleteDeep } from "~/utils/pathHelpers";
-import { handler } from "../utils/handler";
+import { clockHandler } from "../utils/clock";
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
@@ -19,8 +19,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     // Handle patches from client
     socket.on("patch", ({ path, value }) => {
       setDeep(replicants, path, value)
-      handler();
-      io.emit("patch", { path, value }) // broadcast to everyone
+      clockHandler();
+      socket.broadcast.emit("patch", { path, value }) // broadcast to everyone
     })
 
     // Handle deletes from client

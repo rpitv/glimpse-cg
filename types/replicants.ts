@@ -194,30 +194,33 @@ export const defaultConfiguration = {
     athletics: ''
   },
   sync: {
+    clock: true,
+    period: true,
     awayTeam: {
       score: true,
       football: {
-        downs: true,
-        yardsToGo: true,
-        possession: true,
-        playClock: true,
+        timeouts: true
       },
       hockey: {
         sog: true,
+        penalty: true
       }
     },
     homeTeam: {
-      sog: true,
       score: true,
       football: {
-        downs: true,
-        yardsToGo: true,
-        possession: true,
-        playClock: true,
+        timeouts: true
       },
       hockey: {
         sog: true,
+        penalty: true
       }
+    },
+    football: {
+      downs: true,
+      yardsToGo: true,
+      possession: true,
+      playClock: true,
     }
   }
 }
@@ -308,7 +311,7 @@ export const defaultScoreboard = {
   // We're in America
   football: {
     down: 1,
-    yardsToGo: 10,
+    yardsToGo: '10',
     possession: '',
     playClock: 0, // The initial value of the play clock
     playClockRunning: false, // Whether the play clock is currently running
