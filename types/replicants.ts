@@ -194,6 +194,20 @@ export const defaultConfiguration = {
     athletics: ''
   },
   sync: {
+    daktronics: {
+      availablePorts: [] as string[],
+      feed: 'tv' as 'tv' | 'rtd',
+      status: {
+        bitrate: 0,
+        error: false,
+        errorMsg: "",
+        connected: false,
+      },
+      selectedPort: undefined as string | undefined,
+      mock: {
+        packet: [] as number[]
+      }
+    },
     clock: true,
     period: true,
     awayTeam: {
@@ -315,7 +329,12 @@ export const defaultScoreboard = {
     possession: '',
     playClock: 0, // The initial value of the play clock
     playClockRunning: false, // Whether the play clock is currently running
-    timeouts: 3
+    awayTeam: {
+      timeouts: 3,
+    },
+    homeTeam: {
+      timeouts: 3,
+    }
   }
 }
 

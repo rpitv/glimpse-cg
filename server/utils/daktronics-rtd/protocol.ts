@@ -197,7 +197,7 @@ export function daktronicsRtdListener(data: Buffer) {
  */
 export function daktronicsTVListener(data: Buffer) {
 	const hexString = data.toString();
-
+  console.log(hexString);
 	for (const byte of hexString) {
 		if (byte === TV_PAK_HEADER) {
 			staging = []
@@ -207,8 +207,8 @@ export function daktronicsTVListener(data: Buffer) {
 			const actualChecksum = packet.slice(-2); // Last two characters
 			if (calculatedChecksum === actualChecksum) // matches
 				packets = staging.join("");
-			else
-				console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`)
+			// else
+			// 	console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`)
 		} else
 			staging.push(byte);
 	}
@@ -219,13 +219,11 @@ export function daktronicsTVListener(data: Buffer) {
 	packets = "";
 }
 
+const scoreboard = replicants.scoreboard;
+const configuration = replicants.configuration;
 const packetFrequencies: {[key: number]: number} = {};
 function handleRTDPacket(packet: Buffer): void {
 	// If selected sport is undefined or isn't in the sports list, then we don't know how to parse the packet.
-	if(!replicants.sync.selectedSport.value || !sports[replicants.sync.selectedSport.value]) {
-		// logger.trace('Selected sport is undefined or not in the sports list. Unsure of how to handle packet.');
-		return;
-	}
 
 	// Strip all bytes up to 0x01. Seems to be padding.
 	// logger.trace('Stripping all bytes up to 0x01');
@@ -234,47 +232,52 @@ function handleRTDPacket(packet: Buffer): void {
 	// Get the ID. IDs are in the form "00421xxxxx", where "xxxxx" is the ID, all in ASCII. Add one, since it's zero-indexed
 	// logger.trace('Getting the ID of the packet');
 	const id = parseInt(paddingStrippedData.slice(5, 10).toString('ascii'), 10) + 1;
-
 	packetFrequencies[id] = (packetFrequencies[id] || 0) + 1;
 
 	// Make sure this is a valid packet for this sport.
-	if(!sports[replicants.sync.selectedSport.value][id]) {
-		logger.trace('Packet ID %d is not valid for the selected sport. Ignoring packet.', id);
+	if(!sports['Hockey/Lacrosse'][id]) {
+		// logger.trace('Packet ID %d is not valid for the selected sport. Ignoring packet.', id);
 		return;
 	}
 
 	// Get the length of the relevant data for this packet for the given sport.
-	const dataLength = sports[replicants.sync.selectedSport.value][id].length
+	const dataLength = sports['Hockey/Lacrosse'][id].length;
 
 	// Pull the relevant data out of the packet.
-	logger.trace('Packet ID %d has an expected length of %d bytes. Pulling data from packet.', id, dataLength);
+	// logger.trace('Packet ID %d has an expected length of %d bytes. Pulling data from packet.', id, dataLength);
 	const data = paddingStrippedData.slice(11, 11 + dataLength).toString('ascii');
 	const trimmedData = data.trim();
 
 	// if(logger.isLevelEnabled("debug")) {
-	// 	logger.debug({
-	// 		id,
-	// 		fullMessageBlock: paddingStrippedData.toString('ascii'),
-	// 		messageLength: dataLength,
-	// 		messageBlock: data,
-	// 		trimmedMessageBlock: trimmedData
-	// 	},'Packet parsed, being passed to handler');
+		// logger.debug({
+		// 	id,
+		// 	fullMessageBlock: paddingStrippedData.toString('ascii'),
+		// 	messageLength: dataLength,
+		// 	messageBlock: data,
+		// 	trimmedMessageBlock: trimmedData
+		// },'Packet parsed, being passed to handler');
 	// }
+  console.log({
+			id,
+			fullMessageBlock: paddingStrippedData.toString('ascii'),
+			messageLength: dataLength,
+			messageBlock: data,
+			trimmedMessageBlock: trimmedData
+		},'Packet parsed, being passed to handler');
 
 	// Call the handler for the packet, if it is defined.
-	const handler = sports[replicants.sync.selectedSport.value][id].handler;
+	const handler = sports['Hockey/Lacrosse'][id].handler;
 	if(!handler) {
-		logger.debug('No handler defined for packet ID %d. Ignoring packet.', id);
+		// logger.debug('No handler defined for packet ID %d. Ignoring packet.', id);
 		return;
 	}
 	handler(trimmedData);
 }
 
 function handleTVPacket(packet: string): void {
+  console.log(packet);
 	const LENGTH_OF_FOOTBALL_PACKET = 43;
-
-	// currently only the Daktronics football packet is implemented
-	if (!(replicants.sync.selectedSport.value === "Football" && packet.length == LENGTH_OF_FOOTBALL_PACKET))
+	if (packet.length !== LENGTH_OF_FOOTBALL_PACKET)
 		return
 
 	const footballPacket = {
@@ -293,12 +296,15 @@ function handleTVPacket(packet: string): void {
 		timeoutsLeftHome: packet.substring(39, 40),
 		timeoutsLeftAway: packet.substring(40, 41)
 	};
-	const footballSync = replicants.sync.values.football;
-	if (footballSync.downs.value)
-		replicants.scoreboard.down.value = parseInt(footballPacket.down);
-	if (footballSync.playClock.value)
-		replicants.scoreboard.playClock.value = parseInt(footballPacket.playClock);
-	if (footballSync.possession.value) {
+	const footballSync = configuration.sync.football;
+
+	if (footballSync.downs)
+		scoreboard.football.down = parseInt(footballPacket.down);
+	if (footballSync.playClock) {
+    scoreboard.football.playClockRunning = false;
+		scoreboard.football.playClock = parseInt(footballPacket.playClock);
+  }
+	if (footballSync.possession) {
 		const possession = (): string => {
 			if (footballPacket.possessionHome.trim())
 				return footballPacket.possessionHome;
@@ -306,28 +312,28 @@ function handleTVPacket(packet: string): void {
 				return footballPacket.possessionAway;
 			return '';
 		}
-		replicants.scoreboard.possession.value = possession();
+		scoreboard.football.possession = possession();
 	}
-	if (footballSync.yardsToGo.value)
-		replicants.scoreboard.yardsToGo.value = footballPacket.yardsToGo;
+	if (footballSync.yardsToGo)
+		scoreboard.football.yardsToGo = footballPacket.yardsToGo;
 
-	const universalSync = replicants.sync.values;
+	const universalSync = configuration.sync;
 	// General Stuff
-	if (universalSync.clock.value) {
-		if (replicants.scoreboard.clock.isRunning.value) {
-			logger.trace('Clock is manually running but score sync data was received. Stopping manual clock.');
-			replicants.scoreboard.clock.isRunning.value = false;
+	if (universalSync.clock) {
+		if (replicants.scoreboard.clock.isRunning) {
+			// logger.trace('Clock is manually running but score sync data was received. Stopping manual clock.');
+			replicants.scoreboard.clock.isRunning = false;
 		}
 
 		// Clock is considered disabled whenever a blank value is sent. Conversely, it is considered enabled whenever a
 		//   non-blank value is sent.
-		if (footballPacket.clock.length === 0 && replicants.gameSettings.clock.enabled.value) {
-			logger.trace('Blank clock value received, disabling the clock.');
-			replicants.gameSettings.clock.enabled.value = false;
-		} else if(footballPacket.clock.length > 0 && !replicants.gameSettings.clock.enabled.value) {
-			logger.trace('Non-blank clock value received, enabling the clock.');
-			replicants.gameSettings.clock.enabled.value = true;
-		}
+		// if (footballPacket.clock.length === 0 && replicants.gameSettings.clock.enabled.value) {
+		// 	logger.trace('Blank clock value received, disabling the clock.');
+		// 	replicants.gameSettings.clock.enabled.value = false;
+		// } else if(footballPacket.clock.length > 0 && !replicants.gameSettings.clock.enabled.value) {
+		// 	logger.trace('Non-blank clock value received, enabling the clock.');
+		// 	replicants.gameSettings.clock.enabled.value = true;
+		// }
 
 		let mins, secs, tenths, minsAndSecs;
 		[minsAndSecs, tenths] = footballPacket.clock.split('.');
@@ -338,30 +344,30 @@ function handleTVPacket(packet: string): void {
 			mins = '0';
 		}
 		const [minsInt, secsInt, tenthsInt] = [parseInt(mins) || 0, parseInt(secs) || 0, parseInt(tenths) || 0];
-		replicants.scoreboard.clock.time.value = minsInt * 60000 + secsInt * 1000 + tenthsInt * 100;
+		replicants.scoreboard.clock.time = minsInt * 60000 + secsInt * 1000 + tenthsInt * 100;
 		announcementTimersTick();
 	}
-	if (universalSync.period.value)
-		replicants.scoreboard.period.value = parseInt(footballPacket.period);
+	if (universalSync.period)
+		scoreboard.period.count = parseInt(footballPacket.period);
 
 	// Team Stuff
-	if (universalSync.teams[1].score.value)
-		replicants.teams[1].score.value = parseInt(footballPacket.homeScore);
-	if (universalSync.teams[1].timeouts.value)
-		replicants.teams[1].timeouts.value = parseInt(footballPacket.timeoutsLeftHome);
+	if (universalSync.homeTeam.score)
+		scoreboard.homeTeam.score = parseInt(footballPacket.homeScore);
+	if (universalSync.homeTeam.football.timeouts)
+		scoreboard.football.homeTeam.timeouts = parseInt(footballPacket.timeoutsLeftHome);
 
-	if (universalSync.teams[0].score.value)
-		replicants.teams[0].score.value = parseInt(footballPacket.awayScore);
-	if (universalSync.teams[0].timeouts.value)
-		replicants.teams[0].timeouts.value = parseInt(footballPacket.timeoutsLeftAway);
+	if (universalSync.awayTeam.score)
+		scoreboard.awayTeam.score = parseInt(footballPacket.awayScore);
+	if (universalSync.awayTeam.football.timeouts)
+		scoreboard.football.awayTeam.timeouts = parseInt(footballPacket.timeoutsLeftAway);
 
 
 }
 
-if(logger.isLevelEnabled("debug")) {
-	setInterval(() => {
-		logger.debug({
-			packetFrequencies
-		}, 'Packet frequencies');
-	}, 10000);
-}
+// if(logger.isLevelEnabled("debug")) {
+// 	setInterval(() => {
+// 		logger.debug({
+// 			packetFrequencies
+// 		}, 'Packet frequencies');
+// 	}, 10000);
+// }

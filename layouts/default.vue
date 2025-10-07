@@ -25,6 +25,11 @@ const items = ref<NavigationMenuItem[][]>([[
     label: 'Scoreboard',
     icon: 'i-heroicons-information-circle-20-solid',
     to: '/scoreboard'
+  },
+  {
+    label: 'Sync',
+    icon: 'i-heroicons-arrow-path-20-solid',
+    to: '/sync'
   }
 ],
 [

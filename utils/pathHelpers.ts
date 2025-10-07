@@ -1,3 +1,6 @@
+import { EventEmitter } from 'events';
+export const replicantEvents = new EventEmitter();
+
 export function setDeep(obj: any, path: string[], value: any) {
   let target = obj
   for (let i = 0; i < path.length - 1; i++) {
@@ -7,6 +10,7 @@ export function setDeep(obj: any, path: string[], value: any) {
     target = target[path[i]]
   }
   target[path[path.length - 1]] = value
+  replicantEvents.emit('change', path, value);
 }
 
 export function deleteDeep(obj: any, path: string[]) {

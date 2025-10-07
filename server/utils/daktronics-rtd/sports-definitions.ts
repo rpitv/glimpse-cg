@@ -33,7 +33,7 @@ import {
 	periodHandler,
 	awayShotHandler,
 	homePenalty1Handler,
-	homePenalty2Handler,
+	homePenalty2Handler,  
 	awayPenalty1Handler,
 	awayPenalty2Handler,
 	timeoutsHandler,

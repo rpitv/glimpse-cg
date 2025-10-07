@@ -5,25 +5,18 @@
         <h1 class="text-2xl">Settings</h1>
       </template>
       <template #default v-if="configuration">
-        <div>
-          <UFormField label="Graphic Style">
-            <USelect :class="width" :items="styles" v-model="configuration.style" />
-          </UFormField>
-        </div>
-        <USeparator orientation="horizontal" :class="height" />
-        <div>
-          <UFormField label="Sport">
-            <USelect :class="width" :items="sports" v-model="configuration.sport" @update:model-value="refresh()" />
-          </UFormField>
-        </div>
-        <USeparator v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'" orientation="horizontal" :class="height" />
+        <UFormField label="Graphic Style">
+          <USelect :class="width" :items="styles" v-model="configuration.style" />
+        </UFormField>
+        <UFormField class="mt-4" label="Sport">
+          <USelect :class="width" :items="sports" v-model="configuration.sport" @update:model-value="refresh()" />
+        </UFormField>
         <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
-          <UFormField label="Type (Important for Rosters)">
+          <UFormField class="mt-4" label="Type (Important for Rosters)">
             <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="refresh()"/>
           </UFormField>
         </div>
-        <USeparator orientation="horizontal" :class="height" />
-        <div class="flex gap-5">
+        <div class="mt-4 flex gap-5">
           <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="awayTeam" />
           <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="homeTeam" />
         </div>
