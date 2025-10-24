@@ -16,7 +16,7 @@
             <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="refresh()"/>
           </UFormField>
         </div>
-        <div class="mt-4 flex gap-5">
+        <div class="mt-8 flex gap-5">
           <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="awayTeam" />
           <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="homeTeam" />
         </div>

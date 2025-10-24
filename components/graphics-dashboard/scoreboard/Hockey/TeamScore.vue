@@ -1,9 +1,72 @@
 <template>
   <div class="w-full text-center">
     <UCard class="rounded-none">
-      <u class="text-[20px]">SCORE</u>
-      <div class="flex justify-center items-center gap-4">
-        <p class="text-5xl">{{ teamScoreboard!.score }}</p>
+      <div :class="'flex justify-center items-center gap-4 ' + (team === 'homeTeam' ? 'flex-row-reverse' : '')">
+        <div>
+          <div>
+            <u class="block text-[16px]">SHOTS ON GOAL</u>
+            <UTooltip :disabled="!sync[team].hockey.sog" text="Controls cannot be edited when sync is enabled.">
+              <UInputNumber class="w-[150px]" v-model="hockey[team].sog" variant="soft" :max="999" :min="0" :disabled="sync[team].hockey.sog"
+                :ui="{
+                  base: 'text-xl text-center min-w-[75px]',
+                }"
+              >
+                <template #decrement>
+                  <UButton variant="ghost" color="error">
+                    <FontAwesomeIcon icon="fa-solid fa-minus" />
+                  </UButton>
+                </template>
+                <template #increment>
+                  <UButton variant="ghost">
+                    <FontAwesomeIcon icon="fa-solid fa-plus" />
+                  </UButton>
+                </template>
+              </UInputNumber>
+            </UTooltip>
+          </div>
+          <div class="mt-4">
+            <u class="block text-[16px]">FACEOFFS</u>
+            <UTooltip :disabled="!sync[team].hockey.faceoff" text="Controls cannot be edited when sync is enabled.">
+              <UInputNumber class="w-[150px]" v-model="hockey[team].faceoff" variant="soft" :max="999" :min="0" :disabled="sync[team].hockey.faceoff"
+                :ui="{
+                  base: 'text-xl text-center min-w-[75px]',
+                }"
+              >
+                <template #decrement>
+                  <UButton variant="ghost" color="error">
+                    <FontAwesomeIcon icon="fa-solid fa-minus" />
+                  </UButton>
+                </template>
+                <template #increment>
+                  <UButton variant="ghost">
+                    <FontAwesomeIcon icon="fa-solid fa-plus" />
+                  </UButton>
+                </template>
+              </UInputNumber>
+            </UTooltip>
+          </div>
+        </div>
+        <div>
+          <u class="block text-[20px]">SCORE</u>
+          <UTooltip :disabled="!sync[team].score" text="Controls cannot be edited when sync is enabled.">            
+            <UInputNumber class="w-[200px]" v-model="teamScoreboard!.score" variant="ghost" :max="999" :min="0" :disabled="sync[team].score"
+              :ui="{
+                base: 'text-5xl text-center min-w-[75px]',
+              }"
+            >
+              <template #decrement>
+                <UButton size="xl" variant="ghost" color="error">
+                  <FontAwesomeIcon icon="fa-solid fa-minus" />
+                </UButton>
+              </template>
+              <template #increment>
+                <UButton size="xl" variant="ghost">
+                  <FontAwesomeIcon icon="fa-solid fa-plus" />
+                </UButton>
+              </template>
+            </UInputNumber>
+          </UTooltip>
+        </div>
       </div>
       <UModal
 	      :ui="{
@@ -55,13 +118,6 @@
         </template>
       </UModal>
     </UCard>
-    <UCard class="rounded-none">
-      <template #footer>
-        <UTooltip text="Controls cannot be edited when sync is enabled." :disabled="!sync[team].score">
-          <UInputNumber :disabled="sync[team].score" v-model="teamScoreboard!.score" size="xl" />
-        </UTooltip>
-      </template>
-    </UCard>
   </div>
 </template>
 
@@ -71,12 +127,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
+const hockey = replicants.scoreboard.hockey;
 const sync = configuration.sync;
 
 const teamScoreboard = defineModel<Scoreboard["homeTeam" | "awayTeam"]>();
 defineProps<{
   team: "awayTeam" | "homeTeam",
 }>();
+
 
 </script>
 

@@ -197,7 +197,6 @@ export function daktronicsRtdListener(data: Buffer) {
  */
 export function daktronicsTVListener(data: Buffer) {
 	const hexString = data.toString();
-  console.log(hexString);
 	for (const byte of hexString) {
 		if (byte === TV_PAK_HEADER) {
 			staging = []
@@ -207,13 +206,12 @@ export function daktronicsTVListener(data: Buffer) {
 			const actualChecksum = packet.slice(-2); // Last two characters
 			if (calculatedChecksum === actualChecksum) // matches
 				packets = staging.join("");
-			// else
-			// 	console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`)
+			else
+				console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`)
 		} else
 			staging.push(byte);
 	}
 	if (packets.length > 0) {
-		// console.log(packets);
 		handleTVPacket(packets);
 	}
 	packets = "";
@@ -257,13 +255,6 @@ function handleRTDPacket(packet: Buffer): void {
 		// 	trimmedMessageBlock: trimmedData
 		// },'Packet parsed, being passed to handler');
 	// }
-  console.log({
-			id,
-			fullMessageBlock: paddingStrippedData.toString('ascii'),
-			messageLength: dataLength,
-			messageBlock: data,
-			trimmedMessageBlock: trimmedData
-		},'Packet parsed, being passed to handler');
 
 	// Call the handler for the packet, if it is defined.
 	const handler = sports['Hockey/Lacrosse'][id].handler;
@@ -275,7 +266,6 @@ function handleRTDPacket(packet: Buffer): void {
 }
 
 function handleTVPacket(packet: string): void {
-  console.log(packet);
 	const LENGTH_OF_FOOTBALL_PACKET = 43;
 	if (packet.length !== LENGTH_OF_FOOTBALL_PACKET)
 		return

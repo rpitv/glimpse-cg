@@ -36,7 +36,7 @@
 				<div v-if="channel![channelIndex]!.shootout" class="announcement-section homeTeam">
 					<p>
             <span v-for="shot of hockeyHomeTeam.score">
-              {{ shot ? '✅' : '❌' }}
+              {{ computedShot(shot) }}
             </span>
 					</p>
 				</div>
@@ -171,6 +171,11 @@ function computedMessage(message: Announcement) {
 			}
 		}
 	})
+}
+
+function computedShot(shot: boolean | null) {
+  if (shot === null) return '❔';
+  return shot ? '✅' : '❌';
 }
 
 // POWERPLAY SYNC

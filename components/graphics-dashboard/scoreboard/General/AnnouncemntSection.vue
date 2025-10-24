@@ -14,7 +14,7 @@
           <th class="text-center">Actions</th>
         </tr>
       </thead>
-      <tbody class="my-table-tbody">
+      <tbody :class="name">
         <tr v-for="(announcement, index) in announcmentRef" :key="index">
           <td>
             {{ announcement.message }}
@@ -231,7 +231,7 @@ function openModal(index: number) {
   modalState.value = true;
 }
 
-let sortableInstance = useSortable(".my-table-tbody", announcmentRef, { animation: 150 });
+let sortableInstance = useSortable(`.${props.name}`, announcmentRef, { animation: 150 });
 
 </script>
 

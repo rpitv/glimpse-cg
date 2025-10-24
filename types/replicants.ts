@@ -145,14 +145,14 @@ export class Commentator {
   public description: string
   public descriptionColor: string
   public descriptionSize: number
-  public constructor() {
+  public constructor(name="", nameColor="", nameSize=0, description="", descriptionColor="", descriptionSize=0) {
     this._id = v4();
-    this.name = "";
-    this.nameColor = "";
-    this.nameSize = 0;
-    this.description = "";
-    this.descriptionColor = "";
-    this.descriptionSize = 0;
+    this.name = name;
+    this.nameColor = nameColor;
+    this.nameSize = nameSize;
+    this.description = description;
+    this.descriptionColor = descriptionColor;
+    this.descriptionSize = descriptionSize;
   }
 }
 
@@ -216,6 +216,7 @@ export const defaultConfiguration = {
         timeouts: true
       },
       hockey: {
+        faceoff: true,
         sog: true,
         penalty: true
       }
@@ -226,6 +227,7 @@ export const defaultConfiguration = {
         timeouts: true
       },
       hockey: {
+        faceoff: true,
         sog: true,
         penalty: true
       }
@@ -360,79 +362,78 @@ export const defaultExternal = {
   }
 }
 
-interface CustomGraphic {
-  name: string;
-  offsetX: number;
-  offsetY: number;
-  imagePath: string;
+export class CustomGraphic {
+  public _id: string;
+  public offsetX = 0;
+  public offsetY = 0;
+  public preserveSize = false;
+  public preserveRatio = true;
+  // Width and height are percentages of the screen size (0-100)
+  // They are only used if preserveSize and preserveRatio are both false
+  public width = 100;
+  public height = 100;
+  // Size is a percentage scale (0-100) applied when preserveRatio is true and preserveSize is false
+  public size = 100;
+  public imagePath: string;
+
+  public constructor(imagePath: string) {
+    this._id = v4();
+    this.imagePath = imagePath;
+  }
 }
 
 export class Credit {
   public _id: string;
-	public people: string[];
-	public peopleColor: string;
-	public peopleSize: number;
-	public title: string;
-	public titleColor: string;
-	public titleSize: number;
+	public people: string[] = [];
+	public peopleColor = "";
+	public peopleSize = 0;
+	public title = "";
+	public titleColor = "";
+	public titleSize = 0;
 
 	public constructor() {
     this._id = v4();
-		this.people = [];
-		this.peopleColor = "";
-		this.peopleSize = 0;
-		this.title = "";
-		this.titleColor = "";
-		this.titleSize = 0;
 	}
 }
 
-
 export class Channel {
-  public bottomTextBar: boolean;
-  public bottomGrayText: boolean;
-  public bottomRedText: boolean;
-  public bug: boolean;
-  public commentators: boolean;
-  public copyright: boolean;
-  public endGraphic: boolean;
-  public goToBreak: boolean;
-  public locator: boolean;
-  public playerBio: boolean;
-  public produced: boolean;
-  public scoreboard: boolean;
-  public shootout: boolean;
-  public sog: boolean;
-  public standings: boolean;
-  public credits: boolean;
-  public custom: boolean[];
+  public bottomTextBar = false;
+  public bottomGrayText = false;
+  public bottomRedText = false;
+  public bug = false;
+  public commentators = false;
+  public copyright = false;
+  public endGraphic = false;
+  public faceoff = false;
+  public goToBreak = false;
+  public locator = false;
+  public playerBio = false;
+  public produced = false;
+  public scoreboard = false;
+  public shootout = false;
+  public sog = false;
+  public standings = false;
+  public credits = false;
+  public custom: {
+    id: string;
+    show: boolean;
+  }[] = [];
   public constructor() {
-    this.bottomTextBar = false;
-    this.bottomGrayText = false;
-    this.bottomRedText = false;
-    this.bug = false;
-    this.commentators = false;
-    this.copyright = false;
-    this.endGraphic = false;
-    this.goToBreak = false;
-    this.locator = false;
-    this.playerBio = false;
-    this.produced = false;
-    this.scoreboard = false;
-    this.shootout = false;
-    this.sog = false;
-    this.standings = false;
-    this.credits = false;
-    this.custom = [];
   }
-  addCustomGraphic() {
-    this.custom.push(false);
+  public addCustomGraphic(id: string) {
+    this.custom.push({
+      id,
+      show: false
+    });
   }
-  updateCustomGraphic(index: number) {
-    this.custom[index] = false;
+  public updateCustomGraphic(id: string, show: boolean) {
+    const graphic = this.custom.find(g => g.id === id);
+    if (graphic) {
+      graphic.show = show;
+    }
   }
-  deleteCustomGraphic(index: number) {
-    this.custom.splice(index, 1);
+  public deleteCustomGraphic(id: string) {
+    this.custom = this.custom.filter(g => g.id !== id);
   }
 }
 

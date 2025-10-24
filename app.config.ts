@@ -1,5 +1,7 @@
 export default defineAppConfig({
   ui: {
+    tooltip: {
+    },
     icons: {
       // Navigation
       arrowLeft: 'fa:arrow-left',

@@ -4,7 +4,7 @@
     <Customization>
       <component :is="selectedGraphic.component" />
     </Customization>
-    <Preview :selectedGraphic />
+    <Preview />
   </div>
 </template>
 
@@ -15,24 +15,7 @@ import Preview from '~/components/graphics-dashboard/preview.vue';
 import { useGraphicsStore } from '~/store/graphics';
 
 const graphicsStore = useGraphicsStore();
-
-const selectedGraphic = ref({
-  component: null as Component | null,
-  name: ''
-});
-
-onMounted(() => {
-  if (graphicsStore.selectedGraphic) {
-    selectedGraphic.value = graphicsStore.selectedGraphic;
-  }
-});
-
-watch(selectedGraphic, (newGraphic) => {
-  if (newGraphic) {
-    graphicsStore.setGraphic(newGraphic);
-  }
-});
-
+const { selectedGraphic } = graphicsStore;
 </script>
 
 <style>

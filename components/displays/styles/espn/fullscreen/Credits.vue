@@ -5,7 +5,7 @@
 		<img class="rpitvlogo" :src="RPITVLogo">
 	</div>
 	<div :style="creditsContainer">
-		<div class="credit" v-for="(credit, i) in credits.credit">
+		<div class="credit" v-for="(credit, i) in creditPeople" :key="i">
 			<p :style="title[i]">{{ credit.title }}</p>
 			<p :style="people[i]" class="person" v-for="person in credit.people">{{ person }}</p>
 		</div>

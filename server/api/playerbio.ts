@@ -3,7 +3,9 @@ import { replicants } from "~/utils/replicants";
 export default defineEventHandler(async (event) => {
   const configuration = replicants.configuration;
   const { awayTeam, homeTeam, type, sport } = configuration;
-  
+  if (!awayTeam && !homeTeam) {
+    return
+  };
   let awayPlayers = awayTeam.athletics;
   let homePlayers = homeTeam.athletics;
 
@@ -45,8 +47,8 @@ export default defineEventHandler(async (event) => {
   homePlayers += suffix;
   return {
     awayPlayers: await fetch(awayPlayers)
-      .then(async (response) => await response.text()),
+      .then(async (response) => await response.text()).catch(() => ""),
     homePlayers: await fetch(homePlayers)
-      .then(async (response) => await response.text())
+      .then(async (response) => await response.text()).catch(() => ""),
   }
 })

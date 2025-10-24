@@ -20,7 +20,7 @@
           </tr>
         </thead>
         <tbody class="my-table-tbody">
-          <tr v-for="(commentator, index) in commentatorsRef" :key="commentator._id">
+          <tr v-for="(commentator, index) in commentatorsRef" :key="index">
             <td>
               <div class="w-full">
                 <UFormField label="Name" help="The name of the commentator.">

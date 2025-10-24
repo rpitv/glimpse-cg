@@ -37,7 +37,6 @@ export async function closeSerialPort(): Promise<void> {
 export async function openSerialPort(path: string, baudRate: number = 19200): Promise<void> {
   // If a port is already open, then close it.
   if(port && port.isOpen) {
-    console.log("CLOSING?");
     await closeSerialPort();
   }
 

@@ -1,5 +1,5 @@
 <template>
-	<div :class="(channels![channelIndex].commentators && !route.query.preview) || preview ? 'show' : 'hide'">
+	<div :class="(channels[channelIndex]!.commentators && !route.query.preview) || preview ? 'show' : 'hide'">
 		<ESPNCommentators v-if="espnStyles.indexOf(configuration!.style) !== -1"/>
 		<RPITVCommentators v-if="rpiTVStyles.indexOf(configuration!.style) !== -1"/>
 	</div>

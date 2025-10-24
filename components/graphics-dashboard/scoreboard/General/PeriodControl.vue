@@ -6,13 +6,19 @@
     <template #default>
       <p class="text-center text-2xl">{{ formattedPeriod }}</p>
       <div class="flex">
-        <UButton class="mt-4 mr-2" variant="outline" :disabled="period.count <= 1" @click="decreasePeriod">
-          <FontAwesomeIcon icon="fas fa-minus" /> 1
-        </UButton>
-        <USlider class="mt-4" v-model="period.count" :min="1" :max="period.length + period.overtime.length" :tooltip="true" :step="1" />
-        <UButton class="mt-4 ml-2" variant="outline" @click="increasePeriod">
-          <FontAwesomeIcon icon="fas fa-plus" /> 1
-        </UButton>
+        <UTooltip text="Controls cannot be edited when sync is enabled." :disabled="!sync.period">
+          <UButton class="mt-4 mr-2" variant="outline" :disabled="period.count <= 1 || sync.period" @click="decreasePeriod">
+            <FontAwesomeIcon icon="fas fa-minus" /> 1
+          </UButton>
+        </UTooltip>
+        <UTooltip text="Controls cannot be edited when sync is enabled." :disabled="!sync.period">
+          <USlider :disabled="sync.period" class="mt-4" v-model="period.count" :min="1" :max="period.length + period.overtime.length + 1" :tooltip="true" :step="1" />
+        </UTooltip>
+        <UTooltip text="Controls cannot be edited when sync is enabled." :disabled="!sync.period">
+          <UButton class="mt-4 ml-2" variant="outline" @click="increasePeriod" :disabled="period.count >= period.length + period.overtime.length + 1 || sync.period">
+            <FontAwesomeIcon icon="fas fa-plus" />1
+          </UButton>
+        </UTooltip>
       </div>
       <div class="flex gap-2 mt-4 justify-around w-full">
         <UFormField class="w-full" label="Total Periods" help="# of periods during regulation">
@@ -32,6 +38,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 const replicants = await useReplicants();
 
 const scoreboard = replicants.scoreboard;
+const sync = replicants.configuration.sync;
 const period = scoreboard.period;
 
 const formattedPeriod = computed(() => {
@@ -47,13 +54,16 @@ const formattedPeriod = computed(() => {
   const overtimeCount = period.count - period.length;
   if (overtimeCount === 1 && period.overtime.length === 1)
     return "OT";
+  if (period.overtime.length + period.length < period.count)
+    return "S/O";
   return `OT${overtimeCount}`;
 });
 
 
 function increasePeriod() {
   // TODO: Add infinite overtime
-  period.count += 1;
+  if (period.length + period.overtime.length + 1 > period.count)
+    period.count += 1;
 }
 
 function decreasePeriod() {

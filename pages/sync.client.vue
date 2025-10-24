@@ -1,51 +1,54 @@
 <template>
-  <div>
-    <div class="conn-light"></div>
-    <p class="conn-text">
-      {{connectedText}} -
-      {{(sync.daktronics.status.bitrate / 1000).toFixed(2)}} Kbps
-    </p>
-    <UFormField label="Feed Type" class="mt-4">
-      <UInputMenu value-key="value" v-model="sync.daktronics.feed" :items="feeds" />
-    </UFormField>
-    <UInputMenu class="mt-4" :items="availablePortsOptions" value-key="value" v-model="sync.daktronics.selectedPort" ></UInputMenu>
-    <UCheckbox size="lg" label="Show Advanced Settings" v-model="showAdvanced"></UCheckbox>
-    
-    <div v-if="showAdvanced && sync.daktronics.selectedPort === 'MOCK'">
-      <h1>Mock Data Submission</h1>
-      <h2>Bulk Upload</h2>
-      <UAlert color="warning" v-if="mockBulkErrorMsg" :title="mockBulkErrorMsg"></UAlert>
-      <UFileUpload v-model="mockFile" label="Click or drag a file to this area to upload" class="mt-10" @change="uploadChangedEvent">
-      </UFileUpload>
-      <USlider class="mt-10" :tooltip="true" :min="100" :max="100000" v-model="mockBulkDataSliderValue" :step="100" />
-      <UFormField class="mt-10" label="Bitrate (approximate)">
-        <UInputNumber :min="0" v-model="mockBulkDataSliderValue" :step="100" />
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <UFormField label="Feed Type" class="mt-4">
+        <UInputMenu value-key="value" v-model="sync.daktronics.feed" :items="feeds" />
       </UFormField>
+      <UInputMenu class="mt-4" :items="availablePortsOptions" value-key="value" v-model="sync.daktronics.selectedPort" />
+      <br />
+      <div class="mt-2 conn-light"></div>
+      <p class="conn-text">
+        {{connectedText}} -
+        {{(sync.daktronics.status.bitrate / 1000).toFixed(2)}} Kbps
+      </p>
+      <UCheckbox class="mt-4" size="lg" label="Show Advanced Settings" v-model="showAdvanced"></UCheckbox>
+      
+      <div v-if="showAdvanced && sync.daktronics.selectedPort === 'MOCK'">
+        <h1>Mock Data Submission</h1>
+        <h2>Bulk Upload</h2>
+        <UAlert color="warning" v-if="mockBulkErrorMsg" :title="mockBulkErrorMsg"></UAlert>
+        <UFileUpload v-model="mockFile" label="Click or drag a file to this area to upload" class="mt-10" @change="uploadChangedEvent">
+        </UFileUpload>
+        <USlider class="mt-10" :tooltip="true" :min="100" :max="100000" v-model="mockBulkDataSliderValue" :step="100" />
+        <UFormField class="mt-10" label="Bitrate (approximate)">
+          <UInputNumber :min="0" v-model="mockBulkDataSliderValue" :step="100" />
+        </UFormField>
 
-      <UAlert v-if="mockBulkDataSliderValue > 19200" class="mt-10" title="Impossible Bitrate"
-        description="In real-world scenarios, bitrate will never exceed 19.2 Kbps (i.e., the baud rate)."
-        color="info"
-        >
-      </UAlert>
+        <UAlert v-if="mockBulkDataSliderValue > 19200" class="mt-10" title="Impossible Bitrate"
+          description="In real-world scenarios, bitrate will never exceed 19.2 Kbps (i.e., the baud rate)."
+          color="info"
+          >
+        </UAlert>
 
-      <UButton
-        class="mt-10"
-        @click="mockBulkButtonClicked"
-        :disabled="mockBulkData === null"
-        :color="mockBulkCurrentlyUploading ? 'error' : 'success'">
-        {{ mockBulkCurrentlyUploading ? "Stop" : "Start" }}
-      </UButton>
-      <div v-if="mockBulkData">
-        <p>Upload Progress</p>
-        <p>{{ progress.toFixed(3) }}%</p>
-        <UProgress v-if="mockBulkData" color="success" v-model="progress"  />
+        <UButton
+          class="mt-10"
+          @click="mockBulkButtonClicked"
+          :disabled="mockBulkData === null"
+          :color="mockBulkCurrentlyUploading ? 'error' : 'success'">
+          {{ mockBulkCurrentlyUploading ? "Stop" : "Start" }}
+        </UButton>
+        <div v-if="mockBulkData">
+          <p>Upload Progress</p>
+          <p>{{ progress.toFixed(3) }}%</p>
+          <UProgress v-if="mockBulkData" color="success" v-model="progress"  />
+        </div>
       </div>
     </div>
+    <SyncOptions />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { UCheckbox } from '#components';
 
 const replicants = await useReplicants();
 const sync = replicants.configuration.sync;
@@ -165,14 +168,7 @@ function uploadChangedEvent(): void {
 		}
 		// File successfully read. Check the file's contents to make sure it's a valid Daktronics RTD feed.
 		const fileContents = new Uint8Array(<ArrayBuffer>readEvent.target.result);
-		// First byte is always 0x16 in a valid RTD feed.
-		// if(fileContents.at(0) !== 0x16) {
-		// 	mockBulkErrorMsg.value = 'That file doesn\'t appear to be a valid Daktronics RTD feed.';
-		// 	mockBulkData.value = null;
-		// } else {
-			mockBulkData.value = fileContents;
-		// 	mockBulkErrorMsg.value = null;
-		// }
+    mockBulkData.value = fileContents;
 	});
 	fr.readAsArrayBuffer(mockFile.value);
 }

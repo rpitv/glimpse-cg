@@ -9,7 +9,7 @@
       <template #default>
         <div>
           <URadioGroup
-            v-model="model"
+            @update:model-value="changeGraphic"
             :items="computedGraphics"
             value-key="val"
             indicator="hidden"
@@ -27,7 +27,7 @@
               <div class="text-left">
                 <div class="flex justify-between">
                   <p class="text-xl">{{ item.label }}</p>
-                  <USwitch v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)" :debounce="75" />
+                  <USwitch v-if="item.label !== 'Custom Graphics'" v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)" :debounce="75" />
                 </div>
               </div>
             </template>
@@ -40,25 +40,23 @@
 
 <script setup lang="ts">
 import type { Channel } from '~/types/replicants';
-import Bug from '../customization/Bug.vue';
-import Commentators from '../customization/Commentators.vue';
-import Copyright from '../customization/Copyright.vue';
-import EndGraphics from '../customization/EndGraphics.vue';
-import GoToBreak from '../customization/GoToBreak.vue';
-import Locator from '../customization/Locator.vue';
-import PlayerBio from '../customization/PlayerBio.vue';
-import Credits from '../customization/Credits.vue';
+import { useGraphicsStore } from '~/store/graphics';
+import Bug from '../customization/bug.vue';
+import Commentators from '../customization/commentators.vue';
+import Copyright from '../customization/copyright.vue';
+import EndGraphics from '../customization/endgraphics.vue';
+import GoToBreak from '../customization/gotobreak.vue';
+import Locator from '../customization/locator.vue';
+import PlayerBio from '../customization/playerbio.vue';
+import Credits from '../customization/credits.vue';
+import CustomGraphics from '../customization/customgraphics.vue';
+import type { Component } from 'vue';
 
 const replicants = await useReplicants();
 const channels = replicants.channels;
 const configuration = replicants.configuration;
-
-const model = defineModel({
-  type: Object as PropType<{
-    name: string;
-    component: Component | null;
-  }>
-});
+const graphicsStore = useGraphicsStore();
+const { selectedGraphic } = graphicsStore;
 
 interface Graphic {
   label: string;
@@ -121,7 +119,18 @@ const graphics: Graphic[] = [
     val: { name: "standings", component: null, reference: "standings" },
     restrictions: [],
   },
+  {
+    label: "Custom Graphics",
+    val: { name: "customgraphics", component: markRaw(CustomGraphics), reference: "customGraphics" },
+    restrictions: [],
+  }
 ];
+
+function changeGraphic(graphicVal: { name: string; component: Component; reference: string }) {
+  selectedGraphic.component = graphicVal.component;
+  selectedGraphic.name = graphicVal.name;
+  selectedGraphic.id = null;
+}
 
 const computedGraphics = computed(() => {
   return graphics.filter((graphic) => {
@@ -129,6 +138,7 @@ const computedGraphics = computed(() => {
     return graphic.restrictions.includes(configuration.style);
   });
 });
+
 
 </script>
 

@@ -5,11 +5,11 @@
         Preview
       </p>
       <br></br>
-      <div v-if="loading &&  selectedGraphic.name">
+      <div v-if="loading &&  graphicsStore.selectedGraphic.name">
         <UProgress indeterminate />
         <p class="text-center">Loading Preview...</p>
       </div>
-      <iframe v-if="selectedGraphic.name" :src="`/display/?preview=${selectedGraphic.name}&dev=1`" @load="loading = false">
+      <iframe v-if="graphicsStore.selectedGraphic.name" :src="`/display/?preview=${graphicsStore.selectedGraphic.name}&dev=1&${graphicsStore.selectedGraphic.id ? `id=${graphicsStore.selectedGraphic.id}` : ''}`" @load="loading = false">
       </iframe>
       <p v-else>No Graphic Selected</p>
     </UCard>
@@ -17,19 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import type { Component } from 'vue';
+import { useGraphicsStore } from '~/store/graphics';
 
+const graphicsStore = useGraphicsStore();
 
 const loading = ref(true);
-const props = defineProps({
-  selectedGraphic: {
-    type: Object as PropType<{ component: Component | null; name: string }> | null,
-    required: true
-  }
-});
 
 
-watch(props, (newValue) => {
+watch(graphicsStore.selectedGraphic, (newValue) => {
+  console.log('selectedGraphic changed:', newValue);
   if (newValue) loading.value = true;
 }, { deep: true });
 
