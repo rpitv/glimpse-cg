@@ -127,9 +127,7 @@ const graphics: Graphic[] = [
 ];
 
 function changeGraphic(graphicVal: { name: string; component: Component; reference: string }) {
-  selectedGraphic.component = graphicVal.component;
-  selectedGraphic.name = graphicVal.name;
-  selectedGraphic.id = null;
+  graphicsStore.setGraphic({ component: graphicVal.component, name: graphicVal.name, id: null });
 }
 
 const computedGraphics = computed(() => {

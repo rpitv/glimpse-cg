@@ -1,8 +1,8 @@
 <template>
   <div id="graphics-dashboard" >
-    <GraphicsList v-model="selectedGraphic" />
+    <GraphicsList />
     <Customization>
-      <component :is="selectedGraphic.component" />
+      <component :is="graphicsStore.selectedGraphic.component" />
     </Customization>
     <Preview />
   </div>

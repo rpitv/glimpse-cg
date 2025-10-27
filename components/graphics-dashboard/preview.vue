@@ -13,7 +13,7 @@
       </iframe>
       <p v-else>No Graphic Selected</p>
       <div v-if="graphicsStore.selectedGraphic.id && graphicsStore.selectedGraphic.name === 'customgraphic' && fullscreen">
-        <UFormField label="Offset X" help="Adjust the horizontal position of this graphic">
+        <UFormField class="mt-4" label="Offset X" help="Adjust the horizontal position of this graphic">
           <UInputNumber
             v-model="currentGraphic!.offsetX"
           />
@@ -77,7 +77,11 @@ const fullscreen = computed({
 const currentGraphic = ref(fullscreen.value?.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id));
 
 watch(() => graphicsStore.selectedGraphic, () => {
-  currentGraphic.value = fullscreen.value.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id);
+  if (graphicsStore.selectedGraphic.name !== 'customgraphic') {
+    graphicsStore.selectedGraphic.id = null;
+  } else {
+    currentGraphic.value = fullscreen.value.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id);
+  }
 });
 
 watch(currentGraphic, (newVal) => {

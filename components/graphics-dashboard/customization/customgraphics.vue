@@ -140,6 +140,9 @@ function confirmDelete(index: number) {
 function performDelete() {
   if (deleteIndex.value !== null) {
     deleteCustomGraphic(customGraphicsRef.value[deleteIndex.value]!._id);
+    if (graphicsStore.selectedGraphic.id === customGraphicsRef.value[deleteIndex.value]!._id) {
+      graphicsStore.setGraphic({ component: null, name: 'customgraphic', id: null });
+    }
     customGraphicsRef.value = customGraphicsRef.value.filter((_, i) => i !== deleteIndex.value);
     deleteIndex.value = null;
     deleteModalState.value = false;
