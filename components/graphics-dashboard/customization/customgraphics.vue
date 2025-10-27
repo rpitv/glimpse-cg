@@ -38,7 +38,7 @@
           </td>
           <td class="p-2">
             <div class="flex justify-center gap-2">
-              <UButton @click.stop="toggleCustomGraphic(graphic._id)" variant="outline" :color="channelsRef[index]?.show ? 'neutral' : 'primary'">
+              <UButton @click.stop="toggleCustomGraphic(index)" variant="outline" :color="channelsRef[index]?.show ? 'neutral' : 'primary'">
                 {{ channelsRef[index]?.show ? 'Hide' : 'Show' }}
               </UButton>
               <UButton color="error" variant="outline" @click.stop="confirmDelete(index)">Delete</UButton>
@@ -65,7 +65,7 @@
 <script lang="ts" setup>
 import { CustomGraphic } from '~/types/replicants';
 import { useGraphicsStore } from '~/store/graphics';
-import customgraphics from '~/components/graphics-dashboard/customization/customgraphics.vue';
+import customgraphics from './customgraphics.vue';
 
 const toast = useToast();
 const graphicsStore = useGraphicsStore();
@@ -88,8 +88,6 @@ const deleteIndex = ref<number | null>(null);
 
 const selectRow = (index: number) => {
   if (index !== null) {
-    console.log('selectRow called with index:', index);
-    console.log('Graphic at index:', customGraphicsRef.value[index]);
     const graphic = customGraphicsRef.value[index]!;
     graphicsStore.setGraphic({ component: markRaw(customgraphics), name: 'customgraphic', id: graphic._id });
   } else {
@@ -154,8 +152,8 @@ function performDelete() {
 }
 
 function addCustomGraphic(id: string) {
-  channelsRef.value = [
-    ...(channelsRef.value || []),
+  replicants.channels[0]!.custom = [
+    ...(replicants.channels[0]!.custom || []),
     {
       id,
       show: false,
@@ -163,18 +161,14 @@ function addCustomGraphic(id: string) {
   ];
 }
 
-function toggleCustomGraphic(id: string) {
-  const graphic = replicants.channels[0]?.custom.find(g => g.id === id);
-  if (graphic) {
-    graphic.show = !graphic.show;
-  }
-  channelsRef.value = channelsRef.value;
+async function toggleCustomGraphic(index: number) {
+  replicants.channels[0]!.custom[index]!.show = !replicants.channels[0]!.custom[index]!.show;
+  replicants.channels[0]!.custom = [...replicants.channels[0]!.custom];
 }
 
 function deleteCustomGraphic(id: string) {
   channelsRef.value = channelsRef.value.filter(g => g.id !== id);
 }
-
 </script>
 
 <style scoped>
