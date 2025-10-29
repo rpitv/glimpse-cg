@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   nitro: {
     experimental: {
-      websocket: true
+      websocket: true,
     }
   }
 })
