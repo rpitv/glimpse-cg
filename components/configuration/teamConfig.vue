@@ -73,9 +73,6 @@
           <UFormField label="Athletics URL">
             <UInput class="w-full" v-model="configuration[props.teamSide].athletics" />
           </UFormField>
-          <UFormField class="mt-2" label="Special (CHECK THIS BOX IF ITS BROWN)">
-            <UCheckbox v-model="configuration[props.teamSide].special" />
-          </UFormField>
         </div>
       </template>
     </UCollapsible>
@@ -110,7 +107,6 @@ function loadPreset(school: Configuration['awayTeam' | 'homeTeam']) {
   configuration[props.teamSide].secondaryColor = school.secondaryColor;
   configuration[props.teamSide].logo = school.logo;
   configuration[props.teamSide].athletics = school.athletics || '';
-  configuration[props.teamSide].special = school.special || false;
   toast.add({
     title: 'Preset Loaded',
     description: `Loaded preset for ${school.schoolName}`,

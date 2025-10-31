@@ -12,7 +12,7 @@
       <USwitch v-model="playerBio.info.show" label="Show Additional Info" />
     </UFormField>
     <USeparator class="mt-4" size="md"/>
-    <div class="mt-4 flex gap-4 max-height">
+    <div class="mt-4 flex gap-4">
       <div v-if="!loading" v-for="i in 2" :key="i" class="w-full">
         <UInput v-if="i === 1" v-model="awaySearchPlayer" class="mt-2 w-full" size="md" variant="outline" placeholder="Search away player">
           <template #leading>
@@ -24,24 +24,26 @@
             <FontAwesomeIcon :icon="['fa', 'magnifying-glass']" class="inline-block align-middle" />
           </template>
         </UInput>
-        <URadioGroup :color="i === 1 ? 'error' : 'success'" class="w-full mt-4"
-          :items="i === 1 ? filteredAwayPlayers.map((player) => ({ name: player.name, value: { ...player } })) : filteredHomePlayers.map((player) => ({ name: player.name, value: { ...player } }))" label-key="name" variant="table" indicator="hidden" 
-          :ui="{
-            item: '!rounded-none hover:bg-gray-100 dark:hover:bg-gray-800',
-          }" 
-          v-model="selectedPlayer"
-          @update:model-value="updateSelectedPlayer(i)"
-        >
-          <template #label="{ item }">
-            <div class="flex items-center gap-2">
-              <img :src="item.value!.image" alt="Player Image" class="w-12 h-12 object-cover rounded" />
-              <div class="text-left">
-                <div class="font-bold"><span class="text-sm">#{{ item.value!.number }}</span> {{ item.value!.name }}</div>
-                <div class="text-sm ">{{ item.value!.position }} - {{ item.value!.year }}</div>
+        <div class="max-height"> 
+          <URadioGroup :color="i === 1 ? 'error' : 'success'" class="w-full mt-4"
+            :items="i === 1 ? filteredAwayPlayers.map((player) => ({ name: player.name, value: { ...player } })) : filteredHomePlayers.map((player) => ({ name: player.name, value: { ...player } }))" label-key="name" variant="table" indicator="hidden" 
+            :ui="{
+              item: '!rounded-none hover:bg-gray-100 dark:hover:bg-gray-800',
+            }" 
+            v-model="selectedPlayer"
+            @update:model-value="updateSelectedPlayer(i)"
+          >
+            <template #label="{ item }">
+              <div class="flex items-center gap-2">
+                <img :src="item.value!.image" alt="Player Image" class="w-12 h-12 object-cover rounded" />
+                <div class="text-left">
+                  <div class="font-bold"><span class="text-sm">#{{ item.value!.number }}</span> {{ item.value!.name }}</div>
+                  <div class="text-sm ">{{ item.value!.position }} - {{ item.value!.year }}</div>
+                </div>
               </div>
-            </div>
-          </template>
-        </URadioGroup>
+            </template>
+          </URadioGroup>
+        </div>
       </div>
       <div class="w-full h-full text-center" v-else>
         <UProgress></UProgress>
@@ -93,30 +95,67 @@ async function refresh() {
   loading.value = false;
 }
 
-function setPlayers(teamPlayers: string, team: "home" | "away"): Player[] {
-  const teamDOM = domParser.parseFromString(teamPlayers, "text/html");
-  const playersDOM = teamDOM.querySelectorAll(".sidearm-roster-player");
+function setPlayers(teamPlayers: { html: string, new: boolean}, team: "home" | "away"): Player[] {
+  const teamDOM = domParser.parseFromString(teamPlayers.html, "text/html");
   let players: Player[] = [];
-  playersDOM.forEach((player) => {
-    let imageLink = null;
-    if (player.querySelector("img")?.dataset.src)
-      imageLink = ((team === "home" ? homeTeam.value.athletics : awayTeam.value.athletics) + player.querySelector("img")?.dataset.src)
-        .replace(/(width=)\d+/, '$1300')
-        .replace(/(quality=)\d+/, '$170');
-		players.push({
-			custom1: player.querySelector(".sidearm-roster-player-custom1")?.textContent?.trim() ?? null,
-			custom2: player.querySelector(".sidearm-roster-player-custom2")?.textContent?.trim() ?? null,
-			height: player.querySelector(".sidearm-roster-player-height")?.textContent?.trim() as string,
-			hometown: player.querySelector(".sidearm-roster-player-hometown")?.textContent?.trim() as string,
-			image: imageLink || rpitvlogo,
-			name: player.querySelector("h3")?.textContent?.trim() as string,
-			number: player.querySelector(".sidearm-roster-player-jersey-number")?.textContent?.trim() as string,
-			position: player.querySelector(".sidearm-roster-player-position-long-short")?.textContent?.trim() as string,
-			previousTeam: player.querySelector(".sidearm-roster-player-highschool")?.textContent?.trim() as string,
-			weight: player.querySelector(".sidearm-roster-player-weight")?.textContent?.trim() as string,
-			year: player.querySelector(".sidearm-roster-player-academic-year")?.textContent?.trim() as string,
-		});
-	});
+  if (teamPlayers.new) {
+    const playersGrid = teamDOM.querySelector(".c-rosterpage__players--rail");
+    const playersDOM = playersGrid?.querySelectorAll(".s-person-card");
+    playersDOM?.forEach((player) => {
+      const name = player.querySelector(".s-person-card__header__person-details-personal__name")?.querySelector("span")?.textContent;
+      const image = player.querySelector('[data-test-id="s-image-resized__img"]')?.getAttribute("src") || rpitvlogo
+      const position = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-position-short"]');
+      position?.querySelector("span")?.remove();
+      const year = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-academic-year-short"]');
+      year?.querySelector("span")?.remove();
+      const height = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-height"]');
+      height?.querySelector("span")?.remove();
+      const weight = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-weight"]')
+      weight?.querySelector("span")?.remove();
+      const hometown = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-home-town"]')
+      hometown?.querySelector("span")?.remove();
+      hometown?.querySelector("svg")?.remove();
+      const number = player.querySelector('[data-test-id="s-stamp__root"]')?.querySelector("span")
+      number?.querySelector("span")?.remove();
+      players.push({
+        custom1: null,
+        custom2: null,
+        height: height?.textContent?.trim() as string,
+        hometown: hometown?.textContent?.trim() as string,
+        image: image,
+        name: name as string,
+        number: number?.textContent?.trim() as string,
+        position: position?.textContent?.trim() as string,
+        previousTeam: "",
+        weight: weight?.textContent?.trim() as string,
+        year: year?.textContent?.trim() as string,
+      });
+    });
+  } else {
+    const playersDOM = teamDOM.querySelectorAll(".sidearm-roster-player");
+    // new sidearms format
+    
+    playersDOM.forEach((player) => {
+      let imageLink = null;
+      if (player.querySelector("img")?.dataset.src)
+        imageLink = ((team === "home" ? homeTeam.value.athletics : awayTeam.value.athletics) + player.querySelector("img")?.dataset.src)
+          .replace(/(width=)\d+/, '$1300')
+          .replace(/(quality=)\d+/, '$170');
+      players.push({
+        custom1: player.querySelector(".sidearm-roster-player-custom1")?.textContent?.trim() ?? null,
+        custom2: player.querySelector(".sidearm-roster-player-custom2")?.textContent?.trim() ?? null,
+        height: player.querySelector(".sidearm-roster-player-height")?.textContent?.trim() as string,
+        hometown: player.querySelector(".sidearm-roster-player-hometown")?.textContent?.trim() as string,
+        image: imageLink || rpitvlogo,
+        name: player.querySelector("h3")?.textContent?.trim() as string,
+        number: player.querySelector(".sidearm-roster-player-jersey-number")?.textContent?.trim() as string,
+        position: player.querySelector(".sidearm-roster-player-position-long-short")?.textContent?.trim() as string,
+        previousTeam: player.querySelector(".sidearm-roster-player-highschool")?.textContent?.trim() as string,
+        weight: player.querySelector(".sidearm-roster-player-weight")?.textContent?.trim() as string,
+        year: player.querySelector(".sidearm-roster-player-academic-year")?.textContent?.trim() as string,
+      });
+    });
+  }
   return players;
 }
 
@@ -169,7 +208,7 @@ onMounted(() => {
 
 <style scoped>
 .max-height {
-  max-height: 50vh;
+  max-height: 45vh;
   overflow-y: auto;
 }
 </style>

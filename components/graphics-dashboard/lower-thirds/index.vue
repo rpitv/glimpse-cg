@@ -92,7 +92,7 @@ const graphics: Graphic[] = [
   {
     label: "End Graphics",
     val: { name: "endgraphics", component: markRaw(EndGraphics), reference: "endGraphic" },
-    restrictions: [],
+    restrictions: ["rpitv"],
   },
   {
     label: "Go To Break",

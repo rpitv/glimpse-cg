@@ -1,4 +1,5 @@
 import { replicants } from "~/utils/replicants";
+import puppeteer from "puppeteer";
 
 export default defineEventHandler(async (event) => {
   const configuration = replicants.configuration;
@@ -45,10 +46,32 @@ export default defineEventHandler(async (event) => {
 
   awayPlayers += suffix;
   homePlayers += suffix;
+
+  const {html: awayHTML, new: awayNew } = await checkForButton(awayPlayers);
+  const {html: homeHTML, new: homeNew} = await checkForButton(homePlayers);
+
   return {
-    awayPlayers: await fetch(awayPlayers)
-      .then(async (response) => await response.text()).catch(() => ""),
-    homePlayers: await fetch(homePlayers)
-      .then(async (response) => await response.text()).catch(() => ""),
+    awayPlayers: {
+      html: awayHTML,
+      new: awayNew
+    },
+    homePlayers: {
+      html: homeHTML,
+      new: homeNew
+    }
   }
-})
+});
+
+async function checkForButton(url: string) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: 'networkidle2' });
+  const button = await page.$('#_viewType_card');
+
+  if (button) {
+    await button.click();
+  }
+  const html = await page.content();
+  await browser.close();
+  return { html, new: !!button};
+}

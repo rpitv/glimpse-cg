@@ -34,13 +34,12 @@
   },
   {
     "abbr": "BROWN",
-  "athletics": "https://brownbears.com",
+    "athletics": "https://brownbears.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fBrown_logo_200x200.png&height=200&width=200&type=webp",
     "primaryColor": "#4E3629",
     "schoolName": "Brown University",
     "secondaryColor": "#7C2529",
     "shortName": "Brown",
-    "special": true,
     "teamName": "Bears"
   },
   {

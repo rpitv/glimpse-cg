@@ -5,7 +5,7 @@
         Preview
       </p>
       <br></br>
-      <div v-if="loading &&  graphicsStore.selectedGraphic.name">
+      <div v-if="loading && graphicsStore.selectedGraphic.name">
         <UProgress indeterminate />
         <p class="text-center">Loading Preview...</p>
       </div>
@@ -76,12 +76,14 @@ const fullscreen = computed({
 });
 const currentGraphic = ref(fullscreen.value?.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id));
 
-watch(() => graphicsStore.selectedGraphic, () => {
-  if (graphicsStore.selectedGraphic.name !== 'customgraphic') {
+watch(() => graphicsStore.selectedGraphic, (n, o) => {
+  if (n.name !== o.name || n.id !== o.id) 
+    loading.value = true;
+  
+  if (graphicsStore.selectedGraphic.name !== 'customgraphic') 
     graphicsStore.selectedGraphic.id = null;
-  } else {
+  else 
     currentGraphic.value = fullscreen.value.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id);
-  }
 });
 
 watch(currentGraphic, (newVal) => {
@@ -93,10 +95,6 @@ watch(currentGraphic, (newVal) => {
     }
   }
 }, { deep: true });
-
-onMounted(() => {
-  loading.value = false;
-});
 </script>
 
 <style>

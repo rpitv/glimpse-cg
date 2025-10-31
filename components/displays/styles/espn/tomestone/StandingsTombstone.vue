@@ -31,15 +31,14 @@
 <script setup lang="ts">
 import { StandingsTeam } from "~/utils/standings";
 import TombstoneBuilder from "./TombstoneBuilder.vue";
-import type { Fullscreen } from "~/types/replicants";
 
 const replicants = await useReplicants();
 const standings = replicants.fullscreen.standings;
 
 function sortByPosition(a: StandingsTeam, b: StandingsTeam) {
   if (a.position < b.position)
-      return -1;
-if (a.position > b.position)
+    return -1;
+  if (a.position > b.position)
     return 1;
   return 0;
 }
@@ -47,88 +46,88 @@ if (a.position > b.position)
 
 <style scoped lang="scss">
 @font-face {
-    font-family: "swiss721_bold";
-    src: url('~/assets/espn/Swiss721Medium.ttf')
+  font-family: "swiss721_bold";
+  src: url('~/assets/espn/Swiss721Medium.ttf')
 }
 
 .tombstone {
-    font-family: "swiss721_med";
-    bottom: 7vh;
-    left: 5vw;
-    width: 36vw;
+  font-family: "swiss721_med";
+  bottom: 7vh;
+  left: 5vw;
+  width: 36vw;
 }
 
 .header {
-    background-color: white;
-    display: flex;
-    align-items: center;
-    padding: 0.5vw;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 0.5vw;
 }
 
 .header-img {
-    height: 4vh;
+  height: 4vh;
 }
 
 .header-text {
-    display: flex;
-    flex-direction: column;
-    padding-left: 1vw;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1vw;
 }
 
 .header-main {
-    font-size: 4.2vh;
+  font-size: 4.2vh;
 }
 
 .header-sub {
-    font-size: 2vh;
-    white-space: pre-wrap;
+  font-size: 2vh;
+  white-space: pre-wrap;
 }
 
 table, th, td {
-    border: 4px solid #B4B4B4;
-    border-collapse: collapse;
+  border: 4px solid #B4B4B4;
+  border-collapse: collapse;
 }
 
 table {
-    width: 100%;
-    background: #ececee;
+  width: 100%;
+  background: #ececee;
 }
 
 tr {
-    height: 2.8vh;
+  height: 2.8vh;
 }
 
 tbody td {
-    padding-left:  0.5vw;
-    padding-right: 0.5vw;
+  padding-left:  0.5vw;
+  padding-right: 0.5vw;
 }
 
 td.logo {
-    width: 4vw;
-    height: inherit;
+  width: 4vw;
+  height: inherit;
 }
 
 td.logo img {
-    height: 3.5vh;
-    display: block;
-    margin: auto;
+  height: 3.5vh;
+  display: block;
+  margin: auto;
 }
 
 td.name {
-    width: 18vw;
-    font-size: 2.5vh;
-    padding-left: 0.5vw;
+  width: 18vw;
+  font-size: 2.5vh;
+  padding-left: 0.5vw;
 }
 
 td.record {
-    width: 8vw;
-    font-size: 2.5vh;
-    text-align: center;
+  width: 8vw;
+  font-size: 2.5vh;
+  text-align: center;
 }
 
 td.points {
-    width: 4vw;
-    font-size: 2.5vh;
-    text-align: center;
+  width: 4vw;
+  font-size: 2.5vh;
+  text-align: center;
 }
 </style>
