@@ -3,10 +3,12 @@
     <UCard class="rounded-none">
       <u class="text-[20px]">SCORE</u>
       <div class="flex justify-center items-center gap-4">
-        <p class="text-5xl">{{ teamScoreboard!.score }}</p>
+        <p class="text-5xl">
+          {{ teamScoreboard!.score }}
+        </p>
       </div>
       <UModal
-	      :ui="{
+        :ui="{
           content: 'max-w-3xl',
         }"
       >
@@ -26,28 +28,75 @@
         <template #content>
           <UCard>
             <template #header>
-              <p class="text-2xl">Edit <b>{{ teamScoreboard!.name || configuration[team].abbr }}</b> Visuals</p>
+              <p class="text-2xl">
+                Edit <b>{{ teamScoreboard!.name || configuration[team].abbr }}</b> Visuals
+              </p>
             </template>
             <template #default>
               <div class="flex justify-between">
                 <div class="w-full">
-                  <UFormField label="Team Name" help="The name of the team.">
-                    <UInput v-model="teamScoreboard!.name" :placeholder="configuration[team].abbr" />
+                  <UFormField
+                    label="Team Name"
+                    help="The name of the team."
+                  >
+                    <UInput
+                      v-model="teamScoreboard!.name"
+                      :placeholder="configuration[team].abbr"
+                    />
                   </UFormField>
-                  <ColorPicker v-model="teamScoreboard!.nameColor" class="mt-4"  label="Team Name Color" help="The color for the team name" />
-                  <UFormField class="mt-4" label="Team Name Size" help="Adjust the size of the team name.">
-                    <UInputNumber v-model="teamScoreboard!.nameSize" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
+                  <ColorPicker
+                    v-model="teamScoreboard!.nameColor"
+                    class="mt-4"
+                    label="Team Name Color"
+                    help="The color for the team name"
+                  />
+                  <UFormField
+                    class="mt-4"
+                    label="Team Name Size"
+                    help="Adjust the size of the team name."
+                  >
+                    <UInputNumber
+                      v-model="teamScoreboard!.nameSize"
+                      :step="0.1"
+                      :format-options="{ minimumFractionDigits: 1 }"
+                    />
                   </UFormField>
-                  <UFormField class="mt-4" label="Team Logo" help="The logo of the team.">
-                    <UInput v-model="teamScoreboard!.logo" class="w-full" :placeholder="configuration[team].logo" />
+                  <UFormField
+                    class="mt-4"
+                    label="Team Logo"
+                    help="The logo of the team."
+                  >
+                    <UInput
+                      v-model="teamScoreboard!.logo"
+                      class="w-full"
+                      :placeholder="configuration[team].logo"
+                    />
                   </UFormField>
-                  <UFormField class="mt-4" label="Team Logo Size" help="Adjust the size of the team logo.">
-                    <UInputNumber v-model="teamScoreboard!.logoSize" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
+                  <UFormField
+                    class="mt-4"
+                    label="Team Logo Size"
+                    help="Adjust the size of the team logo."
+                  >
+                    <UInputNumber
+                      v-model="teamScoreboard!.logoSize"
+                      :step="0.1"
+                      :format-options="{ minimumFractionDigits: 1 }"
+                    />
                   </UFormField>
                 </div>
                 <div class="w-full">
-                  <ColorPicker v-model="teamScoreboard!.primaryColor" label="Primary Color" help="The primary color of the team." :placeholder="configuration[team].primaryColor"/>
-                  <ColorPicker v-model="teamScoreboard!.secondaryColor" label="Secondary Color" help="The secondary color of the team." :placeholder="configuration[team].secondaryColor" />
+                  <ColorPicker
+                    v-model="teamScoreboard!.primaryColor"
+                    label="Primary Color"
+                    help="The primary color of the team."
+                    :placeholder="configuration[team].primaryColor"
+                  />
+                  <ColorPicker
+                    v-model="teamScoreboard!.secondaryColor"
+                    label="Secondary Color"
+                    help="The secondary color of the team."
+                    :placeholder="configuration[team].secondaryColor"
+                  />
                 </div>
               </div>
             </template>
@@ -57,8 +106,15 @@
     </UCard>
     <UCard class="rounded-none">
       <template #footer>
-        <UTooltip text="Controls cannot be edited when sync is enabled." :disabled="!sync[team].score">
-          <UInputNumber :disabled="sync[team].score" v-model="teamScoreboard!.score" size="xl" />
+        <UTooltip
+          text="Controls cannot be edited when sync is enabled."
+          :disabled="!sync[team].score"
+        >
+          <UInputNumber
+            v-model="teamScoreboard!.score"
+            :disabled="sync[team].score"
+            size="xl"
+          />
         </UTooltip>
       </template>
     </UCard>
@@ -73,11 +129,10 @@ const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const sync = configuration.sync;
 
-const teamScoreboard = defineModel<Scoreboard["homeTeam" | "awayTeam"]>();
+const teamScoreboard = defineModel<Scoreboard['homeTeam' | 'awayTeam']>();
 defineProps<{
-  team: "awayTeam" | "homeTeam",
+  team: 'awayTeam' | 'homeTeam';
 }>();
-
 </script>
 
 <style>

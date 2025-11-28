@@ -1,4 +1,4 @@
-import { replicants } from "~/utils/replicants";
+import { replicants } from '~/utils/replicants';
 
 // Endpoint handler
 function handleLowerThirdScoreboard(params: any) {
@@ -8,13 +8,13 @@ function handleLowerThirdScoreboard(params: any) {
       statusCode: 400,
       body: {
         code: 400,
-        msg: "missing description, underscores _ will be replaced with spaces. config/lt-scoreboard/__DESCRIPTION__/__FONT_SIZE_0.0__/__TIMER_ON__"
-      }
+        msg: 'missing description, underscores _ will be replaced with spaces. config/lt-scoreboard/__DESCRIPTION__/__FONT_SIZE_0.0__/__TIMER_ON__',
+      },
     };
   }
-  const description = param1.replace(/_+/g, " ");
+  const description = param1.replace(/_+/g, ' ');
   const size = parseFloat(param2);
-  const timer = !!(param3 && param3 === "true");
+  const timer = !!(param3 && param3 === 'true');
   const config = replicants.lowerThird.goToBreak;
   config.description.text = description;
   if (size != null) config.description.fontSize = size;
@@ -23,16 +23,16 @@ function handleLowerThirdScoreboard(params: any) {
     statusCode: 200,
     body: {
       code: 200,
-      msg: "parsed config",
+      msg: 'parsed config',
       description,
       size,
-      timer
-    }
+      timer,
+    },
   };
 }
 
 const endpointsConfigs = {
-  "lt-scoreboard": handleLowerThirdScoreboard
+  'lt-scoreboard': handleLowerThirdScoreboard,
 };
 
 // Main Nuxt API handler
@@ -44,7 +44,7 @@ export default async function config(event: any, paramsArr: string[]) {
   if (!endpointsConfigs[endpoint as keyof typeof endpointsConfigs]) {
     return {
       statusCode: 400,
-      body: { code: 400, msg: `invalid endpoint in config '${endpoint}'` }
+      body: { code: 400, msg: `invalid endpoint in config '${endpoint}'` },
     };
   }
   return endpointsConfigs[endpoint as keyof typeof endpointsConfigs](params);

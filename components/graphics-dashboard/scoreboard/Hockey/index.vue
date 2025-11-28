@@ -3,19 +3,40 @@
     <div>
       <UCard class="rounded-none">
         <template #header>
-          <USwitch v-model="channels[0]!.scoreboard" label="Scorebug Control" size="xl" :ui="{
-            label: 'text-2xl',
-          }" description="Turn on or off the scorebug" />
+          <USwitch
+            v-model="channels[0]!.scoreboard"
+            label="Scorebug Control"
+            size="xl"
+            :ui="{
+              label: 'text-2xl',
+            }"
+            description="Turn on or off the scorebug"
+          />
         </template>
       </UCard>
       <div class="flex justify-center">
-        <TeamScore v-model="awayTeamScoreboard" team="awayTeam" />
-        <TeamScore v-model="homeTeamScoreboard" team="homeTeam" />
+        <TeamScore
+          v-model="awayTeamScoreboard"
+          team="awayTeam"
+        />
+        <TeamScore
+          v-model="homeTeamScoreboard"
+          team="homeTeam"
+        />
       </div>
       <UCard class="rounded-none">
         <template #footer>
-          <USwitch v-model="replicants.channels[0]!.sog" size="xl" label="Display SOG"/>
-          <USwitch v-model="replicants.channels[0]!.faceoff" class="mt-4" size="xl" label="Display Faceoffs"/>
+          <USwitch
+            v-model="replicants.channels[0]!.sog"
+            size="xl"
+            label="Display SOG"
+          />
+          <USwitch
+            v-model="replicants.channels[0]!.faceoff"
+            class="mt-4"
+            size="xl"
+            label="Display Faceoffs"
+          />
         </template>
       </UCard>
       <UCard class="rounded-none mt-8">
@@ -23,19 +44,28 @@
           <b class="text-2xl">Announcement Control</b>
         </template>
         <div class="grid grid-cols-2 gap-4 mt-4">
-          <AnnouncemntSection :section="replicants.scoreboard.awayTeam" name="Away" />
-          <AnnouncemntSection :section="replicants.scoreboard.homeTeam" name="Home" />
-          <AnnouncemntSection class="mt-4" :section="replicants.scoreboard" name="Global"/>
+          <AnnouncemntSection
+            :section="replicants.scoreboard.awayTeam"
+            name="Away"
+          />
+          <AnnouncemntSection
+            :section="replicants.scoreboard.homeTeam"
+            name="Home"
+          />
+          <AnnouncemntSection
+            class="mt-4"
+            :section="replicants.scoreboard"
+            name="Global"
+          />
         </div>
       </UCard>
     </div>
     <div>
       <ClockControl />
-      <PeriodControl class="mt-8"/>
+      <PeriodControl class="mt-8" />
       <ShootoutControl class="mt-8" />
     </div>
-    <div>
-    </div>
+    <div />
   </div>
 </template>
 

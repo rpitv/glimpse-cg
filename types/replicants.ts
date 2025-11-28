@@ -1,27 +1,27 @@
-import type { Announcement } from "~/utils/announcement";
-import type { StandingsTeam } from "~/utils/standings";
-import { v4 } from "uuid";
+import type { Announcement } from '~/utils/announcement';
+import type { StandingsTeam } from '~/utils/standings';
+import { v4 } from 'uuid';
 
 export const defaultLowerThird = {
   bottomTextBar: {
     greyText: {
-      text: "",
+      text: '',
       alignment: 'center' as 'left' | 'center' | 'right',
       textSize: 0,
       offsetX: 0,
       offsetY: 0,
       textColor: '#FFFFFF',
-      bgColor: '#000000'
+      bgColor: '#000000',
     },
     redText: {
-      text: "",
-      alignment: "center" as 'left' | 'center' | 'right',
+      text: '',
+      alignment: 'center' as 'left' | 'center' | 'right',
       textSize: 0,
       offsetX: 0,
       offsetY: 0,
       textColor: '#FFFFFF',
-      autoResize: false
-    }
+      autoResize: false,
+    },
   },
   bug: {
     offsetX: 0,
@@ -56,7 +56,7 @@ export const defaultLowerThird = {
       text: '',
       autoFit: false,
     },
-    awayTeam : {
+    awayTeam: {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -69,7 +69,7 @@ export const defaultLowerThird = {
       primaryColor: '',
       secondaryColor: '',
     },
-    homeTeam : {
+    homeTeam: {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -88,7 +88,7 @@ export const defaultLowerThird = {
   locator: {
     offsetX: 0,
     offsetY: 0,
-    awayTeam : {
+    awayTeam: {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -98,7 +98,7 @@ export const defaultLowerThird = {
       primaryColor: '',
       secondaryColor: '',
     },
-    homeTeam : {
+    homeTeam: {
       name: '',
       nameColor: '',
       nameSize: 0,
@@ -132,20 +132,20 @@ export const defaultLowerThird = {
       height: '',
       year: '',
       weight: '',
-      hometown: ''
-    }
-  }
-}
+      hometown: '',
+    },
+  },
+};
 
 export class Commentator {
-  public _id: string
-  public name: string
-  public nameColor: string
-  public nameSize: number
-  public description: string
-  public descriptionColor: string
-  public descriptionSize: number
-  public constructor(name="", nameColor="", nameSize=0, description="", descriptionColor="", descriptionSize=0) {
+  public _id: string;
+  public name: string;
+  public nameColor: string;
+  public nameSize: number;
+  public description: string;
+  public descriptionColor: string;
+  public descriptionSize: number;
+  public constructor(name = '', nameColor = '', nameSize = 0, description = '', descriptionColor = '', descriptionSize = 0) {
     this._id = v4();
     this.name = name;
     this.nameColor = nameColor;
@@ -159,7 +159,7 @@ export class Commentator {
 export const defaultConfiguration = {
   style: 'rpitv' as 'rpitv' | 'espn' | 'football',
   // Based on the selected sport, it will attempt to fetch different data from athletics.
-  sport: 'hockey' as 'hockey' | 'football' | 'acha' | 'lacrosse' |'basketball' | 'soccer',
+  sport: 'hockey' as 'hockey' | 'football' | 'acha' | 'lacrosse' | 'basketball' | 'soccer',
   type: 'men' as 'men' | 'women',
   awayTeam: {
     // The abbreviation of the school, typically 3-5 characters.
@@ -175,7 +175,7 @@ export const defaultConfiguration = {
     secondaryColor: '#FFFFFF',
     // :)
     special: false,
-    athletics: ''
+    athletics: '',
   },
   homeTeam: {
     // The abbreviation of the school, typically 3-5 characters.
@@ -191,7 +191,7 @@ export const defaultConfiguration = {
     secondaryColor: '#FFFFFF',
     // :)
     special: false,
-    athletics: ''
+    athletics: '',
   },
   sync: {
     daktronics: {
@@ -200,46 +200,46 @@ export const defaultConfiguration = {
       status: {
         bitrate: 0,
         error: false,
-        errorMsg: "",
+        errorMsg: '',
         connected: false,
       },
       selectedPort: undefined as string | undefined,
       mock: {
-        packet: [] as number[]
-      }
+        packet: [] as number[],
+      },
     },
     clock: true,
     period: true,
     awayTeam: {
       score: true,
       football: {
-        timeouts: true
+        timeouts: true,
       },
       hockey: {
         faceoff: true,
         sog: true,
-        penalty: true
-      }
+        penalty: true,
+      },
     },
     homeTeam: {
       score: true,
       football: {
-        timeouts: true
+        timeouts: true,
       },
       hockey: {
         faceoff: true,
         sog: true,
-        penalty: true
-      }
+        penalty: true,
+      },
     },
     football: {
       downs: true,
       yardsToGo: true,
       possession: true,
       playClock: true,
-    }
-  }
-}
+    },
+  },
+};
 
 export const defaultScoreboard = {
   offsetX: 0,
@@ -281,12 +281,12 @@ export const defaultScoreboard = {
     length: 3,
     overtime: {
       count: 0,
-      length: 0
-    }
+      length: 0,
+    },
   },
   hockey: {
     shootout: {
-      // Should the period count exceed its length + OT length, it will 
+      // Should the period count exceed its length + OT length, it will
       // be considered a shootout and the period will be rendered as S/O.
       enabled: false,
       round: 0,
@@ -297,15 +297,15 @@ export const defaultScoreboard = {
       penalty: {
         player1: {
           number: '',
-          timer: ''
+          timer: '',
         },
         player2: {
           number: '',
-          timer: ''
-        }
+          timer: '',
+        },
       },
       sog: 0,
-      faceoff: 0
+      faceoff: 0,
     },
     homeTeam: {
       // The score is an array of booleans, where each boolean represents a goal scored in the shootout.
@@ -313,15 +313,15 @@ export const defaultScoreboard = {
       penalty: {
         player1: {
           number: '',
-          timer: ''
+          timer: '',
         },
         player2: {
           number: '',
-          timer: ''
-        }
+          timer: '',
+        },
       },
       sog: 0,
-      faceoff: 0
+      faceoff: 0,
     },
   },
   // We're in America
@@ -336,9 +336,9 @@ export const defaultScoreboard = {
     },
     homeTeam: {
       timeouts: 3,
-    }
-  }
-}
+    },
+  },
+};
 
 export const defaultFullscreen = {
   credits: {
@@ -346,12 +346,12 @@ export const defaultFullscreen = {
   },
   standings: {
     teams: [] as StandingsTeam[],
-    title: "",
-    subtitle: "",
-    headerLogoLink: "",
+    title: '',
+    subtitle: '',
+    headerLogoLink: '',
   },
-  custom: [] as CustomGraphic[]
-}
+  custom: [] as CustomGraphic[],
+};
 
 export const defaultExternal = {
   awayTeam: {
@@ -359,8 +359,8 @@ export const defaultExternal = {
   },
   homeTeam: {
     athleticsURL: '',
-  }
-}
+  },
+};
 
 export class CustomGraphic {
   public _id: string;
@@ -384,16 +384,16 @@ export class CustomGraphic {
 
 export class Credit {
   public _id: string;
-	public people: string[] = [];
-	public peopleColor = "";
-	public peopleSize = 0;
-	public title = "";
-	public titleColor = "";
-	public titleSize = 0;
+  public people: string[] = [];
+  public peopleColor = '';
+  public peopleSize = 0;
+  public title = '';
+  public titleColor = '';
+  public titleSize = 0;
 
-	public constructor() {
+  public constructor() {
     this._id = v4();
-	}
+  }
 }
 
 export class Channel {
@@ -418,20 +418,21 @@ export class Channel {
     id: string;
     show: boolean;
   }[] = [];
-  public constructor() {
-  }
+
   public addCustomGraphic(id: string) {
     this.custom.push({
       id,
-      show: false
+      show: false,
     });
   }
+
   public updateCustomGraphic(id: string, show: boolean) {
     const graphic = this.custom.find(g => g.id === id);
     if (graphic) {
       graphic.show = show;
     }
   }
+
   public deleteCustomGraphic(id: string) {
     this.custom = this.custom.filter(g => g.id !== id);
   }
@@ -446,7 +447,7 @@ export const defaultReplicants = {
   fullscreen: defaultFullscreen,
   external: defaultExternal,
   channels: defaultChannels,
-}
+};
 
 export type LowerThird = typeof defaultLowerThird;
 export type Configuration = typeof defaultConfiguration;

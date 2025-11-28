@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: FIX -->
-	<!-- <img :src="Commentators">
+  <!-- <img :src="Commentators">
 	<div class="main-names">
 		<p v-if="replicants.lowerThird.commentators.leftPerson.name.value">
 			{{ replicants.lowerThird.commentators.leftPerson.name.value }}
@@ -26,12 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import Commentators from "~/assets/rpitv-modern/RPITVCommentator.png"
-import type { LowerThird } from "~/types/replicants";
+import Commentators from '~/assets/rpitv-modern/RPITVCommentator.png';
+import type { LowerThird } from '~/types/replicants';
 
 const replicants = await useReplicants();
 const commentators = replicants.lowerThird.commentators;
-
 </script>
 
 <style scoped lang="scss">

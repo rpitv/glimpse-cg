@@ -1,10 +1,10 @@
-import type { NitroApp } from "nitropack";
-import { Server as Engine } from "engine.io";
-import { Server } from "socket.io";
-import { defineEventHandler } from "h3";
-import { replicants, subscribe } from "~/utils/replicants";
-import { setDeep, deleteDeep } from "~/utils/pathHelpers";
-import { clockHandler } from "../utils/clock";
+import type { NitroApp } from 'nitropack';
+import { Server as Engine } from 'engine.io';
+import { Server } from 'socket.io';
+import { defineEventHandler } from 'h3';
+import { replicants, subscribe } from '~/utils/replicants';
+import { setDeep, deleteDeep } from '~/utils/pathHelpers';
+import { clockHandler } from '../utils/clock';
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
@@ -12,35 +12,35 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
   io.bind(engine);
 
-  io.on("connection", (socket) => {
+  io.on('connection', (socket) => {
     // Send full state on connect
-    socket.emit("init", replicants)
+    socket.emit('init', replicants);
 
     // Handle patches from client
-    socket.on("patch", ({ path, value }) => {
-      setDeep(replicants, path, value)
+    socket.on('patch', ({ path, value }) => {
+      setDeep(replicants, path, value);
       clockHandler();
-      socket.broadcast.emit("patch", { path, value }) // broadcast to everyone
-    })
+      socket.broadcast.emit('patch', { path, value }); // broadcast to everyone
+    });
 
     // Handle deletes from client
-    socket.on("delete", ({ path }) => {
-      deleteDeep(replicants, path)
-      io.emit("delete", { path }) // broadcast to everyone
-    })
-
+    socket.on('delete', ({ path }) => {
+      deleteDeep(replicants, path);
+      io.emit('delete', { path }); // broadcast to everyone
+    });
   });
 
   subscribe((change) => {
     // change: { type: 'patch' | 'delete', path: string[], value?: any }
-    if (change.type === "patch") {
-      io.emit("patch", { path: change.path, value: change.value });
-    } else if (change.type === "delete") {
-      io.emit("delete", { path: change.path });
+    if (change.type === 'patch') {
+      io.emit('patch', { path: change.path, value: change.value });
+    }
+    else if (change.type === 'delete') {
+      io.emit('delete', { path: change.path });
     }
   });
 
-  nitroApp.router.use("/socket.io/", defineEventHandler({
+  nitroApp.router.use('/socket.io/', defineEventHandler({
     handler(event) {
       engine.handleRequest(event.node.req, event.node.res);
       event._handled = true;
@@ -51,7 +51,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         engine.prepare(peer._internal.nodeReq);
         // @ts-expect-error private method and property
         engine.onWebSocket(peer._internal.nodeReq, peer._internal.nodeReq.socket, peer.websocket);
-      }
-    }
+      },
+    },
   }));
 });

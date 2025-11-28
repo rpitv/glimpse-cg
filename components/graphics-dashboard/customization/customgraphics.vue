@@ -1,17 +1,39 @@
 <template>
   <div>
     <div class="flex justify-end mb-2">
-      <UModal title="Add a custom graphic" description="Add a custom graphic by either uploading it from your computer, or providing a URL to it" v-model:open="modalState">
+      <UModal
+        v-model:open="modalState"
+        title="Add a custom graphic"
+        description="Add a custom graphic by either uploading it from your computer, or providing a URL to it"
+      >
         <UButton>Add Graphic</UButton>
         <template #body>
-          <UFileUpload @change="fileUpload" v-model="graphicFile" label="Upload/Drop your graphic here"></UFileUpload>
-          <USeparator class="mt-2">OR</USeparator>
+          <UFileUpload
+            v-model="graphicFile"
+            label="Upload/Drop your graphic here"
+            @change="fileUpload"
+          />
+          <USeparator class="mt-2">
+            OR
+          </USeparator>
           <div class="p-2">
-            <UFormField label="Image URL" help="Enter the URL of the custom graphic image.">
-              <UInput v-model="graphicUrl" placeholder="https://example.com/graphic.png" class="w-full" />
+            <UFormField
+              label="Image URL"
+              help="Enter the URL of the custom graphic image."
+            >
+              <UInput
+                v-model="graphicUrl"
+                placeholder="https://example.com/graphic.png"
+                class="w-full"
+              />
             </UFormField>
             <div class="flex justify-end mt-4">
-              <UButton @click="addGraphic(graphicUrl)" :disabled="!graphicUrl">Add Graphic</UButton>
+              <UButton
+                :disabled="!graphicUrl"
+                @click="addGraphic(graphicUrl)"
+              >
+                Add Graphic
+              </UButton>
             </div>
           </div>
         </template>
@@ -20,42 +42,78 @@
     <table class="w-full">
       <thead>
         <tr>
-          <th class="text-left p-2">Preview</th>
-          <th class="p-2">Actions</th>
+          <th class="text-left p-2">
+            Preview
+          </th>
+          <th class="p-2">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody class="my-table-tbody">
         <tr
-          v-if="customGraphicsRef.length > 0"
           v-for="(graphic, index) in customGraphicsRef"
+          v-if="customGraphicsRef.length > 0"
           :key="index"
           :class="{ 'selected-row': graphicsStore.selectedGraphic.id === graphic._id }"
-          @click="selectRow(index)"
           style="cursor: pointer;"
+          @click="selectRow(index)"
         >
           <td class="p-2">
-            <img :src="graphic.imagePath" alt="Preview Image" class="w-full h-auto rounded-md custom-graphic"/>
+            <img
+              :src="graphic.imagePath"
+              alt="Preview Image"
+              class="w-full h-auto rounded-md custom-graphic"
+            >
           </td>
           <td class="p-2">
             <div class="flex justify-center gap-2">
-              <UButton @click.stop="toggleCustomGraphic(index)" variant="outline" :color="channelsRef[index]?.show ? 'neutral' : 'primary'">
+              <UButton
+                variant="outline"
+                :color="channelsRef[index]?.show ? 'neutral' : 'primary'"
+                @click.stop="toggleCustomGraphic(index)"
+              >
                 {{ channelsRef[index]?.show ? 'Hide' : 'Show' }}
               </UButton>
-              <UButton color="error" variant="outline" @click.stop="confirmDelete(index)">Delete</UButton>
+              <UButton
+                color="error"
+                variant="outline"
+                @click.stop="confirmDelete(index)"
+              >
+                Delete
+              </UButton>
             </div>
           </td>
         </tr>
         <tr v-else>
-          <td colspan="2" class="text-center p-4 text-gray-500">No graphics added yet. Click "Add Graphic" to add one.</td>
+          <td
+            colspan="2"
+            class="text-center p-4 text-gray-500"
+          >
+            No graphics added yet. Click "Add Graphic" to add one.
+          </td>
         </tr>
       </tbody>
     </table>
-    <UModal v-model:open="deleteModalState" title="Confirm Delete">
+    <UModal
+      v-model:open="deleteModalState"
+      title="Confirm Delete"
+    >
       <template #body>
         <div>Are you sure you want to delete this graphic?</div>
         <div class="flex justify-end gap-2 mt-4">
-          <UButton @click="deleteModalState = false" variant="outline">Cancel</UButton>
-          <UButton color="error" @click="performDelete">Delete</UButton>
+          <UButton
+            variant="outline"
+            @click="deleteModalState = false"
+          >
+            Cancel
+          </UButton>
+          <UButton
+            color="error"
+            @click="performDelete"
+          >
+            Delete
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -73,16 +131,16 @@ const replicants = await useReplicants();
 const fullscreen = replicants.fullscreen;
 const customGraphicsRef = computed({
   get: () => fullscreen.custom,
-  set: (val) => (fullscreen.custom = val),
+  set: val => (fullscreen.custom = val),
 });
 const channelsRef = computed({
   get: () => replicants.channels[0]!.custom,
-  set: (val) => (replicants.channels[0]!.custom = val),
+  set: val => (replicants.channels[0]!.custom = val),
 });
 
 const modalState = ref(false);
 const graphicFile = ref<File | null>(null);
-const graphicUrl = ref("");
+const graphicUrl = ref('');
 const deleteModalState = ref(false);
 const deleteIndex = ref<number | null>(null);
 
@@ -90,16 +148,17 @@ const selectRow = (index: number) => {
   if (index !== null) {
     const graphic = customGraphicsRef.value[index]!;
     graphicsStore.setGraphic({ component: markRaw(customgraphics), name: 'customgraphic', id: graphic._id });
-  } else {
+  }
+  else {
     graphicsStore.setGraphic({ component: null, name: '', id: null });
   }
-}
+};
 
 function addGraphic(url: string) {
   if (url) {
     const newGraphic = new CustomGraphic(url);
     customGraphicsRef.value = [...customGraphicsRef.value, newGraphic];
-    graphicUrl.value = "";
+    graphicUrl.value = '';
     modalState.value = false;
     addCustomGraphic(newGraphic._id);
     toast.add({
@@ -113,7 +172,7 @@ function addGraphic(url: string) {
 function fileUpload() {
   if (graphicFile.value) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       const base64Url = e.target?.result as string;
       const newGraphic = new CustomGraphic(base64Url);
       customGraphicsRef.value = [...customGraphicsRef.value, newGraphic];
@@ -126,11 +185,10 @@ function fileUpload() {
       color: 'success',
     });
     graphicFile.value = null;
-    graphicUrl.value = "";
+    graphicUrl.value = '';
     modalState.value = false;
   }
 }
-
 
 function confirmDelete(index: number) {
   deleteIndex.value = index;

@@ -1,5 +1,5 @@
 <template>
-  <div id="graphics-dashboard" >
+  <div id="graphics-dashboard">
     <GraphicsList />
     <Customization>
       <component :is="graphicsStore.selectedGraphic.component" />
@@ -23,5 +23,4 @@ const { selectedGraphic } = graphicsStore;
   display: grid;
   grid-template-columns: 2fr 5fr 3fr;
 }
-
 </style>

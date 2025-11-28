@@ -1,24 +1,25 @@
-import type { NitroApp } from "nitropack";
-import { replicants } from "~/utils/replicants";
-import {SerialPortStream} from "@serialport/stream";
-import {MockBinding, MockPortBinding} from "@serialport/binding-mock";
-import {SerialPort} from "serialport";
-import {daktronicsRtdListener, daktronicsTVListener} from "../utils/daktronics-rtd/protocol";
-import { replicantEvents } from "~/utils/pathHelpers";
+import type { NitroApp } from 'nitropack';
+import { replicants } from '~/utils/replicants';
+import { SerialPortStream } from '@serialport/stream';
+import type { MockPortBinding } from '@serialport/binding-mock';
+import { MockBinding } from '@serialport/binding-mock';
+import { SerialPort } from 'serialport';
+import { daktronicsRtdListener, daktronicsTVListener } from '../utils/daktronics-rtd/protocol';
+import { replicantEvents } from '~/utils/pathHelpers';
 
 let port: SerialPortStream | null = null;
-let currentPort: string | null = null;
+const currentPort: string | null = null;
 const configuration = replicants.configuration;
 const daktronics = configuration.sync.daktronics;
 // Calculate connection bitrate every second. This loop occurs even if the port is closed.
-let bitrateCalculationCache: {timestamp: number, byteCount: number}[] = [];
+let bitrateCalculationCache: { timestamp: number; byteCount: number }[] = [];
 
 /**
  * Close the currently open serial port. If no serial port is open, then do nothing. Returns a promise that resolves
  *  when the port is closed.
  */
 export async function closeSerialPort(): Promise<void> {
-  if(port && port.isOpen) {
+  if (port && port.isOpen) {
     await new Promise(resolve => port?.close(resolve));
   }
   port = null;
@@ -36,41 +37,42 @@ export async function closeSerialPort(): Promise<void> {
  */
 export async function openSerialPort(path: string, baudRate: number = 19200): Promise<void> {
   // If a port is already open, then close it.
-  if(port && port.isOpen) {
+  if (port && port.isOpen) {
     await closeSerialPort();
   }
 
   // Open the serial port.
-  if(path === "MOCK") {
+  if (path === 'MOCK') {
     // "MOCK" port is a special port which can take in any data and echo it back out.
-    MockBinding.createPort('MockPort', {echo: true, record: true});
-    port = new SerialPortStream({binding: MockBinding, path: 'MockPort', baudRate})
-  } else {
+    MockBinding.createPort('MockPort', { echo: true, record: true });
+    port = new SerialPortStream({ binding: MockBinding, path: 'MockPort', baudRate });
+  }
+  else {
     // Confirm that the serial port exists.
     // if(!(await SerialPort.list()).some(port => port.path === path)) {
     //   console.error("Serial port does not exist.");
     // }
-    port = new SerialPort({path, baudRate, endOnClose: true});
+    port = new SerialPort({ path, baudRate, endOnClose: true });
   }
 
-  port.on("error", (err)=> {
+  port.on('error', (err) => {
     // logger.trace("openSerialPort() error");
     // logger.error(err);
     daktronics.status.error = true;
     daktronics.status.errorMsg = `${err.name}: ${err.message}`;
-  })
+  });
 
   // Whenever data is received by the port, send it out as a message so users can monitor the connection status.
   port.on('data', async (data) => {
     daktronics.status.error = false;
-    bitrateCalculationCache.push({timestamp: Date.now(), byteCount: data.length});
+    bitrateCalculationCache.push({ timestamp: Date.now(), byteCount: data.length });
   });
 
   // Set up the Daktronics RTD listener on the port.
   port.on('data', (data: Buffer) => {
-    if (daktronics.feed === "rtd")
+    if (daktronics.feed === 'rtd')
       daktronicsRtdListener(data);
-    else if (daktronics.feed === "tv")
+    else if (daktronics.feed === 'tv')
       daktronicsTVListener(data);
   });
 
@@ -85,7 +87,7 @@ export async function openSerialPort(path: string, baudRate: number = 19200): Pr
 }
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
-  daktronics.status = { connected: false, bitrate: 0, error: false, errorMsg: "" }
+  daktronics.status = { connected: false, bitrate: 0, error: false, errorMsg: '' };
   setInterval(() => {
     // Remove data older than 5 seconds.
     bitrateCalculationCache = bitrateCalculationCache.filter(c => c.timestamp > Date.now() - 5000);
@@ -108,27 +110,28 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   //   and plugged back in, the server will automatically reconnect. Server will also auto connect with saved values on
   //   startup.
   setInterval(async () => {
-    if(daktronics.selectedPort !== null && !port?.isOpen) {
+    if (daktronics.selectedPort !== null && !port?.isOpen) {
       try {
-        await openSerialPort(daktronics.selectedPort!,  daktronics.feed === "tv" ? 9600 : 19200);
-      } catch(ignored) {}
+        await openSerialPort(daktronics.selectedPort!, daktronics.feed === 'tv' ? 9600 : 19200);
+      }
+      catch (ignored) {}
     }
   }, 1000);
 
-  replicantEvents.on('change', async (path, value) => { 
-    if (JSON.stringify(path) ===  JSON.stringify([ 'configuration', 'sync', 'daktronics', 'selectedPort' ])) {
+  replicantEvents.on('change', async (path, value) => {
+    if (JSON.stringify(path) === JSON.stringify(['configuration', 'sync', 'daktronics', 'selectedPort'])) {
       if (!daktronics.selectedPort)
-          return;
-      
-        // If the selected port has changed, then close the current port.
-        if (daktronics.selectedPort !== currentPort) {
-          await closeSerialPort();
-          await openSerialPort(daktronics.selectedPort, daktronics.feed === "tv" ? 9600 : 19200);
-        }
+        return;
+
+      // If the selected port has changed, then close the current port.
+      if (daktronics.selectedPort !== currentPort) {
+        await closeSerialPort();
+        await openSerialPort(daktronics.selectedPort, daktronics.feed === 'tv' ? 9600 : 19200);
+      }
     }
-    if (JSON.stringify(path) ===  JSON.stringify([ 'configuration', 'sync', 'daktronics', 'mock', 'packet' ])) {
-      if (replicants.configuration.sync.daktronics.selectedPort === "MOCK" && port && port.isOpen) {
-        (<MockPortBinding>port.port).emitData(value)
+    if (JSON.stringify(path) === JSON.stringify(['configuration', 'sync', 'daktronics', 'mock', 'packet'])) {
+      if (replicants.configuration.sync.daktronics.selectedPort === 'MOCK' && port && port.isOpen) {
+        (<MockPortBinding>port.port).emitData(value);
       }
     }
   });
@@ -139,5 +142,4 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   //     (<MockPortBinding>port.port).emitData(data)
   //   }
   // })
-
 });

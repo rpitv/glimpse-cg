@@ -1,27 +1,51 @@
 <template>
   <TombstoneBuilder class="tombstone">
     <div class="header">
-      <img class="header-img" :src="standings.headerLogoLink" alt="">
+      <img
+        class="header-img"
+        :src="standings.headerLogoLink"
+        alt=""
+      >
       <div class="header-text">
-          <span class="header-main">{{ standings.title }}</span>
-          <span class="header-sub">{{ standings.subtitle }}</span>
+        <span class="header-main">{{ standings.title }}</span>
+        <span class="header-sub">{{ standings.subtitle }}</span>
       </div>
     </div>
     <table>
       <thead>
         <tr>
-          <td></td>
-          <td class="name">TEAM</td>
-          <td class="record">CON REC</td>
-          <td class="points">PTS</td>
+          <td />
+          <td class="name">
+            TEAM
+          </td>
+          <td class="record">
+            CON REC
+          </td>
+          <td class="points">
+            PTS
+          </td>
         </tr>
       </thead>
       <tbody v-for="team in standings.teams.filter(team => 0 < team.position).sort(sortByPosition)">
         <tr>
-          <td class="logo" :style="{'background': team.teamColor}"><img :src="team.logoLink" alt=""></td>
-          <td class="name">{{ team.teamName }}</td>
-          <td class="record">{{ team.record }}</td>
-          <td class="points">{{ team.points }}</td>
+          <td
+            class="logo"
+            :style="{ background: team.teamColor }"
+          >
+            <img
+              :src="team.logoLink"
+              alt=""
+            >
+          </td>
+          <td class="name">
+            {{ team.teamName }}
+          </td>
+          <td class="record">
+            {{ team.record }}
+          </td>
+          <td class="points">
+            {{ team.points }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -29,11 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { StandingsTeam } from "~/utils/standings";
-import TombstoneBuilder from "./TombstoneBuilder.vue";
+import type { StandingsTeam } from '~/utils/standings';
+import TombstoneBuilder from './TombstoneBuilder.vue';
 
 const replicants = await useReplicants();
-const standings = replicants.fullscreen.standings;
+const standings = ref(replicants.fullscreen.standings);
 
 function sortByPosition(a: StandingsTeam, b: StandingsTeam) {
   if (a.position < b.position)

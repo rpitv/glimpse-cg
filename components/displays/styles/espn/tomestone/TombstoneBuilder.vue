@@ -1,22 +1,53 @@
 <template>
   <div class="container">
     <div class="wrapper">
-      <slot/>
+      <slot />
     </div>
-    <img class="notch vertical top left" :src="notch" alt="">
-    <img class="notch vertical top right" :src="notch" alt="">
-    <img class="notch vertical bottom left" :src="notch" alt="">
-    <img class="notch vertical bottom right" :src="notch" alt="">
-    <img class="notch horizontal top left" :src="notch" alt="">
-    <img class="notch horizontal top right" :src="notch" alt="">
-    <img class="notch horizontal bottom left" :src="notch" alt="">
-    <img class="notch horizontal bottom right" :src="notch" alt="">
+    <img
+      class="notch vertical top left"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch vertical top right"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch vertical bottom left"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch vertical bottom right"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch horizontal top left"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch horizontal top right"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch horizontal bottom left"
+      :src="notch"
+      alt=""
+    >
+    <img
+      class="notch horizontal bottom right"
+      :src="notch"
+      alt=""
+    >
   </div>
 </template>
 
 <script setup lang="ts">
-import notch from "~/assets/espn/notch.svg"
-
+import notch from '~/assets/espn/notch.svg';
 </script>
 
 <style scoped lang="scss">

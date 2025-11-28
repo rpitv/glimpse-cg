@@ -1,41 +1,50 @@
 <template>
-	<div class="copyright-main">
-		<div v-if="endGraphics.type === 'box'" class="center-graphics">
-			<div class="background">
-				<span class="header">{{ endGraphics.title }}</span>
-				<br>
-				<span class="text">{{ endGraphics.message.trim() }}</span>
-			</div>
-		</div>
-	</div>
-	<div :style="copyrightContainer" class="center-copyright">
-		<span :style="copyrightText" class="background">
-			{{ copyright.text || "© RPI TV ALL RIGHTS RESERVED"}}
-		</span>
-	</div>
+  <div class="copyright-main">
+    <div
+      v-if="endGraphics.type === 'box'"
+      class="center-graphics"
+    >
+      <div class="background">
+        <span class="header">{{ endGraphics.title }}</span>
+        <br>
+        <span class="text">{{ endGraphics.message.trim() }}</span>
+      </div>
+    </div>
+  </div>
+  <div
+    :style="copyrightContainer"
+    class="center-copyright"
+  >
+    <span
+      :style="copyrightText"
+      class="background"
+    >
+      {{ copyright.text || "© RPI TV ALL RIGHTS RESERVED" }}
+    </span>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { type CSSProperties } from "vue";
-import type { LowerThird } from "~/types/replicants";
+import type { CSSProperties } from 'vue';
+import type { LowerThird } from '~/types/replicants';
 
 const replicants = await useReplicants();
 const endGraphics = replicants.lowerThird.endGraphics;
 const copyright = replicants.lowerThird.copyright;
 
 const copyrightContainer = computed((): CSSProperties => {
-	return {
-		bottom: copyright.offsetY + 10 + "vh",
-		left: copyright.offsetX + "vw",
-		position: "absolute",
-	}
+  return {
+    bottom: copyright.offsetY + 10 + 'vh',
+    left: copyright.offsetX + 'vw',
+    position: 'absolute',
+  };
 });
 const copyrightText = computed((): CSSProperties => {
-	return {
-		color: copyright.textColor || "white",
-		fontSize: copyright.textSize + 3 + "vh",
-		wordWrap: "normal"
-	}
+  return {
+    color: copyright.textColor || 'white',
+    fontSize: copyright.textSize + 3 + 'vh',
+    wordWrap: 'normal',
+  };
 });
 </script>
 

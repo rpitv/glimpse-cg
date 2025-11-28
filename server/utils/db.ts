@@ -1,9 +1,9 @@
-import Database from "better-sqlite3"
-import {mkdir} from "node:fs/promises";
-import {join} from "path";
-import {writeFile} from "node:fs";
+import Database from 'better-sqlite3';
+import { mkdir } from 'node:fs/promises';
+import { join } from 'path';
+import { writeFile } from 'node:fs';
 
-export const db = new Database("replicants.db");
+export const db = new Database('replicants.db');
 
 function initHttpCacheTable() {
   db.prepare(`
@@ -19,32 +19,32 @@ function initHttpCacheTable() {
   `).run();
 
   // image cache dir
-  mkdir(join(process.cwd(), "public", "cache", "images"), {recursive: true})
-      .then(() => {
-          writeFile(join(process.cwd(), "public", "cache", "_README.txt"), `
+  mkdir(join(process.cwd(), 'public', 'cache', 'images'), { recursive: true })
+    .then(() => {
+      writeFile(join(process.cwd(), 'public', 'cache', '_README.txt'), `
           Warning: Files in cache subject to automatic deletion.
           It is safe to delete this directory if it gets too full.
           `, (err) => {
-              if (err) {
-                  console.error('Error writing file:', err);
-                  return;
-              }
-              console.log('File written successfully!');
-          })
-      })
-      .catch(console.error);
+        if (err) {
+          console.error('Error writing file:', err);
+          return;
+        }
+        console.log('File written successfully!');
+      });
+    })
+    .catch(console.error);
 }
 
 export function getValue<T = any>(key: string): T | null {
-  const row = db.prepare("SELECT value FROM store WHERE key = ?").get(key)
-  return row ? JSON.parse(row.value) : null
+  const row = db.prepare('SELECT value FROM store WHERE key = ?').get(key);
+  return row ? JSON.parse(row.value) : null;
 }
 
 export function setValue<T = any>(key: string, value: T) {
-  db.prepare("INSERT OR REPLACE INTO store (key, value) VALUES (?, ?)").run(
+  db.prepare('INSERT OR REPLACE INTO store (key, value) VALUES (?, ?)').run(
     key,
-    JSON.stringify(value)
-  )
+    JSON.stringify(value),
+  );
 }
 
 db.exec(`

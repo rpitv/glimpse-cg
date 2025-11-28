@@ -1,76 +1,93 @@
 <template>
-	<img class="credits" :src="FullScreen">
-	<div :style="header">
-		<p>Produced By</p>
-		<img class="rpitvlogo" :src="RPITVLogo">
-	</div>
-	<div :style="creditsContainer">
-		<div class="credit" v-for="(credit, i) in creditPeople" :key="i">
-			<p :style="title[i]">{{ credit.title }}</p>
-			<p :style="people[i]" class="person" v-for="person in credit.people">{{ person }}</p>
-		</div>
-	</div>
+  <img
+    class="credits"
+    :src="FullScreen"
+  >
+  <div :style="header">
+    <p>Produced By</p>
+    <img
+      class="rpitvlogo"
+      :src="RPITVLogo"
+    >
+  </div>
+  <div :style="creditsContainer">
+    <div
+      v-for="(credit, i) in creditPeople"
+      :key="i"
+      class="credit"
+    >
+      <p :style="title[i]">
+        {{ credit.title }}
+      </p>
+      <p
+        v-for="person in credit.people"
+        :style="people[i]"
+        class="person"
+      >
+        {{ person }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import FullScreen from "~/assets/espn/FullScreen.png";
-import RPITVLogo from "~/assets/rpitv-modern/rpitv_logo.svg";
-import type { CSSProperties } from "vue";
-import { computed } from "vue";
+import FullScreen from '~/assets/espn/FullScreen.png';
+import RPITVLogo from '~/assets/rpitv-modern/rpitv_logo.svg';
+import type { CSSProperties } from 'vue';
+import { computed } from 'vue';
 
 const replicants = await useReplicants();
 const credits = replicants.fullscreen.credits;
 const creditPeople = ref(credits.credit);
 
 const header = computed((): CSSProperties => {
-	return {
-		bottom: "68vh",
-		display: "flex",
-		fontSize: "5vh",
-		justifyContent: "space-between",
-		left: "11vw",
-		position: "absolute",
-		width: "79vw"
-	}
+  return {
+    bottom: '68vh',
+    display: 'flex',
+    fontSize: '5vh',
+    justifyContent: 'space-between',
+    left: '11vw',
+    position: 'absolute',
+    width: '79vw',
+  };
 });
 const creditsContainer = computed((): CSSProperties => {
-	return {
-		bottom: "20.9vh",
-		display: "flex",
-		height: "55vh",
-		flexDirection: "column",
-		flexWrap: "wrap",
-		left: "13vw",
-		width: "74.3vw",
-	}
+  return {
+    bottom: '20.9vh',
+    display: 'flex',
+    height: '55vh',
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    left: '13vw',
+    width: '74.3vw',
+  };
 });
 
 const people = computed((): CSSProperties[] => {
-	const styles: CSSProperties[] = [];
-	for (const credit of credits.credit) {
-		styles.push({
-			color: credit.peopleColor,
-			fontSize: credit.peopleSize + 2.4 + "vh",
-		});
-	}
-	return styles;
+  const styles: CSSProperties[] = [];
+  for (const credit of credits.credit) {
+    styles.push({
+      color: credit.peopleColor,
+      fontSize: credit.peopleSize + 2.4 + 'vh',
+    });
+  }
+  return styles;
 });
 
 const title = computed((): CSSProperties[] => {
-	const styles: CSSProperties[] = [];
-	for (const credit of credits.credit) {
-		styles.push({
-			color: credit.titleColor,
-			fontSize: credit.titleSize + 3.3 + "vh",
-		});
-	}
-	return styles;
+  const styles: CSSProperties[] = [];
+  for (const credit of credits.credit) {
+    styles.push({
+      color: credit.titleColor,
+      fontSize: credit.titleSize + 3.3 + 'vh',
+    });
+  }
+  return styles;
 });
 
 watch(() => credits, () => {
   creditPeople.value = credits.credit;
 }, { deep: true });
-
 </script>
 
 <style scoped lang="scss">

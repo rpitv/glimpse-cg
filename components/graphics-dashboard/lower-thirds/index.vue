@@ -9,7 +9,6 @@
       <template #default>
         <div>
           <URadioGroup
-            @update:model-value="changeGraphic"
             :items="computedGraphics"
             value-key="val"
             indicator="hidden"
@@ -19,15 +18,22 @@
                 'has-data-[state=checked]:bg-transparent has-data-[state=checked]:border-muted has-data-[state=checked]:z-0',
                 'has-[[role=radio][data-state=checked]]:bg-primary/10',
                 'has-[[role=radio][data-state=checked]]:border-primary/50',
-                'has-[[role=radio][data-state=checked]]:z-[1]'
-              ].join(' ')
+                'has-[[role=radio][data-state=checked]]:z-[1]',
+              ].join(' '),
             }"
+            @update:model-value="changeGraphic"
           >
             <template #label="{ item }">
               <div class="text-left">
                 <div class="flex justify-between">
-                  <p class="text-xl">{{ item.label }}</p>
-                  <USwitch v-if="item.label !== 'Custom Graphics'" v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)" :debounce="75" />
+                  <p class="text-xl">
+                    {{ item.label }}
+                  </p>
+                  <USwitch
+                    v-if="item.label !== 'Custom Graphics'"
+                    v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)"
+                    :debounce="75"
+                  />
                 </div>
               </div>
             </template>
@@ -48,6 +54,7 @@ import EndGraphics from '../customization/endgraphics.vue';
 import GoToBreak from '../customization/gotobreak.vue';
 import Locator from '../customization/locator.vue';
 import PlayerBio from '../customization/playerbio.vue';
+import Standings from '../customization/standings.vue';
 import Credits from '../customization/credits.vue';
 import CustomGraphics from '../customization/customgraphics.vue';
 import type { Component } from 'vue';
@@ -56,7 +63,6 @@ const replicants = await useReplicants();
 const channels = replicants.channels;
 const configuration = replicants.configuration;
 const graphicsStore = useGraphicsStore();
-const { selectedGraphic } = graphicsStore;
 
 interface Graphic {
   label: string;
@@ -70,60 +76,60 @@ interface Graphic {
 
 const graphics: Graphic[] = [
   {
-    label: "Bottom Text Bar",
-    val: { name: "bottomtextbar", component: null, reference: "bottomTextBar" },
-    restrictions: ["rpitv"],
+    label: 'Bottom Text Bar',
+    val: { name: 'bottomtextbar', component: null, reference: 'bottomTextBar' },
+    restrictions: ['rpitv'],
   },
   {
-    label: "Bug",
-    val: { name: "bug", component: markRaw(Bug), reference: "bug" },
+    label: 'Bug',
+    val: { name: 'bug', component: markRaw(Bug), reference: 'bug' },
     restrictions: [],
   },
   {
-    label: "Commentators",
-    val: { name: "commentators", component: markRaw(Commentators), reference: "commentators" },
+    label: 'Commentators',
+    val: { name: 'commentators', component: markRaw(Commentators), reference: 'commentators' },
     restrictions: [],
   },
   {
-    label: "Copyright",
-    val: { name: "copyright", component: markRaw(Copyright), reference: "copyright" },
+    label: 'Copyright',
+    val: { name: 'copyright', component: markRaw(Copyright), reference: 'copyright' },
     restrictions: [],
   },
   {
-    label: "End Graphics",
-    val: { name: "endgraphics", component: markRaw(EndGraphics), reference: "endGraphic" },
-    restrictions: ["rpitv"],
-  },
-  {
-    label: "Go To Break",
-    val: { name: "gotobreak", component: markRaw(GoToBreak), reference: "goToBreak" },
+    label: 'Credits',
+    val: { name: 'credits', component: markRaw(Credits), reference: 'credits' },
     restrictions: [],
   },
   {
-    label: "Locator",
-    val: { name: "locator", component: markRaw(Locator), reference: "locator" },
+    label: 'End Graphics',
+    val: { name: 'endgraphics', component: markRaw(EndGraphics), reference: 'endGraphic' },
+    restrictions: ['rpitv'],
+  },
+  {
+    label: 'Go To Break',
+    val: { name: 'gotobreak', component: markRaw(GoToBreak), reference: 'goToBreak' },
     restrictions: [],
   },
   {
-    label: "Player Bios",
-    val: { name: "playerbio", component: markRaw(PlayerBio), reference: "playerBio" },
+    label: 'Locator',
+    val: { name: 'locator', component: markRaw(Locator), reference: 'locator' },
     restrictions: [],
   },
   {
-    label: "Credits",
-    val: { name: "credits", component: markRaw(Credits), reference: "credits" },
+    label: 'Player Bios',
+    val: { name: 'playerbio', component: markRaw(PlayerBio), reference: 'playerBio' },
     restrictions: [],
   },
   {
-    label: "Standings",
-    val: { name: "standings", component: null, reference: "standings" },
+    label: 'Standings',
+    val: { name: 'standings', component: markRaw(Standings), reference: 'standings' },
     restrictions: [],
   },
   {
-    label: "Custom Graphics",
-    val: { name: "customgraphics", component: markRaw(CustomGraphics), reference: "customGraphics" },
+    label: 'Custom Graphics',
+    val: { name: 'customgraphics', component: markRaw(CustomGraphics), reference: 'customGraphics' },
     restrictions: [],
-  }
+  },
 ];
 
 function changeGraphic(graphicVal: { name: string; component: Component; reference: string }) {
@@ -136,8 +142,6 @@ const computedGraphics = computed(() => {
     return graphic.restrictions.includes(configuration.style);
   });
 });
-
-
 </script>
 
 <style scoped>

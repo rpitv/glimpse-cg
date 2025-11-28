@@ -1,21 +1,36 @@
 <template>
-	<div class="banner" :class="{
-    show: channels[channelIndex]!.scoreboard && channels[channelIndex]!.bug && !route.query.preview, 
-    hide: !channels[channelIndex]!.scoreboard || !channels[channelIndex]!.bug || route.query.preview
-  }">
-		<div class="title">SHOTS ON GOAL</div>
-		<div class="bottom"></div>
-		<div class="upward-line"></div>
-		<div class="away-team-name" :style="{color: awayTeam.primaryColor}">
-			{{ awayTeam.shortName }}
-		</div>
-		<div class="home-team-name" :style="{color: homeTeam.primaryColor}">
-			{{ homeTeam.shortName }}
-		</div>
-		<div class="away-team-sogs"> {{ scoreboard!.hockey.awayTeam.sog }}</div>
-		<div class="home-team-sogs"> {{ scoreboard!.hockey.homeTeam.sog }}</div>
-	</div>
-	<!-- <div class="banner" :class="{show: replicants.sync.values.faceoffs.value && replicants.scoreboard.visible.value, hide: !replicants.sync.values.faceoffs.value || !replicants.scoreboard.visible.value}">
+  <div
+    class="banner"
+    :class="{
+      show: channels[channelIndex]!.scoreboard && channels[channelIndex]!.bug && !route.query.preview,
+      hide: !channels[channelIndex]!.scoreboard || !channels[channelIndex]!.bug || route.query.preview,
+    }"
+  >
+    <div class="title">
+      SHOTS ON GOAL
+    </div>
+    <div class="bottom" />
+    <div class="upward-line" />
+    <div
+      class="away-team-name"
+      :style="{ color: awayTeam.primaryColor }"
+    >
+      {{ awayTeam.shortName }}
+    </div>
+    <div
+      class="home-team-name"
+      :style="{ color: homeTeam.primaryColor }"
+    >
+      {{ homeTeam.shortName }}
+    </div>
+    <div class="away-team-sogs">
+      {{ scoreboard!.hockey.awayTeam.sog }}
+    </div>
+    <div class="home-team-sogs">
+      {{ scoreboard!.hockey.homeTeam.sog }}
+    </div>
+  </div>
+  <!-- <div class="banner" :class="{show: replicants.sync.values.faceoffs.value && replicants.scoreboard.visible.value, hide: !replicants.sync.values.faceoffs.value || !replicants.scoreboard.visible.value}">
 		<div class="title">Faceoffs</div>
 		<div class="bottom"></div>
 		<div class="upward-line"></div>
@@ -31,19 +46,17 @@
 </template>
 
 <script setup lang="ts">
-
 const route = useRoute();
 const replicants = await useReplicants();
-let channelIndex = ref(0);
+const channelIndex = ref(0);
 if (route.query.channel)
-	channelIndex.value = parseInt(route.query.channel as string);
+  channelIndex.value = parseInt(route.query.channel as string);
 
 const channels = replicants.channels;
 const scoreboard = replicants.scoreboard;
 
 const awayTeam = replicants.configuration.awayTeam;
 const homeTeam = replicants.configuration.homeTeam;
-
 </script>
 
 <style scoped>
@@ -56,7 +69,6 @@ const homeTeam = replicants.configuration.homeTeam;
 	opacity: 0;
 	transition: 1s;
 }
-
 
 div {
 	top: 0;

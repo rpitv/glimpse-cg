@@ -1,7 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-05-15',
-  devtools: { enabled: true },
 
   modules: [
     '@nuxt/content',
@@ -11,10 +9,22 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
   ],
+  devtools: { enabled: true },
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+  compatibilityDate: '2025-05-15',
   nitro: {
     experimental: {
       websocket: true,
-    }
-  }
-})
+    },
+  },
+  eslint: {
+    config: {
+      stylistic: {
+        quotes: 'single',
+        indent: 2,
+        semi: true,
+      },
+    },
+    checker: true,
+  },
+});

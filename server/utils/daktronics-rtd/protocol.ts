@@ -1,8 +1,8 @@
-import { sports } from "./sports-definitions";
-import { replicants } from "~/utils/replicants"; 
+import { sports } from './sports-definitions';
+import { replicants } from '~/utils/replicants';
 // import * as fs from 'fs-extra';
 // import * as path from "path";
-import { announcementTimersTick } from "#imports";
+import { announcementTimersTick } from '#imports';
 
 const packetBytes: number[] = [];
 let computedChecksum = 0;
@@ -32,7 +32,6 @@ As an example, consider the following packet (in hexadecimal):
 
 --- Payload ---
 
-
  */
 
 /**
@@ -42,9 +41,9 @@ As an example, consider the following packet (in hexadecimal):
  * @returns The pretty-printed string.
  */
 function bufferToHexString(data: Buffer) {
-	const hexDataStr = data.toString('hex').toUpperCase();
-	// Add spaces between each byte
-	return hexDataStr.match(/.{1,2}/g)?.join(' ') ?? '';
+  const hexDataStr = data.toString('hex').toUpperCase();
+  // Add spaces between each byte
+  return hexDataStr.match(/.{1,2}/g)?.join(' ') ?? '';
 }
 
 const dumpQueue: (() => Promise<void>)[] = [];
@@ -91,23 +90,23 @@ const dumpQueue: (() => Promise<void>)[] = [];
 // }
 
 function calculateChecksum(packet: string) {
-	// Remove the last two characters (presumed checksum) from the packet
-	const packetWithoutChecksum = packet.slice(0, -2);
+  // Remove the last two characters (presumed checksum) from the packet
+  const packetWithoutChecksum = packet.slice(0, -2);
 
-	// Convert each character to its ASCII code and adds all characters
-	let checksum = 0;
-	for (let i = 0; i < packetWithoutChecksum.length; i++) {
-		checksum += packetWithoutChecksum.charCodeAt(i);
-	}
+  // Convert each character to its ASCII code and adds all characters
+  let checksum = 0;
+  for (let i = 0; i < packetWithoutChecksum.length; i++) {
+    checksum += packetWithoutChecksum.charCodeAt(i);
+  }
 
-	// modulo 256 for two byte hex
-	checksum %= 256
+  // modulo 256 for two byte hex
+  checksum %= 256;
 
-	// Convert the resulting checksum to a 2-digit hexadecimal string
-	return checksum.toString(16).toUpperCase().padStart(2, '0');
+  // Convert the resulting checksum to a 2-digit hexadecimal string
+  return checksum.toString(16).toUpperCase().padStart(2, '0');
 }
 
-let packets: string = ""
+let packets: string = '';
 let staging: string[] = [];
 
 /**
@@ -120,69 +119,71 @@ let staging: string[] = [];
  *   {@link handleRTDPacket}.
  */
 export function daktronicsRtdListener(data: Buffer) {
-	// replicants.sync.status.value.error = false;
-	// dumping the Daktronics serial connection to a dump file
-	if (process.env.DUMP_RTD !== "false") {
-		// writeToDumpFile(data);
-	}
-	// if(logger.isLevelEnabled("trace")) {
-	// 	logger.trace({rawBytes: bufferToHexString(data)},'Received data from serial port');
-	// }
-	for (const byte of data) {
-		if (byte === 0x16) {
-			// Start of a new packet. Clear the packet buffer and reset the checksum.
-			// logger.trace('Byte 0x16 received, starting new packet by clearing packet buffer');
-			packetBytes.length = 0;
-			computedChecksum = 0;
-		} else if (byte === 0x17) {
-			// logger.trace('Byte 0x17 received, attempting to parse data in packet buffer');
-			// Every packet+checksum must be at least 2 bytes long, as that's the length of the checksum.
-			if (packetBytes.length < 2) {
-				// logger.warn('Received a packet with a length of %d. Minimum length ' +
-				// 	'is 2, not including the start and end bytes. Packet ignored.', packetBytes.length);
-				continue;
-			}
+  // replicants.sync.status.value.error = false;
+  // dumping the Daktronics serial connection to a dump file
+  if (process.env.DUMP_RTD !== 'false') {
+    // writeToDumpFile(data);
+  }
+  // if(logger.isLevelEnabled("trace")) {
+  // 	logger.trace({rawBytes: bufferToHexString(data)},'Received data from serial port');
+  // }
+  for (const byte of data) {
+    if (byte === 0x16) {
+      // Start of a new packet. Clear the packet buffer and reset the checksum.
+      // logger.trace('Byte 0x16 received, starting new packet by clearing packet buffer');
+      packetBytes.length = 0;
+      computedChecksum = 0;
+    }
+    else if (byte === 0x17) {
+      // logger.trace('Byte 0x17 received, attempting to parse data in packet buffer');
+      // Every packet+checksum must be at least 2 bytes long, as that's the length of the checksum.
+      if (packetBytes.length < 2) {
+        // logger.warn('Received a packet with a length of %d. Minimum length ' +
+        // 	'is 2, not including the start and end bytes. Packet ignored.', packetBytes.length);
+        continue;
+      }
 
-			// logger.trace('Pulling checksum bytes from the end of the packet buffer');
-			const checksumBytes = packetBytes.slice(-2);
-			// Subtract the checksum bytes from the computed checksum. We didn't know they were checksum bytes when we
-			//   added them. Also remove the bytes from the array of packet bytes.
-			computedChecksum -= checksumBytes[0] + checksumBytes[1];
-			packetBytes.length -= 2;
+      // logger.trace('Pulling checksum bytes from the end of the packet buffer');
+      const checksumBytes = packetBytes.slice(-2);
+      // Subtract the checksum bytes from the computed checksum. We didn't know they were checksum bytes when we
+      //   added them. Also remove the bytes from the array of packet bytes.
+      computedChecksum -= checksumBytes[0] + checksumBytes[1];
+      packetBytes.length -= 2;
 
-			// Last two bytes are the checksum in hexadecimal encoded as ASCII characters. E.g., if the checksum
-			//   is 0xEC, then the value of the last two bytes will be 0x4543.
-			// logger.trace({
-			// 	checksumBytes
-			// }, 'Verifying checksum');
-			const checksumBuffer = Buffer.from(Buffer.from(checksumBytes).toString('ascii'), 'hex');
-			if (checksumBuffer.length !== 1) {
-				// logger.warn('Computed checksum buffer has a length of %d. Expected length is 1. Packet ignored.', checksumBuffer.length);
-				continue;
-			}
+      // Last two bytes are the checksum in hexadecimal encoded as ASCII characters. E.g., if the checksum
+      //   is 0xEC, then the value of the last two bytes will be 0x4543.
+      // logger.trace({
+      // 	checksumBytes
+      // }, 'Verifying checksum');
+      const checksumBuffer = Buffer.from(Buffer.from(checksumBytes).toString('ascii'), 'hex');
+      if (checksumBuffer.length !== 1) {
+        // logger.warn('Computed checksum buffer has a length of %d. Expected length is 1. Packet ignored.', checksumBuffer.length);
+        continue;
+      }
 
-			if ((computedChecksum % 256) !== checksumBuffer.readUInt8()) {
-				// logger.warn(
-				// 	{
-				// 		received: checksumBuffer.readUInt8().toString(16),
-				// 		computed: (computedChecksum % 256).toString(16)
-				// 	},
-				// 	'Received a packet with an invalid checksum. Packet ignored.'
-				// );
-				continue;
-			}
+      if ((computedChecksum % 256) !== checksumBuffer.readUInt8()) {
+        // logger.warn(
+        // 	{
+        // 		received: checksumBuffer.readUInt8().toString(16),
+        // 		computed: (computedChecksum % 256).toString(16)
+        // 	},
+        // 	'Received a packet with an invalid checksum. Packet ignored.'
+        // );
+        continue;
+      }
 
-			// At this point, packetBytes contains only the actual packet data.
-			//   0x16, 0x17, and checksum bytes aren't included.
-			// logger.trace('Checksum verified, passing packet to packet handler');
-			handleRTDPacket(Buffer.from(packetBytes));
-		} else {
-			// Add the byte to the packet buffer and add it to the checksum.
-			// logger.trace('Adding byte 0x%s to packet buffer and checksum', byte.toString(16).padStart(2, '0'));
-			packetBytes.push(byte);
-			computedChecksum += byte;
-		}
-	}
+      // At this point, packetBytes contains only the actual packet data.
+      //   0x16, 0x17, and checksum bytes aren't included.
+      // logger.trace('Checksum verified, passing packet to packet handler');
+      handleRTDPacket(Buffer.from(packetBytes));
+    }
+    else {
+      // Add the byte to the packet buffer and add it to the checksum.
+      // logger.trace('Adding byte 0x%s to packet buffer and checksum', byte.toString(16).padStart(2, '0'));
+      packetBytes.push(byte);
+      computedChecksum += byte;
+    }
+  }
 }
 
 /**
@@ -196,162 +197,163 @@ export function daktronicsRtdListener(data: Buffer) {
  * @param data Buffer containing incoming data, may or may not require multiple data buffers to compile into an entire packet.
  */
 export function daktronicsTVListener(data: Buffer) {
-	const hexString = data.toString();
-	for (const byte of hexString) {
-		if (byte === TV_PAK_HEADER) {
-			staging = []
-		} else if (byte === TV_PAK_TAIL) {
-			const packet = staging.join("");
-			const calculatedChecksum = calculateChecksum(packet);
-			const actualChecksum = packet.slice(-2); // Last two characters
-			if (calculatedChecksum === actualChecksum) // matches
-				packets = staging.join("");
-			else
-				console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`)
-		} else
-			staging.push(byte);
-	}
-	if (packets.length > 0) {
-		handleTVPacket(packets);
-	}
-	packets = "";
+  const hexString = data.toString();
+  for (const byte of hexString) {
+    if (byte === TV_PAK_HEADER) {
+      staging = [];
+    }
+    else if (byte === TV_PAK_TAIL) {
+      const packet = staging.join('');
+      const calculatedChecksum = calculateChecksum(packet);
+      const actualChecksum = packet.slice(-2); // Last two characters
+      if (calculatedChecksum === actualChecksum) // matches
+        packets = staging.join('');
+      else
+        console.error(`MISS-MATCHING CHECKSUM - calculated ${calculatedChecksum} != ${actualChecksum} for '${packet}' ignoring...`);
+    }
+    else
+      staging.push(byte);
+  }
+  if (packets.length > 0) {
+    handleTVPacket(packets);
+  }
+  packets = '';
 }
 
 const scoreboard = replicants.scoreboard;
 const configuration = replicants.configuration;
-const packetFrequencies: {[key: number]: number} = {};
+const packetFrequencies: { [key: number]: number } = {};
 function handleRTDPacket(packet: Buffer): void {
-	// If selected sport is undefined or isn't in the sports list, then we don't know how to parse the packet.
+  // If selected sport is undefined or isn't in the sports list, then we don't know how to parse the packet.
 
-	// Strip all bytes up to 0x01. Seems to be padding.
-	// logger.trace('Stripping all bytes up to 0x01');
-	const paddingStrippedData = packet.slice(packet.indexOf(0x01) + 1);
+  // Strip all bytes up to 0x01. Seems to be padding.
+  // logger.trace('Stripping all bytes up to 0x01');
+  const paddingStrippedData = packet.slice(packet.indexOf(0x01) + 1);
 
-	// Get the ID. IDs are in the form "00421xxxxx", where "xxxxx" is the ID, all in ASCII. Add one, since it's zero-indexed
-	// logger.trace('Getting the ID of the packet');
-	const id = parseInt(paddingStrippedData.slice(5, 10).toString('ascii'), 10) + 1;
-	packetFrequencies[id] = (packetFrequencies[id] || 0) + 1;
+  // Get the ID. IDs are in the form "00421xxxxx", where "xxxxx" is the ID, all in ASCII. Add one, since it's zero-indexed
+  // logger.trace('Getting the ID of the packet');
+  const id = parseInt(paddingStrippedData.slice(5, 10).toString('ascii'), 10) + 1;
+  packetFrequencies[id] = (packetFrequencies[id] || 0) + 1;
 
-	// Make sure this is a valid packet for this sport.
-	if(!sports['Hockey/Lacrosse'][id]) {
-		// logger.trace('Packet ID %d is not valid for the selected sport. Ignoring packet.', id);
-		return;
-	}
+  // Make sure this is a valid packet for this sport.
+  if (!sports['Hockey/Lacrosse'][id]) {
+    // logger.trace('Packet ID %d is not valid for the selected sport. Ignoring packet.', id);
+    return;
+  }
 
-	// Get the length of the relevant data for this packet for the given sport.
-	const dataLength = sports['Hockey/Lacrosse'][id].length;
+  // Get the length of the relevant data for this packet for the given sport.
+  const dataLength = sports['Hockey/Lacrosse'][id].length;
 
-	// Pull the relevant data out of the packet.
-	// logger.trace('Packet ID %d has an expected length of %d bytes. Pulling data from packet.', id, dataLength);
-	const data = paddingStrippedData.slice(11, 11 + dataLength).toString('ascii');
-	const trimmedData = data.trim();
+  // Pull the relevant data out of the packet.
+  // logger.trace('Packet ID %d has an expected length of %d bytes. Pulling data from packet.', id, dataLength);
+  const data = paddingStrippedData.slice(11, 11 + dataLength).toString('ascii');
+  const trimmedData = data.trim();
 
-	// if(logger.isLevelEnabled("debug")) {
-		// logger.debug({
-		// 	id,
-		// 	fullMessageBlock: paddingStrippedData.toString('ascii'),
-		// 	messageLength: dataLength,
-		// 	messageBlock: data,
-		// 	trimmedMessageBlock: trimmedData
-		// },'Packet parsed, being passed to handler');
-	// }
+  // if(logger.isLevelEnabled("debug")) {
+  // logger.debug({
+  // 	id,
+  // 	fullMessageBlock: paddingStrippedData.toString('ascii'),
+  // 	messageLength: dataLength,
+  // 	messageBlock: data,
+  // 	trimmedMessageBlock: trimmedData
+  // },'Packet parsed, being passed to handler');
+  // }
 
-	// Call the handler for the packet, if it is defined.
-	const handler = sports['Hockey/Lacrosse'][id].handler;
-	if(!handler) {
-		// logger.debug('No handler defined for packet ID %d. Ignoring packet.', id);
-		return;
-	}
-	handler(trimmedData);
+  // Call the handler for the packet, if it is defined.
+  const handler = sports['Hockey/Lacrosse'][id].handler;
+  if (!handler) {
+    // logger.debug('No handler defined for packet ID %d. Ignoring packet.', id);
+    return;
+  }
+  handler(trimmedData);
 }
 
 function handleTVPacket(packet: string): void {
-	const LENGTH_OF_FOOTBALL_PACKET = 43;
-	if (packet.length !== LENGTH_OF_FOOTBALL_PACKET)
-		return
+  const LENGTH_OF_FOOTBALL_PACKET = 43;
+  if (packet.length !== LENGTH_OF_FOOTBALL_PACKET)
+    return;
 
-	const footballPacket = {
-		clock: packet.substring(0, 5),
-		// unknown CHARS 5-25
-		homeScore: packet.substring(27, 29),
-		awayScore: packet.substring(25, 27),
-		period: packet.substring(29, 30),
-		ballOn: packet.substring(30, 32),
-		down: packet.substring(32, 33),
-		yardsToGo: packet.substring(33, 35),
-		// '<' or '>' or ' ' on both
-		possessionHome: packet.substring(35, 36),
-		possessionAway: packet.substring(36, 37),
-		playClock: packet.substring(37, 39),
-		timeoutsLeftHome: packet.substring(39, 40),
-		timeoutsLeftAway: packet.substring(40, 41)
-	};
-	const footballSync = configuration.sync.football;
+  const footballPacket = {
+    clock: packet.substring(0, 5),
+    // unknown CHARS 5-25
+    homeScore: packet.substring(27, 29),
+    awayScore: packet.substring(25, 27),
+    period: packet.substring(29, 30),
+    ballOn: packet.substring(30, 32),
+    down: packet.substring(32, 33),
+    yardsToGo: packet.substring(33, 35),
+    // '<' or '>' or ' ' on both
+    possessionHome: packet.substring(35, 36),
+    possessionAway: packet.substring(36, 37),
+    playClock: packet.substring(37, 39),
+    timeoutsLeftHome: packet.substring(39, 40),
+    timeoutsLeftAway: packet.substring(40, 41),
+  };
+  const footballSync = configuration.sync.football;
 
-	if (footballSync.downs)
-		scoreboard.football.down = parseInt(footballPacket.down);
-	if (footballSync.playClock) {
+  if (footballSync.downs)
+    scoreboard.football.down = parseInt(footballPacket.down);
+  if (footballSync.playClock) {
     scoreboard.football.playClockRunning = false;
-		scoreboard.football.playClock = parseInt(footballPacket.playClock);
+    scoreboard.football.playClock = parseInt(footballPacket.playClock);
   }
-	if (footballSync.possession) {
-		const possession = (): string => {
-			if (footballPacket.possessionHome.trim())
-				return footballPacket.possessionHome;
-			if (footballPacket.possessionAway.trim())
-				return footballPacket.possessionAway;
-			return '';
-		}
-		scoreboard.football.possession = possession();
-	}
-	if (footballSync.yardsToGo)
-		scoreboard.football.yardsToGo = footballPacket.yardsToGo;
+  if (footballSync.possession) {
+    const possession = (): string => {
+      if (footballPacket.possessionHome.trim())
+        return footballPacket.possessionHome;
+      if (footballPacket.possessionAway.trim())
+        return footballPacket.possessionAway;
+      return '';
+    };
+    scoreboard.football.possession = possession();
+  }
+  if (footballSync.yardsToGo)
+    scoreboard.football.yardsToGo = footballPacket.yardsToGo;
 
-	const universalSync = configuration.sync;
-	// General Stuff
-	if (universalSync.clock) {
-		if (replicants.scoreboard.clock.isRunning) {
-			// logger.trace('Clock is manually running but score sync data was received. Stopping manual clock.');
-			replicants.scoreboard.clock.isRunning = false;
-		}
+  const universalSync = configuration.sync;
+  // General Stuff
+  if (universalSync.clock) {
+    if (replicants.scoreboard.clock.isRunning) {
+      // logger.trace('Clock is manually running but score sync data was received. Stopping manual clock.');
+      replicants.scoreboard.clock.isRunning = false;
+    }
 
-		// Clock is considered disabled whenever a blank value is sent. Conversely, it is considered enabled whenever a
-		//   non-blank value is sent.
-		// if (footballPacket.clock.length === 0 && replicants.gameSettings.clock.enabled.value) {
-		// 	logger.trace('Blank clock value received, disabling the clock.');
-		// 	replicants.gameSettings.clock.enabled.value = false;
-		// } else if(footballPacket.clock.length > 0 && !replicants.gameSettings.clock.enabled.value) {
-		// 	logger.trace('Non-blank clock value received, enabling the clock.');
-		// 	replicants.gameSettings.clock.enabled.value = true;
-		// }
+    // Clock is considered disabled whenever a blank value is sent. Conversely, it is considered enabled whenever a
+    //   non-blank value is sent.
+    // if (footballPacket.clock.length === 0 && replicants.gameSettings.clock.enabled.value) {
+    // 	logger.trace('Blank clock value received, disabling the clock.');
+    // 	replicants.gameSettings.clock.enabled.value = false;
+    // } else if(footballPacket.clock.length > 0 && !replicants.gameSettings.clock.enabled.value) {
+    // 	logger.trace('Non-blank clock value received, enabling the clock.');
+    // 	replicants.gameSettings.clock.enabled.value = true;
+    // }
 
-		let mins, secs, tenths, minsAndSecs;
-		[minsAndSecs, tenths] = footballPacket.clock.split('.');
-		if(minsAndSecs.indexOf(':') > -1) {
-			[mins, secs] = minsAndSecs.split(':')
-		} else {
-			secs = minsAndSecs;
-			mins = '0';
-		}
-		const [minsInt, secsInt, tenthsInt] = [parseInt(mins) || 0, parseInt(secs) || 0, parseInt(tenths) || 0];
-		replicants.scoreboard.clock.time = minsInt * 60000 + secsInt * 1000 + tenthsInt * 100;
-		announcementTimersTick();
-	}
-	if (universalSync.period)
-		scoreboard.period.count = parseInt(footballPacket.period);
+    let mins, secs, tenths, minsAndSecs;
+    [minsAndSecs, tenths] = footballPacket.clock.split('.');
+    if (minsAndSecs.indexOf(':') > -1) {
+      [mins, secs] = minsAndSecs.split(':');
+    }
+    else {
+      secs = minsAndSecs;
+      mins = '0';
+    }
+    const [minsInt, secsInt, tenthsInt] = [parseInt(mins) || 0, parseInt(secs) || 0, parseInt(tenths) || 0];
+    replicants.scoreboard.clock.time = minsInt * 60000 + secsInt * 1000 + tenthsInt * 100;
+    announcementTimersTick();
+  }
+  if (universalSync.period)
+    scoreboard.period.count = parseInt(footballPacket.period);
 
-	// Team Stuff
-	if (universalSync.homeTeam.score)
-		scoreboard.homeTeam.score = parseInt(footballPacket.homeScore);
-	if (universalSync.homeTeam.football.timeouts)
-		scoreboard.football.homeTeam.timeouts = parseInt(footballPacket.timeoutsLeftHome);
+  // Team Stuff
+  if (universalSync.homeTeam.score)
+    scoreboard.homeTeam.score = parseInt(footballPacket.homeScore);
+  if (universalSync.homeTeam.football.timeouts)
+    scoreboard.football.homeTeam.timeouts = parseInt(footballPacket.timeoutsLeftHome);
 
-	if (universalSync.awayTeam.score)
-		scoreboard.awayTeam.score = parseInt(footballPacket.awayScore);
-	if (universalSync.awayTeam.football.timeouts)
-		scoreboard.football.awayTeam.timeouts = parseInt(footballPacket.timeoutsLeftAway);
-
-
+  if (universalSync.awayTeam.score)
+    scoreboard.awayTeam.score = parseInt(footballPacket.awayScore);
+  if (universalSync.awayTeam.football.timeouts)
+    scoreboard.football.awayTeam.timeouts = parseInt(footballPacket.timeoutsLeftAway);
 }
 
 // if(logger.isLevelEnabled("debug")) {

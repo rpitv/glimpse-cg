@@ -1,24 +1,49 @@
 <template>
-	<img class="scoreboard" :src="ScoreboardGraphic">
-	<div class="colors" :style="homeTeamPrimaryColor">
-		<img :style="homeTeamLogo" :src="gtbHomeTeam.logo || homeTeam.logo" :alt="homeTeam.schoolName">
-		<div :style="homeTeamName"> {{ gtbHomeTeam.name || homeTeam.shortName }}</div>
-	</div>
-	<div class="colors" :style="awayTeamPrimaryColor">
-		<img :style="rightTeamLogo" :src="gtbAwayTeam.logo || awayTeam.logo" :alt="awayTeam.shortName">
-		<div :style="rightTeamName"> {{ gtbAwayTeam.name || awayTeam.shortName }}</div>
-	</div>
-	<div :style="homeTeamScore"> {{ gtbHomeTeam.score || scoreboard.homeTeam.score }}</div>
-	<div :style="rightTeamScore"> {{ gtbAwayTeam.score || scoreboard.awayTeam.score }}</div>
-	<div :style="description">
-		{{ goToBreak.description.text || period }}
-		{{ goToBreak.description.clock && clock.time ? `(${formattedClockTime})` : ''}}
-	</div>
+  <img
+    class="scoreboard"
+    :src="ScoreboardGraphic"
+  >
+  <div
+    class="colors"
+    :style="homeTeamPrimaryColor"
+  >
+    <img
+      :style="homeTeamLogo"
+      :src="gtbHomeTeam.logo || homeTeam.logo"
+      :alt="homeTeam.schoolName"
+    >
+    <div :style="homeTeamName">
+      {{ gtbHomeTeam.name || homeTeam.shortName }}
+    </div>
+  </div>
+  <div
+    class="colors"
+    :style="awayTeamPrimaryColor"
+  >
+    <img
+      :style="rightTeamLogo"
+      :src="gtbAwayTeam.logo || awayTeam.logo"
+      :alt="awayTeam.shortName"
+    >
+    <div :style="rightTeamName">
+      {{ gtbAwayTeam.name || awayTeam.shortName }}
+    </div>
+  </div>
+  <div :style="homeTeamScore">
+    {{ gtbHomeTeam.score || scoreboard.homeTeam.score }}
+  </div>
+  <div :style="rightTeamScore">
+    {{ gtbAwayTeam.score || scoreboard.awayTeam.score }}
+  </div>
+  <div :style="description">
+    {{ goToBreak.description.text || period }}
+    {{ goToBreak.description.clock && clock.time ? `(${formattedClockTime})` : '' }}
+  </div>
 </template>
 
 <script setup lang="ts">
-import ScoreboardGraphic from "~/assets/rpitv-modern/Scoreboard.png"
-import type { CSSProperties } from "vue";
+import ScoreboardGraphic from '~/assets/rpitv-modern/Scoreboard.png';
+import type { CSSProperties } from 'vue';
 
 const replicants = await useReplicants();
 const scoreboard = replicants.scoreboard;
@@ -28,95 +53,112 @@ const gtbAwayTeam = goToBreak.awayTeam;
 const homeTeam = replicants.configuration.homeTeam;
 const awayTeam = replicants.configuration.awayTeam;
 
-
-const homeTeamName = computed((): CSSProperties => { return {
-	color: gtbHomeTeam.nameColor,
-	fontSize: gtbHomeTeam.nameSize + 2.5 + "vh",
-	position: "relative",
-	textAlign: "center",
-}});
-const homeTeamScore = computed((): CSSProperties => { return {
-	alignItems: "center",
-	bottom: "16.6vh",
-	color: gtbHomeTeam.scoreColor,
-	display: "flex",
-	fontSize: gtbHomeTeam.scoreSize + 11 + "vh",
-	height: "17.4vh",
-	justifyContent: "space-around",
-	left: "39.5vw",
-	width: "10.5vw",
-}});
-const rightTeamName = computed((): CSSProperties => { return {
-	color: gtbAwayTeam.nameColor,
-	fontSize: gtbAwayTeam.nameSize + 2.5 + "vh",
-	position: "relative",
-	textAlign: "center",
-}});
-const rightTeamScore = computed((): CSSProperties => { return {
-	alignItems: "center",
-	bottom: "16.6vh",
-	color: gtbAwayTeam.scoreColor,
-	display: "flex",
-	fontSize: gtbAwayTeam.scoreSize + 11 + "vh",
-	height: "17.4vh",
-	justifyContent: "space-around",
-	left: "50vw",
-	width: "10.5vw",
-}});
-const description = computed((): CSSProperties => { return {
-	alignItems: "center",
-	bottom: "11.5vh",
-	color: goToBreak.description.fontColor,
-	display: "flex",
-	fontSize: goToBreak.description.fontSize + 2.2 + "vh",
-	height: "3.4vh",
-	justifyContent: "center",
-	left: "42.7vw",
-	width: "14.6vw",
-}})
-const homeTeamPrimaryColor = computed((): CSSProperties => { return {
-	alignItems: "center",
-	backgroundColor: gtbHomeTeam.primaryColor,
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "center",
-	left: "29vw",
-	width: "9.2vw",
-}});
-const awayTeamPrimaryColor = computed((): CSSProperties => { return {
-	alignItems: "center",
-	backgroundColor: gtbAwayTeam.primaryColor,
-	display: "flex",
-	flexDirection: "column",
-	justifyContent: "center",
-	left: "61.8vw",
-	width: "9.2vw"
-}});
-const homeTeamLogo = computed((): CSSProperties => { return {
-	height: gtbHomeTeam.logoSize + "%",
-	maxHeight: "14vh",
-}});
-const rightTeamLogo = computed((): CSSProperties => { return {
-	height: gtbAwayTeam.logoSize + "%",
-	maxHeight: "14vh",
-}});
+const homeTeamName = computed((): CSSProperties => {
+  return {
+    color: gtbHomeTeam.nameColor,
+    fontSize: gtbHomeTeam.nameSize + 2.5 + 'vh',
+    position: 'relative',
+    textAlign: 'center',
+  };
+});
+const homeTeamScore = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    bottom: '16.6vh',
+    color: gtbHomeTeam.scoreColor,
+    display: 'flex',
+    fontSize: gtbHomeTeam.scoreSize + 11 + 'vh',
+    height: '17.4vh',
+    justifyContent: 'space-around',
+    left: '39.5vw',
+    width: '10.5vw',
+  };
+});
+const rightTeamName = computed((): CSSProperties => {
+  return {
+    color: gtbAwayTeam.nameColor,
+    fontSize: gtbAwayTeam.nameSize + 2.5 + 'vh',
+    position: 'relative',
+    textAlign: 'center',
+  };
+});
+const rightTeamScore = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    bottom: '16.6vh',
+    color: gtbAwayTeam.scoreColor,
+    display: 'flex',
+    fontSize: gtbAwayTeam.scoreSize + 11 + 'vh',
+    height: '17.4vh',
+    justifyContent: 'space-around',
+    left: '50vw',
+    width: '10.5vw',
+  };
+});
+const description = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    bottom: '11.5vh',
+    color: goToBreak.description.fontColor,
+    display: 'flex',
+    fontSize: goToBreak.description.fontSize + 2.2 + 'vh',
+    height: '3.4vh',
+    justifyContent: 'center',
+    left: '42.7vw',
+    width: '14.6vw',
+  };
+});
+const homeTeamPrimaryColor = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    backgroundColor: gtbHomeTeam.primaryColor,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    left: '29vw',
+    width: '9.2vw',
+  };
+});
+const awayTeamPrimaryColor = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    backgroundColor: gtbAwayTeam.primaryColor,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    left: '61.8vw',
+    width: '9.2vw',
+  };
+});
+const homeTeamLogo = computed((): CSSProperties => {
+  return {
+    height: gtbHomeTeam.logoSize + '%',
+    maxHeight: '14vh',
+  };
+});
+const rightTeamLogo = computed((): CSSProperties => {
+  return {
+    height: gtbAwayTeam.logoSize + '%',
+    maxHeight: '14vh',
+  };
+});
 
 const clock = replicants.scoreboard.clock;
 
 const formattedClockTime = computed<string>(() => {
-	const minutes = Math.floor(clock.time / 60000).toString();
-	let seconds = Math.floor((clock.time % 60000) / 1000).toString();
-	const millis = Math.floor((clock.time % 1000) / 100).toString();
-	if (minutes === '0') {
-		return `${seconds}.${millis}`;
-	} else {
-		// noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
-		seconds = seconds.padStart(2, '0');
-		return `${minutes}:${seconds}`;
-	}
+  const minutes = Math.floor(clock.time / 60000).toString();
+  let seconds = Math.floor((clock.time % 60000) / 1000).toString();
+  const millis = Math.floor((clock.time % 1000) / 100).toString();
+  if (minutes === '0') {
+    return `${seconds}.${millis}`;
+  }
+  else {
+    // noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
+    seconds = seconds.padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
 });
 const period = ref<string>();
-
 
 // function periodTextHockey() {
 // 	const scoreboardPeriod = replicants.scoreboard.period.value;
@@ -198,7 +240,6 @@ const period = ref<string>();
 // 	}
 // });
 </script>
-
 
 <style scoped>
 @font-face {

@@ -1,53 +1,128 @@
 <template>
   <UCard>
     <template #header>
-      <p class="text-2xl">Sync Options</p>
+      <p class="text-2xl">
+        Sync Options
+      </p>
     </template>
     <template #default>
       <u class="text-xl">General</u>
-      <UCheckbox size="xl" label="Sync Clock" v-model="sync.clock" />
-      <UCheckbox size="xl" label="Sync Period" v-model="sync.period" />
+      <UCheckbox
+        v-model="sync.clock"
+        size="xl"
+        label="Sync Clock"
+      />
+      <UCheckbox
+        v-model="sync.period"
+        size="xl"
+        label="Sync Period"
+      />
       <div class="grid grid-cols-2 gap-4 mt-2">
         <div>
           <u class="text-lg">Away Team</u>
-          <UCheckbox size="xl" label="Sync Away Score" v-model="sync.awayTeam.score" />
+          <UCheckbox
+            v-model="sync.awayTeam.score"
+            size="xl"
+            label="Sync Away Score"
+          />
         </div>
         <div>
           <u class="text-lg">Home Team</u>
-          <UCheckbox size="xl" label="Sync Home Score" v-model="sync.homeTeam.score" />
+          <UCheckbox
+            v-model="sync.homeTeam.score"
+            size="xl"
+            label="Sync Home Score"
+          />
         </div>
       </div>
-      <div class="mt-4"><u class="text-xl">Hockey</u></div>
+      <div class="mt-4">
+        <u class="text-xl">Hockey</u>
+      </div>
       <div class="grid grid-cols-2 gap-4 mt-2">
         <div>
           <u class="text-lg">Away Team</u>
-          <UCheckbox size="xl" label="Sync Away Shots on Goal" v-model="sync.awayTeam.hockey.sog" />
-          <UCheckbox size="xl" label="Sync Away Faceoffs Won" v-model="sync.awayTeam.hockey.faceoff" />
-          <UCheckbox size="xl" label="Sync Away Penalties" v-model="sync.awayTeam.hockey.penalty" />
+          <UCheckbox
+            v-model="sync.awayTeam.hockey.sog"
+            size="xl"
+            label="Sync Away Shots on Goal"
+          />
+          <UCheckbox
+            v-model="sync.awayTeam.hockey.faceoff"
+            size="xl"
+            label="Sync Away Faceoffs Won"
+          />
+          <UCheckbox
+            v-model="sync.awayTeam.hockey.penalty"
+            size="xl"
+            label="Sync Away Penalties"
+          />
         </div>
         <div>
           <u class="text-lg">Home Team</u>
-          <UCheckbox size="xl" label="Sync Home Shots on Goal" v-model="sync.homeTeam.hockey.sog" />
-          <UCheckbox size="xl" label="Sync Home Faceoffs Won" v-model="sync.homeTeam.hockey.faceoff" />
-          <UCheckbox size="xl" label="Sync Home Penalties" v-model="sync.homeTeam.hockey.penalty" />
+          <UCheckbox
+            v-model="sync.homeTeam.hockey.sog"
+            size="xl"
+            label="Sync Home Shots on Goal"
+          />
+          <UCheckbox
+            v-model="sync.homeTeam.hockey.faceoff"
+            size="xl"
+            label="Sync Home Faceoffs Won"
+          />
+          <UCheckbox
+            v-model="sync.homeTeam.hockey.penalty"
+            size="xl"
+            label="Sync Home Penalties"
+          />
         </div>
       </div>
-      <div class="mt-4"><u class="text-xl mt-4">Football</u></div>
-      <UCheckbox size="xl" label="Sync Downs" v-model="sync.football.downs" />
-      <UCheckbox size="xl" label="Sync Yards to Go" v-model="sync.football.yardsToGo" />
-      <UCheckbox size="xl" label="Sync Possession" v-model="sync.football.possession" />
-      <UCheckbox size="xl" label="Sync Play Clock" v-model="sync.football.playClock" />
+      <div class="mt-4">
+        <u class="text-xl mt-4">Football</u>
+      </div>
+      <UCheckbox
+        v-model="sync.football.downs"
+        size="xl"
+        label="Sync Downs"
+      />
+      <UCheckbox
+        v-model="sync.football.yardsToGo"
+        size="xl"
+        label="Sync Yards to Go"
+      />
+      <UCheckbox
+        v-model="sync.football.possession"
+        size="xl"
+        label="Sync Possession"
+      />
+      <UCheckbox
+        v-model="sync.football.playClock"
+        size="xl"
+        label="Sync Play Clock"
+      />
       <div class="grid grid-cols-2 gap-4 mt-2">
         <div>
           <u class="text-lg">Away Team</u>
-          <UCheckbox size="xl" label="Sync Away Timeouts" v-model="sync.awayTeam.football.timeouts" />
+          <UCheckbox
+            v-model="sync.awayTeam.football.timeouts"
+            size="xl"
+            label="Sync Away Timeouts"
+          />
         </div>
         <div>
           <u class="text-lg">Home Team</u>
-          <UCheckbox size="xl" label="Sync Home Timeouts" v-model="sync.homeTeam.football.timeouts" />
+          <UCheckbox
+            v-model="sync.homeTeam.football.timeouts"
+            size="xl"
+            label="Sync Home Timeouts"
+          />
         </div>
       </div>
-      <UButton @click="syncEverything" class="mt-12">Enable Sync For Everything</UButton>
+      <UButton
+        class="mt-12"
+        @click="syncEverything"
+      >
+        Enable Sync For Everything
+      </UButton>
     </template>
   </UCard>
 </template>
@@ -74,7 +149,6 @@ function syncEverything() {
   sync.awayTeam.football.timeouts = true;
   sync.homeTeam.football.timeouts = true;
 }
-
 </script>
 
 <style>

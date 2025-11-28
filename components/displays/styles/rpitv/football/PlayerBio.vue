@@ -1,7 +1,13 @@
 <template>
   <div class="scoreboard-container">
-    <div class="scoreboard" :style="scoreboard">
-      <img class="player-img" :src="playerBio.imageURL ?? ''">
+    <div
+      class="scoreboard"
+      :style="scoreboard"
+    >
+      <img
+        class="player-img"
+        :src="playerBio.imageURL ?? ''"
+      >
       <div :style="action">
         {{ playerBio.description ? playerBio.description : "" }}
         {{ playerBio.playerNumber ? "#" + playerBio.playerNumber: "" }}
@@ -12,49 +18,48 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, type CSSProperties} from "vue";
-import {calcLinearGrad, isLighter, isLightColor} from "../../../util";
+import { computed, ref, type CSSProperties } from 'vue';
+import { calcLinearGrad, isLighter, isLightColor } from '../../../util';
 
 const replicants = await useReplicants();
 const playerBio = replicants.lowerThird.playerBio;
 const awayTeam = replicants.configuration.awayTeam;
 const homeTeam = replicants.configuration.homeTeam;
 
-const linearGrad = ref<string>("");
+const linearGrad = ref<string>('');
 
 const teamColor = computed(() => {
-	const color = playerBio.playerColor || playerBio.teamside === "awayTeam" ? awayTeam.primaryColor : homeTeam.primaryColor;
-	linearGrad.value = calcLinearGrad(color);
-	return color;
-})
+  const color = playerBio.playerColor || playerBio.teamside === 'awayTeam' ? awayTeam.primaryColor : homeTeam.primaryColor;
+  linearGrad.value = calcLinearGrad(color);
+  return color;
+});
 
 const scoreboard = computed((): CSSProperties => {
-	return {
-		position: "fixed",
-        color: isLightColor(teamColor.value) ? "white" : "black",
-		background: isLighter(teamColor.value, linearGrad.value) ? `linear-gradient(${teamColor.value}, ${(linearGrad.value)})` : `linear-gradient(${linearGrad.value}, ${(teamColor.value)})`,
-		bottom: playerBio.offsetY + 5.93 + "vh",
-		display: "flex",
-		height: "10.2vh",
+  return {
+    position: 'fixed',
+    color: isLightColor(teamColor.value) ? 'white' : 'black',
+    background: isLighter(teamColor.value, linearGrad.value) ? `linear-gradient(${teamColor.value}, ${(linearGrad.value)})` : `linear-gradient(${linearGrad.value}, ${(teamColor.value)})`,
+    bottom: playerBio.offsetY + 5.93 + 'vh',
+    display: 'flex',
+    height: '10.2vh',
     left: playerBio.offsetX + 'vw',
-		overflow: "hidden",
-		width: "77.35vw",
-	}
+    overflow: 'hidden',
+    width: '77.35vw',
+  };
 });
 
 const action = computed((): CSSProperties => {
-	return {
-		color: "white",
-		display: "flex",
-		alignItems: "center",
-		bottom: playerBio.offsetY + 10 + "vh",
-		height: "9.7vh",
+  return {
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    bottom: playerBio.offsetY + 10 + 'vh',
+    height: '9.7vh',
     left: playerBio.offsetX + 'vw',
-		marginLeft: "3vw",
-		fontSize: playerBio.fontSize + 7 + "vh",
-	}
+    marginLeft: '3vw',
+    fontSize: playerBio.fontSize + 7 + 'vh',
+  };
 });
-
 </script>
 
 <style scoped>
@@ -68,7 +73,6 @@ const action = computed((): CSSProperties => {
     font-family: "Roboto Condensed";
 	justify-content: center;
 }
-
 
 .scoreboard {
 	display: flex;

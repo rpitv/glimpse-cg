@@ -1,33 +1,38 @@
 <template>
-	<div>
-		<div v-for="(customGraphic, i) in customGraphics" :key="i">
-			<img 
+  <div>
+    <div
+      v-for="(customGraphic, i) in customGraphics"
+      :key="i"
+    >
+      <img
+        :ref="el => imgRefs[i] = el"
         :style="graphicsProps(i)"
         :src="customGraphic.imagePath"
-        :class="(!preview && channelGraphics![i]?.show) || (preview && route.query.id === customGraphic._id) ? 'show' : 'hide'" 
-      />
-		</div>
-	</div>
+        :class="(!route.query.preview && channelGraphics![i]?.show) || (preview && route.query.id === customGraphic._id) ? 'show' : 'hide'"
+      >
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
 
 const route = useRoute();
-const preview = ref(route.query.preview === "customgraphic" || false);
+const preview = ref(route.query.preview === 'customgraphic' || false);
 
-let channelIndex = ref(0);
+const channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
 const replicants = await useReplicants();
 const channelGraphics = ref(replicants.channels[channelIndex.value]?.custom);
 const customGraphics = ref(replicants.fullscreen.custom);
+const imgRefs = ref<HTMLImageElement[]>([]);
 
 function graphicsProps(i: number): CSSProperties {
   const graphic = customGraphics.value?.[i];
   if (!graphic) return {};
-  let style = {
+  const style = {
     position: 'absolute',
     left: `${graphic.offsetX}vw`,
     top: `${graphic.offsetY}vh`,
@@ -38,14 +43,28 @@ function graphicsProps(i: number): CSSProperties {
   if (!graphic.preserveSize && !graphic.preserveRatio) {
     style.width = `${graphic.width}vw`;
     style.height = `${graphic.height}vh`;
-  } else if (!graphic.preserveSize && graphic.preserveRatio) {
+  }
+  else if (!graphic.preserveSize && graphic.preserveRatio) {
     style.width = `${graphic.size}vw`;
     style.height = 'auto';
   }
-  if (preview) {
+  if (preview.value) {
     style.transition = '0s';
+    if (graphic.preserveSize) {
+      const imgWidth = getImageWidth(i);
+      if (imgWidth) {
+        const aspectRatio = imgWidth / 1920 * 100;
+        style.width = `${aspectRatio}vw`;
+        style.height = `auto`;
+      }
+    }
   }
   return style;
+}
+
+function getImageWidth(index: number): number | undefined {
+  const img = imgRefs.value[index];
+  return img ? img.naturalWidth : undefined;
 }
 
 watch(
@@ -53,7 +72,7 @@ watch(
   (newVal) => {
     channelGraphics.value = newVal;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -61,12 +80,11 @@ watch(
   (newVal) => {
     customGraphics.value = newVal;
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
 <style scoped lang="scss">
-
 .show {
   transition: 1s;
   opacity: 1;

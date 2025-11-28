@@ -1,30 +1,34 @@
 <template>
-	<div class="team-section">
-		<div class="logo-section">
-			<img v-if="team.logo" :src="team.logo" :alt="team.schoolName">
-		</div>
-		<div class="name-section">
-			<p>
-				{{ scoreboardTeam.name || team.shortName }}
-			</p>
-		</div>
-		<div class="score-section">
-			<p>
-				{{ scoreboardTeam.score }}
-			</p>
-		</div>
-	</div>
+  <div class="team-section">
+    <div class="logo-section">
+      <img
+        v-if="team.logo"
+        :src="team.logo"
+        :alt="team.schoolName"
+      >
+    </div>
+    <div class="name-section">
+      <p>
+        {{ scoreboardTeam.name || team.shortName }}
+      </p>
+    </div>
+    <div class="score-section">
+      <p>
+        {{ scoreboardTeam.score }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
+import type { PropType } from 'vue';
 
 const props = defineProps({
-	team: {
-		type: String as PropType<"awayTeam" | "homeTeam">,
-		required: true
-	}
-})
+  team: {
+    type: String as PropType<'awayTeam' | 'homeTeam'>,
+    required: true,
+  },
+});
 
 const replicants = await useReplicants();
 
@@ -34,7 +38,6 @@ const logoBgColor = ref(scoreboardTeam.primaryColor);
 </script>
 
 <style scoped lang="scss">
-
 .team-section {
 	display: flex;
 	font-family: 'Roboto', sans-serif;

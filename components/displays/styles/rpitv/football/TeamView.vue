@@ -1,74 +1,75 @@
 <template>
-	<div class="team">
-		<div class="team-info">
-			<img :src="team.logo" class="logo">
-			<div class="team-name">
-				{{ scoreboardTeam.name || team.abbr }}
-			</div>
-		</div>
-		<div class="team-score">
-			{{ score.toFixed(0) }}
-		</div>
-	</div>
+  <div class="team">
+    <div class="team-info">
+      <img
+        :src="team.logo"
+        class="logo"
+      >
+      <div class="team-name">
+        {{ scoreboardTeam.name || team.abbr }}
+      </div>
+    </div>
+    <div class="team-score">
+      {{ score.toFixed(0) }}
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from "vue";
-import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
-import gsap from "gsap";
+import type { PropType } from 'vue';
+import { isLightColor, calcLinearGrad, isLighter } from '../../../util';
+import gsap from 'gsap';
 
 const props = defineProps({
-	team: {
-		type: String as PropType<"homeTeam" | "awayTeam">,
-		required: true
-	}
-})
+  team: {
+    type: String as PropType<'homeTeam' | 'awayTeam'>,
+    required: true,
+  },
+});
 
 const replicants = await useReplicants();
 const team = replicants.configuration[props.team];
 const scoreboardTeam = replicants.scoreboard[props.team];
 
 const color1 = computed(() => {
-	const linearGradient = calcLinearGrad(team.primaryColor);
-	if (!isLighter(team.primaryColor, linearGradient))
-		return linearGradient;
-	return team.primaryColor;
-})
+  const linearGradient = calcLinearGrad(team.primaryColor);
+  if (!isLighter(team.primaryColor, linearGradient))
+    return linearGradient;
+  return team.primaryColor;
+});
 
 const color2 = computed(() => {
-	const linearGradient = calcLinearGrad(team.primaryColor);
-	if (!isLighter(team.primaryColor, linearGradient))
-		return team.primaryColor;
-	return linearGradient;
-})
+  const linearGradient = calcLinearGrad(team.primaryColor);
+  if (!isLighter(team.primaryColor, linearGradient))
+    return team.primaryColor;
+  return linearGradient;
+});
 
 const color3 = computed(() => {
-	const linearGradient = calcLinearGrad(team.secondaryColor);
-	if (!isLighter(team.secondaryColor, linearGradient))
-		return linearGradient;
-	return team.secondaryColor;
-})
+  const linearGradient = calcLinearGrad(team.secondaryColor);
+  if (!isLighter(team.secondaryColor, linearGradient))
+    return linearGradient;
+  return team.secondaryColor;
+});
 
 const color4 = computed(() => {
-	const linearGradient = calcLinearGrad(team.secondaryColor);
-	if (!isLighter(team.secondaryColor, linearGradient))
-		return team.secondaryColor;
-	return linearGradient;
-})
+  const linearGradient = calcLinearGrad(team.secondaryColor);
+  if (!isLighter(team.secondaryColor, linearGradient))
+    return team.secondaryColor;
+  return linearGradient;
+});
 
-const nameColor = computed(() => isLightColor(team.primaryColor) ? "white" : "black");
-const scoreColor = computed(() => isLightColor(team.secondaryColor) ? "white" : "black");
+const nameColor = computed(() => isLightColor(team.primaryColor) ? 'white' : 'black');
+const scoreColor = computed(() => isLightColor(team.secondaryColor) ? 'white' : 'black');
 
 const score = computed(() => scoreboardTeam.score);
 watch(score, (n, o) => {
-	const t1 = gsap.timeline();
-	t1.to(score, { duration: 1, value: Number(n), ease: "power1.out"}, "+=8")
+  const t1 = gsap.timeline();
+  t1.to(score, { duration: 1, value: Number(n), ease: 'power1.out' }, '+=8');
 });
-
 </script>
 
 <style scoped lang="scss">
-
 .team {
 	display: grid;
 	grid-template-columns: 2fr 1fr;

@@ -1,55 +1,57 @@
 <template>
-	<div class="team">
-		<div class="logo">
-			<img :src="team.logo" id="logoImg" :alt="team.schoolName">
-		</div>
-		<div class="team-name">
-			{{ scoreboardTeam.name || team.abbr }}
-		</div>
-		<div class="team-score">
-			{{ scoreboardTeam.score }}
-		</div>
-	</div>
+  <div class="team">
+    <div class="logo">
+      <img
+        id="logoImg"
+        :src="team.logo"
+        :alt="team.schoolName"
+      >
+    </div>
+    <div class="team-name">
+      {{ scoreboardTeam.name || team.abbr }}
+    </div>
+    <div class="team-score">
+      {{ scoreboardTeam.score }}
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { isLightColor, calcLinearGrad, isLighter } from "../../../util";
-
+import { isLightColor, calcLinearGrad, isLighter } from '../../../util';
 
 const props = defineProps({
   team: {
-    type: String as PropType<"homeTeam" | "awayTeam">,
-    required: true
-  }
+    type: String as PropType<'homeTeam' | 'awayTeam'>,
+    required: true,
+  },
 });
 const replicants = await useReplicants();
 const team = replicants.configuration[props.team];
 const scoreboardTeam = replicants.scoreboard[props.team];
 
-const fontColor = ref("black");
+const fontColor = ref('black');
 
 const color1 = computed(() => {
-	const linearGradient = calcLinearGrad(team.primaryColor);
-	if (!isLighter(team.primaryColor, linearGradient))
-		return linearGradient;
-	return team.primaryColor;
-})
+  const linearGradient = calcLinearGrad(team.primaryColor);
+  if (!isLighter(team.primaryColor, linearGradient))
+    return linearGradient;
+  return team.primaryColor;
+});
 
 const color2 = computed(() => {
-	const linearGradient = calcLinearGrad(team.primaryColor);
-	if (!isLighter(team.primaryColor, linearGradient))
-		return team.primaryColor;
-	return linearGradient;
-})
+  const linearGradient = calcLinearGrad(team.primaryColor);
+  if (!isLighter(team.primaryColor, linearGradient))
+    return team.primaryColor;
+  return linearGradient;
+});
 
-if (isLightColor(color1.value)) fontColor.value = "white";
-else fontColor.value = "black";
+if (isLightColor(color1.value)) fontColor.value = 'white';
+else fontColor.value = 'black';
 
 watch(color1, (n, o) => {
-	if (isLightColor(n)) fontColor.value = "white";
-	else fontColor.value = "black";
-})
-
+  if (isLightColor(n)) fontColor.value = 'white';
+  else fontColor.value = 'black';
+});
 </script>
 
 <style scoped>

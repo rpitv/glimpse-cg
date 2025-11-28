@@ -1,30 +1,38 @@
 <template>
-	<div id="container" :class="{
-			show: channels![channelIndex].produced,
-			hide: !channels![channelIndex].produced,
-			translateUp: channels![channelIndex].copyright,
-			translateNone: !channels![channelIndex].copyright
-		}">
-		<img id="ESPNCopyrightImg" :src="ESPN_Copyright">
-		<img id="logo" :src="RPITV_LOGO">
-		<span id="Text">Produced by RPI TV</span>
-	</div>
+  <div
+    id="container"
+    :class="{
+      show: channels![channelIndex].produced,
+      hide: !channels![channelIndex].produced,
+      translateUp: channels![channelIndex].copyright,
+      translateNone: !channels![channelIndex].copyright,
+    }"
+  >
+    <img
+      id="ESPNCopyrightImg"
+      :src="ESPN_Copyright"
+    >
+    <img
+      id="logo"
+      :src="RPITV_LOGO"
+    >
+    <span id="Text">Produced by RPI TV</span>
+  </div>
 </template>
 
 <script setup lang="ts">
-import ESPN_Copyright from "~/assets/espn/ESPN_Copyright.png"
-import RPITV_LOGO from "~/assets/rpitv-modern/rpitv_logo.svg"
+import ESPN_Copyright from '~/assets/espn/ESPN_Copyright.png';
+import RPITV_LOGO from '~/assets/rpitv-modern/rpitv_logo.svg';
 
 const route = useRoute();
 const replicants = await useReplicants();
-const preview = ref(route.query.preview === "produced" || false);
+const preview = ref(route.query.preview === 'produced' || false);
 
-let channelIndex = ref(0);
+const channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
 const channels = replicants.channels;
-
 </script>
 
 <style scoped lang="scss">

@@ -3,19 +3,37 @@
     <b class="text-xl text-muted">{{ name.toLocaleUpperCase() }}</b>
     <table class="w-full">
       <colgroup>
-        <col span="1" style="width: 40%;">
-        <col span="1" style="width: 30%;">
-        <col span="1" style="width: 30%;">
+        <col
+          span="1"
+          style="width: 40%;"
+        >
+        <col
+          span="1"
+          style="width: 30%;"
+        >
+        <col
+          span="1"
+          style="width: 30%;"
+        >
       </colgroup>
       <thead>
         <tr>
-          <th class="text-left">Message</th>
-          <th class="text-left">Timer</th>
-          <th class="text-center">Actions</th>
+          <th class="text-left">
+            Message
+          </th>
+          <th class="text-left">
+            Timer
+          </th>
+          <th class="text-center">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody :class="name">
-        <tr v-for="(announcement, index) in announcmentRef" :key="index">
+        <tr
+          v-for="(announcement, index) in announcmentRef"
+          :key="index"
+        >
           <td>
             {{ announcement.message }}
           </td>
@@ -23,16 +41,32 @@
             <p v-if="announcement.timer">
               {{ millisToString((announcement.timer!.length) - (announcement.timer!.startedAt - replicants.scoreboard.clock.time)) }}
             </p>
-            <p v-else class="text-muted">No Timer</p>
+            <p
+              v-else
+              class="text-muted"
+            >
+              No Timer
+            </p>
           </td>
           <td>
             <div class="flex gap-2 justify-center">
-              <UButton color="secondary" @click="openModal(index)" class="rounded-full">
+              <UButton
+                color="secondary"
+                class="rounded-full"
+                @click="openModal(index)"
+              >
                 <template #leading>
-                  <FontAwesomeIcon size="lg" :icon="'pen-to-square'" />
+                  <FontAwesomeIcon
+                    size="lg"
+                    :icon="'pen-to-square'"
+                  />
                 </template>
               </UButton>
-              <UButton color="error" @click="deleteAnnouncement(index)" class="rounded-full">
+              <UButton
+                color="error"
+                class="rounded-full"
+                @click="deleteAnnouncement(index)"
+              >
                 <template #leading>
                   <FontAwesomeIcon icon="trash" />
                 </template>
@@ -41,7 +75,10 @@
           </td>
         </tr>
         <tr v-if="announcmentRef.length === 0">
-          <td class="text-center text-muted w-full" colspan="3">
+          <td
+            class="text-center text-muted w-full"
+            colspan="3"
+          >
             There are no announcements. Use the bottom row to add one.
           </td>
         </tr>
@@ -51,19 +88,27 @@
       <tbody>
         <tr>
           <td>
-            <UInput @keydown.enter="addAnnouncement()" v-model="announcementMessage" class="w-full" placeholder="Announcement Message" />
+            <UInput
+              v-model="announcementMessage"
+              class="w-full"
+              placeholder="Announcement Message"
+              @keydown.enter="addAnnouncement()"
+            />
           </td>
           <td>
             <UInput
-              @keydown.enter="addAnnouncement()"
+              v-model="time"
               class="w-full"
               placeholder="MM:SS or SS"
-              v-model="time"
               :ui="{ base: 'text-center' }"
+              @keydown.enter="addAnnouncement()"
             />
           </td>
           <td class="text-center">
-            <UButton @click="addAnnouncement()" class="rounded-full">
+            <UButton
+              class="rounded-full"
+              @click="addAnnouncement()"
+            >
               <template #leading>
                 <FontAwesomeIcon icon="plus" />
               </template>
@@ -72,30 +117,47 @@
         </tr>
       </tbody>
     </table>
-    <UModal v-model:open="modalState" title="Edit Announcement" description="Edit the announcement message and timer." :ui="{
-      footer: 'flex justify-between',
-    }">
+    <UModal
+      v-model:open="modalState"
+      title="Edit Announcement"
+      description="Edit the announcement message and timer."
+      :ui="{
+        footer: 'flex justify-between',
+      }"
+    >
       <template #body>
         <UFormField label="Announcement Message">
           <UInput
-            @keydown.enter="editAnnouncement()"
             v-model="editedMessage"
             class="w-full mb-4"
             placeholder="Announcement Message"
+            @keydown.enter="editAnnouncement()"
           />
         </UFormField>
         <UFormField label="Timer (MM:SS or SS)">
           <UInput
-            @keydown.enter="editAnnouncement()"
             v-model="editedTimer"
             placeholder="MM:SS or SS"
             :ui="{ base: 'text-center' }"
+            @keydown.enter="editAnnouncement()"
           />
         </UFormField>
       </template>
       <template #footer>
-        <UButton size="xl" color="neutral" @click="cancelEdit">Cancel</UButton>
-        <UButton size="xl" color="secondary" @click="editAnnouncement">Edit</UButton>
+        <UButton
+          size="xl"
+          color="neutral"
+          @click="cancelEdit"
+        >
+          Cancel
+        </UButton>
+        <UButton
+          size="xl"
+          color="secondary"
+          @click="editAnnouncement"
+        >
+          Edit
+        </UButton>
       </template>
     </UModal>
   </div>
@@ -114,18 +176,18 @@ const scoreboard = replicants.scoreboard;
 
 const props = defineProps<{
   section: {
-    announcement: Announcement[]
-  },
-  name: 'Away' | 'Home' | 'Global'
+    announcement: Announcement[];
+  };
+  name: 'Away' | 'Home' | 'Global';
 }>();
 
 const announcmentRef = computed({
   get: () => {
-    return props.section.announcement
+    return props.section.announcement;
   },
   set: (val: Announcement[]) => {
     props.section.announcement = val;
-  }
+  },
 });
 
 const announcementMessage = ref('');
@@ -140,7 +202,7 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
     toast.add({
       title: 'Error',
       description: 'Announcement message cannot be empty.',
-      color: 'error'
+      color: 'error',
     });
     return;
   }
@@ -148,11 +210,12 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
   if (timer.trim() !== '') {
     try {
       totalTime = parseTimeString(timer);
-    } catch (e) {
+    }
+    catch (e) {
       toast.add({
         title: 'Error',
         description: (e as Error).message,
-        color: 'error'
+        color: 'error',
       });
       return;
     }
@@ -161,8 +224,8 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
     length: totalTime,
     startedAt: replicants.scoreboard.clock.time,
     timerEndsAction: 'removeAnnouncement',
-    visible: true
-  }
+    visible: true,
+  };
   announcmentRef.value.push(new Announcement(announcementMessage.value, (totalTime > 0 ? announcementTimer : undefined)));
 
   time.value = '';
@@ -170,7 +233,7 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
   toast.add({
     title: 'Success',
     description: 'Announcement added successfully.',
-    color: 'primary'
+    color: 'primary',
   });
 }
 
@@ -178,15 +241,17 @@ function editAnnouncement() {
   props.section.announcement[openedAnnouncement.value]!.message = editedMessage.value;
   if (editedTimer.value.trim() === '') {
     props.section.announcement[openedAnnouncement.value]!.timer = null;
-  } else {
+  }
+  else {
     let totalTime = -1;
     try {
       totalTime = parseTimeString(editedTimer.value);
-    } catch (e) {
+    }
+    catch (e) {
       toast.add({
         title: 'Error',
         description: (e as Error).message,
-        color: 'error'
+        color: 'error',
       });
       return;
     }
@@ -194,15 +259,15 @@ function editAnnouncement() {
       length: totalTime,
       startedAt: replicants.scoreboard.clock.time,
       timerEndsAction: 'removeAnnouncement',
-      visible: true
-    }
+      visible: true,
+    };
   }
   openedAnnouncement.value = -1;
   modalState.value = false;
   toast.add({
     title: 'Success',
     description: 'Announcement edited successfully.',
-    color: 'secondary'
+    color: 'secondary',
   });
 }
 
@@ -211,7 +276,7 @@ function deleteAnnouncement(index: number) {
   toast.add({
     title: 'Success',
     description: 'Announcement deleted successfully.',
-    color: 'success'
+    color: 'success',
   });
 }
 
@@ -225,14 +290,14 @@ function openModal(index: number) {
   editedMessage.value = props.section.announcement[openedAnnouncement.value]!.message;
   if (props.section.announcement[openedAnnouncement.value]!.timer) {
     editedTimer.value = millisToString(props.section.announcement[openedAnnouncement.value]!.timer!.length);
-  } else {
+  }
+  else {
     editedTimer.value = '';
   }
   modalState.value = true;
 }
 
-let sortableInstance = useSortable(`.${props.name}`, announcmentRef, { animation: 150 });
-
+const sortableInstance = useSortable(`.${props.name}`, announcmentRef, { animation: 150 });
 </script>
 
 <style scoped>

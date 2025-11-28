@@ -2,63 +2,140 @@
   <div id="configuration-page">
     <UCard class="rounded-none">
       <template #header>
-        <h1 class="text-2xl">Settings</h1>
+        <h1 class="text-2xl">
+          Settings
+        </h1>
       </template>
-      <template #default v-if="configuration">
+      <template
+        v-if="configuration"
+        #default
+      >
         <UFormField label="Graphic Style">
-          <USelect :class="width" :items="styles" v-model="configuration.style" />
+          <USelect
+            v-model="configuration.style"
+            :class="width"
+            :items="styles"
+          />
         </UFormField>
-        <UFormField class="mt-4" label="Sport">
-          <USelect :class="width" :items="sports" v-model="configuration.sport" @update:model-value="refresh()" />
+        <UFormField
+          class="mt-4"
+          label="Sport"
+        >
+          <USelect
+            v-model="configuration.sport"
+            :class="width"
+            :items="sports"
+            @update:model-value="refresh()"
+          />
         </UFormField>
         <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
-          <UFormField class="mt-4" label="Type (Important for Rosters)">
-            <USelect :class="width" :items="type" v-model="configuration.type" @update:model-value="refresh()"/>
+          <UFormField
+            class="mt-4"
+            label="Type (Important for Rosters)"
+          >
+            <USelect
+              v-model="configuration.type"
+              :class="width"
+              :items="type"
+              @update:model-value="refresh()"
+            />
           </UFormField>
         </div>
         <div class="mt-8 flex gap-5">
-          <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="awayTeam" />
-          <TeamConfig @loadPreset="loadPreset" class="w-full" team-side="homeTeam" />
+          <TeamConfig
+            class="w-full"
+            team-side="awayTeam"
+            @load-preset="loadPreset"
+          />
+          <TeamConfig
+            class="w-full"
+            team-side="homeTeam"
+            @load-preset="loadPreset"
+          />
         </div>
       </template>
     </UCard>
-    <UCard class="rounded-none" id="schedule-card">
+    <UCard
+      id="schedule-card"
+      class="rounded-none"
+    >
       <template #header>
-        <h1 class="text-2xl">Schedule</h1>
-        <USwitch v-model="homeToggle" label="Only Show Home Games" />
+        <h1 class="text-2xl">
+          Schedule
+        </h1>
+        <USwitch
+          v-model="homeToggle"
+          label="Only Show Home Games"
+        />
       </template>
       <div v-if="loading">
-        <UProgress></UProgress>
+        <UProgress />
         <p>Getting schedule...</p>
       </div>
       <div v-else>
-        <URadioGroup ref="radioSchedule" id="schedule" :loop="true" indicator="hidden" variant="table" 
-          value-key="val" :items="schedule.filter(g => {
+        <URadioGroup
+          id="schedule"
+          ref="radioSchedule"
+          v-model="selectedSchool"
+          :loop="true"
+          indicator="hidden"
+          variant="table"
+          value-key="val"
+          :items="schedule.filter(g => {
             if (homeToggle)
               return g.val.homeGame
             return true
-          })" v-model="selectedSchool"
+          })"
           @dblclick="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }"
         >
           <template #label="{ item }">
-            <div :id="item.uni" class="flex items-center gap-2">
-              <img class="schedule-logo" :src="item.val.opponentLogo?.src"></img>
+            <div
+              :id="item.uni"
+              class="flex items-center gap-2"
+            >
+              <img
+                class="schedule-logo"
+                :src="item.val.opponentLogo?.src"
+              >
               <div>
-                <p class="text-muted text-left">{{ configuration?.type === 'men' || (configuration.sport === 'acha' || configuration.sport === 'football') ? '(MEN)' : '(WOMEN)' }}</p>
-                <p class="text-left text-xl">{{ item.val.title }}</p>
-                <p class="text-muted text-left">{{ item.val.description }}</p>
+                <p class="text-muted text-left">
+                  {{ configuration?.type === 'men' || (configuration.sport === 'acha' || configuration.sport === 'football') ? '(MEN)' : '(WOMEN)' }}
+                </p>
+                <p class="text-left text-xl">
+                  {{ item.val.title }}
+                </p>
+                <p class="text-muted text-left">
+                  {{ item.val.description }}
+                </p>
               </div>
             </div>
           </template>
         </URadioGroup>
         <div class="flex items-center justify-between gap-2">
-        <UTooltip :disabled="!!selectedSchool?.preset" text="This school does not have a preset available." :delay-duration="0">
-          <UButton class="mt-2" :disabled="!selectedSchool || !selectedSchool.preset" @click="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }">Load Matchup</UButton>
-        </UTooltip>
-          <span v-if="lastUpdated != ''" class="flex items-center gap-2" id="lastUpdated">
+          <UTooltip
+            :disabled="!!selectedSchool?.preset"
+            text="This school does not have a preset available."
+            :delay-duration="0"
+          >
+            <UButton
+              class="mt-2"
+              :disabled="!selectedSchool || !selectedSchool.preset"
+              @click="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }"
+            >
+              Load Matchup
+            </UButton>
+          </UTooltip>
+          <span
+            v-if="lastUpdated != ''"
+            id="lastUpdated"
+            class="flex items-center gap-2"
+          >
             <span>Last Updated: {{ lastUpdated }}</span>
             <UButton @click="refresh(true)">
-              <UIcon name="material-symbols-light:sync" class="size-full"/>
+              <UIcon
+                name="material-symbols-light:sync"
+                class="size-full"
+              />
             </UButton>
           </span>
         </div>
@@ -72,59 +149,58 @@ import type { Configuration } from '~/types/replicants';
 import schools from '~/assets/schools.json';
 import TeamConfig from '~/components/configuration/teamConfig.vue';
 import { URadioGroup } from '#components';
-import type { ScheduleResults } from "~/server/api/schedule";
+import type { ScheduleResults } from '~/server/api/schedule';
 
 const toast = useToast();
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const width = 'w-48';
 const height = 'h-5';
-const lastUpdated = ref("");
+const lastUpdated = ref('');
 const homeToggle = ref(true);
 
 const styles = [{
   label: 'RPI TV',
-  value: 'rpitv'
+  value: 'rpitv',
 },
 {
   label: 'ESPN',
-  value: 'espn'
+  value: 'espn',
 },
 {
   label: 'Football',
-  value: 'football'
+  value: 'football',
 }];
 
 const sports = [{
   label: 'Hockey',
-  value: 'hockey'
+  value: 'hockey',
 },
 {
   label: 'ACHA',
-  value: 'acha'
+  value: 'acha',
 },
 {
   label: 'Football',
-  value: 'football'
+  value: 'football',
 },
 {
   label: 'Basketball',
-  value: 'basketball'
+  value: 'basketball',
 },
 {
   label: 'Soccer',
-  value: 'soccer'
+  value: 'soccer',
 }];
 
 const type = [{
   label: 'Mens',
-  value: 'men'
+  value: 'men',
 },
 {
   label: 'Womens',
-  value: 'women'
+  value: 'women',
 }];
-
 
 export interface Timeline {
   val: {
@@ -137,8 +213,8 @@ export interface Timeline {
       alt: string;
     };
     preset: Configuration['awayTeam' | 'homeTeam'] | null;
-  }
-  uni: string
+  };
+  uni: string;
 }
 
 const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
@@ -150,11 +226,11 @@ let scrollToView: null | number = null;
 
 const selectedSchool = ref<Timeline['val']>();
 
-async function refresh(force=false) {
+async function refresh(force = false) {
   loading.value = true;
   schedule.value = [];
   const data: ScheduleResults = await $fetch(`/api/schedule?force=${force}`, {}).catch((error) => {
-      console.error("Error fetching.ts schedule:", error);
+    console.error('Error fetching.ts schedule:', error);
   });
 
   let current = false;
@@ -169,18 +245,18 @@ async function refresh(force=false) {
           day: 'numeric',
           year: 'numeric',
           hour: '2-digit',
-          minute: '2-digit'
+          minute: '2-digit',
         }),
         homeGame: game.homeGame,
         title: `${game.opponent} @ ${game.location}`,
-        type: configuration.value?.type || "mens",
+        type: configuration.value?.type || 'mens',
         opponentLogo: {
           src: game.opponentLogo,
-          alt: game.opponentLogoAlt
+          alt: game.opponentLogoAlt,
         },
         preset: preset || null as Configuration['awayTeam' | 'homeTeam'] | null,
       },
-      uni: i.toString()
+      uni: i.toString(),
     };
     if (!current) {
       if (new Date(game.date).getTime() >= Date.now()) {
@@ -214,7 +290,7 @@ function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['aw
   toast.add({
     title: 'Preset Loaded',
     description: `Loaded preset for ${school.schoolName}`,
-    duration: 3000
+    duration: 3000,
   });
 }
 
@@ -224,9 +300,8 @@ onMounted(async () => {
 
 watch((radioSchedule), () => {
   if (radioSchedule.value)
-    document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center'});
-
-})
+    document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center' });
+});
 </script>
 
 <style>
@@ -234,7 +309,6 @@ watch((radioSchedule), () => {
   display: grid;
   grid-template-columns: 7fr 4fr;
 }
-
 
 #schedule-card {
   min-height: 400px;

@@ -7,32 +7,55 @@
       <br></br>
       <div v-if="loading && graphicsStore.selectedGraphic.name">
         <UProgress indeterminate />
-        <p class="text-center">Loading Preview...</p>
+        <p class="text-center">
+          Loading Preview...
+        </p>
       </div>
-      <iframe v-if="graphicsStore.selectedGraphic.name" :src="`/display/?preview=${graphicsStore.selectedGraphic.name}&dev=1&${graphicsStore.selectedGraphic.id ? `id=${graphicsStore.selectedGraphic.id}` : ''}`" @load="loading = false">
-      </iframe>
-      <p v-else>No Graphic Selected</p>
+      <iframe
+        v-if="graphicsStore.selectedGraphic.name"
+        :src="`/display/?preview=${graphicsStore.selectedGraphic.name}&dev=1&${graphicsStore.selectedGraphic.id ? `id=${graphicsStore.selectedGraphic.id}` : ''}`"
+        @load="loading = false"
+      />
+      <p v-else>
+        No Graphic Selected
+      </p>
       <div v-if="graphicsStore.selectedGraphic.id && graphicsStore.selectedGraphic.name === 'customgraphic' && fullscreen">
-        <UFormField class="mt-4" label="Offset X" help="Adjust the horizontal position of this graphic">
+        <UFormField
+          class="mt-4"
+          label="Offset X"
+          help="Adjust the horizontal position of this graphic"
+        >
           <UInputNumber
             v-model="currentGraphic!.offsetX"
           />
         </UFormField>
-        <UFormField label="Offset Y" help="Adjust the vertical position of this graphic">
+        <UFormField
+          label="Offset Y"
+          help="Adjust the vertical position of this graphic"
+        >
           <UInputNumber
             v-model="currentGraphic!.offsetY"
           />
         </UFormField>
-        <UCheckbox class="mt-4" size="xl" v-model="currentGraphic!.preserveSize" 
-          label="Preserve Size" 
-          description="Keep the original size of the graphic" 
+        <UCheckbox
+          v-model="currentGraphic!.preserveSize"
+          class="mt-4"
+          size="xl"
+          label="Preserve Size"
+          description="Keep the original size of the graphic"
         />
         <div v-if="!currentGraphic?.preserveSize">
-          <UCheckbox class="mt-2" size="xl" v-model="currentGraphic!.preserveRatio" 
-            label="Preserve Aspect Ratio" 
-            description="Keep the original aspect ratio of the graphic" 
+          <UCheckbox
+            v-model="currentGraphic!.preserveRatio"
+            class="mt-2"
+            size="xl"
+            label="Preserve Aspect Ratio"
+            description="Keep the original aspect ratio of the graphic"
           />
-          <UFormField class="mt-2" v-if="currentGraphic?.preserveRatio" label="Size"
+          <UFormField
+            v-if="currentGraphic?.preserveRatio"
+            class="mt-2"
+            label="Size"
             help="Adjust the size of the graphic while maintaining its aspect ratio"
           >
             <UInputNumber
@@ -41,7 +64,9 @@
             />
           </UFormField>
           <div v-if="!currentGraphic?.preserveSize && !currentGraphic?.preserveRatio">
-            <UFormField class="mt-2" label="Width"
+            <UFormField
+              class="mt-2"
+              label="Width"
               help="Adjust the width of the graphic"
             >
               <UInputNumber
@@ -49,7 +74,9 @@
                 :min="0"
               />
             </UFormField>
-            <UFormField class="mt-2" label="Height"
+            <UFormField
+              class="mt-2"
+              label="Height"
               help="Adjust the height of the graphic"
             >
               <UInputNumber
@@ -72,23 +99,23 @@ const graphicsStore = useGraphicsStore();
 const loading = ref(true);
 const fullscreen = computed({
   get: () => replicants.fullscreen,
-  set: (val) => (replicants.fullscreen = val),
+  set: val => (replicants.fullscreen = val),
 });
-const currentGraphic = ref(fullscreen.value?.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id));
+const currentGraphic = ref(fullscreen.value?.custom.find(graphic => graphic._id === graphicsStore.selectedGraphic.id));
 
 watch(() => graphicsStore.selectedGraphic, (n, o) => {
-  if (n.name !== o.name || n.id !== o.id) 
+  if (n.name !== o.name || n.id !== o.id)
     loading.value = true;
-  
-  if (graphicsStore.selectedGraphic.name !== 'customgraphic') 
+
+  if (graphicsStore.selectedGraphic.name !== 'customgraphic')
     graphicsStore.selectedGraphic.id = null;
-  else 
-    currentGraphic.value = fullscreen.value.custom.find((graphic) => graphic._id === graphicsStore.selectedGraphic.id);
+  else
+    currentGraphic.value = fullscreen.value.custom.find(graphic => graphic._id === graphicsStore.selectedGraphic.id);
 });
 
 watch(currentGraphic, (newVal) => {
   if (newVal) {
-    const index = fullscreen.value.custom.findIndex((graphic) => graphic._id === newVal._id);
+    const index = fullscreen.value.custom.findIndex(graphic => graphic._id === newVal._id);
     if (index !== -1) {
       fullscreen.value.custom[index] = newVal;
       fullscreen.value.custom = [...fullscreen.value.custom]; // Trigger reactivity

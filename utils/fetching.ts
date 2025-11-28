@@ -1,23 +1,22 @@
-import { db } from "~/server/utils/db";
-import {createHash} from "node:crypto";
+import { db } from '~/server/utils/db';
+import { createHash } from 'node:crypto';
 
 // =======================
 //  Uses table http_cache
 // =======================
 export interface http_cache {
-    url: string
-    next_refresh: number
-    sha256_og: string
-    content_text: string
-    content_blob: Blob
+  url: string;
+  next_refresh: number;
+  sha256_og: string;
+  content_text: string;
+  content_blob: Blob;
 }
 
 function debug(msg: unknown, enabled: boolean = false) {
-    if (enabled) {
-        console.log(msg)
-    }
+  if (enabled) {
+    console.log(msg);
+  }
 }
-
 
 /**
  * Fetches a URL first by checking the local cache before going out to fetch the page. This will not check for the page's
@@ -37,86 +36,85 @@ function debug(msg: unknown, enabled: boolean = false) {
  * @param forceFetch    Force cache invalidation and fetch the url.
  */
 export function fetchTextViaCache(normalizedURL: string,
-                                  fetchOptions: RequestInit = {},
-                                  parser: "text" | ((res: Response) => Promise<string>) = "text",
-                                  cacheTime: number = 60,
-                                  forceFetch: boolean = false): Promise<string> {
-    return new Promise((resolve, reject) => {
-        if (parser === undefined || parser === null) {
-            throw new Error("Invalid parameter 'parser' it's undefined or null.");
-        }
+  fetchOptions: RequestInit = {},
+  parser: 'text' | ((res: Response) => Promise<string>) = 'text',
+  cacheTime: number = 60,
+  forceFetch: boolean = false): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (parser === undefined || parser === null) {
+      throw new Error('Invalid parameter \'parser\' it\'s undefined or null.');
+    }
 
-        // checks for db cache
-        debug(`======= fetchTextViaCache(${normalizedURL}) ======= ${new Date()}`);
-        const dbResponse = db.prepare(`SELECT *
+    // checks for db cache
+    debug(`======= fetchTextViaCache(${normalizedURL}) ======= ${new Date()}`);
+    const dbResponse = db.prepare(`SELECT *
                                        FROM http_cache
                                        WHERE url = ?`).get(normalizedURL) as http_cache | undefined;
-        debug("db response:");
-        debug(dbResponse);
+    debug('db response:');
+    debug(dbResponse);
 
-        // is cached value still valid?
-        if (dbResponse?.next_refresh !== undefined && Math.floor(Date.now() / 1000) < dbResponse.next_refresh && !forceFetch) {
-            debug(`✅✅✅ resolving content from cache`)
-            return resolve(dbResponse.content_text);
-        }
+    // is cached value still valid?
+    if (dbResponse?.next_refresh !== undefined && Math.floor(Date.now() / 1000) < dbResponse.next_refresh && !forceFetch) {
+      debug(`✅✅✅ resolving content from cache`);
+      return resolve(dbResponse.content_text);
+    }
 
-        // a new fetch needs to be sent out
-        debug(`🔥🔥🔥 cache is invalid or DNE`)
-        let sha256hash = '';
-        let disableThenChain = false;
-        fetch(normalizedURL, fetchOptions)
-            .then(async data => {
-                // calc sha256 for changes, if no changes then return existing storage and update cache
-                const buffer = Buffer.from(await data.clone().arrayBuffer());
-                sha256hash = createHash("sha256").update(buffer).digest("hex");
-                if (dbResponse?.sha256_og === sha256hash && !forceFetch) {
-                    db.prepare(`
+    // a new fetch needs to be sent out
+    debug(`🔥🔥🔥 cache is invalid or DNE`);
+    let sha256hash = '';
+    let disableThenChain = false;
+    fetch(normalizedURL, fetchOptions)
+      .then(async (data) => {
+        // calc sha256 for changes, if no changes then return existing storage and update cache
+        const buffer = Buffer.from(await data.clone().arrayBuffer());
+        sha256hash = createHash('sha256').update(buffer).digest('hex');
+        if (dbResponse?.sha256_og === sha256hash && !forceFetch) {
+          db.prepare(`
                         INSERT INTO http_cache (url, next_refresh)
                         VALUES (?, ?)
                         ON CONFLICT(url) DO UPDATE SET next_refresh = excluded.next_refresh
                     `).run(normalizedURL, Math.floor(Date.now() / 1000) + cacheTime);
-                    debug("⚡⚡⚡ short circuit with same sha256 hash")
-                    disableThenChain = true;
-                    return resolve(dbResponse.content_text);
-                }
+          debug('⚡⚡⚡ short circuit with same sha256 hash');
+          disableThenChain = true;
+          return resolve(dbResponse.content_text);
+        }
 
-                if (parser === "text") {
-                    return data.text();
-                }
+        if (parser === 'text') {
+          return data.text();
+        }
 
-                debug("💥💥💥 using custom parser")
-                return parser(data)
-                    .then(parsedData => {
-                        debug("🆗🆗🆗 custom parsedData");
-                        debug(parsedData);
-                        return parsedData;
-                    })
-            })
-            .then(data => {
-                if (disableThenChain) {
-                    return;
-                }
+        debug('💥💥💥 using custom parser');
+        return parser(data)
+          .then((parsedData) => {
+            debug('🆗🆗🆗 custom parsedData');
+            debug(parsedData);
+            return parsedData;
+          });
+      })
+      .then((data) => {
+        if (disableThenChain) {
+          return;
+        }
 
-                if (data === undefined || data === null) {
-                    console.warn(`fetching.ts#fetchTextViaCache(${normalizedURL},
+        if (data === undefined || data === null) {
+          console.warn(`fetching.ts#fetchTextViaCache(${normalizedURL},
                         ${JSON.stringify(fetchOptions)}, ${parser}) resulted in an undefined or null response`);
-                    data = ''
-                }
+          data = '';
+        }
 
-                db.prepare(`
+        db.prepare(`
                     INSERT INTO http_cache (url, next_refresh, sha256_og, content_text)
                     VALUES (?, ?, ?, ?)
                     ON CONFLICT(url) DO UPDATE SET next_refresh = excluded.next_refresh,
                                                    sha256_og    = excluded.sha256_og,
                                                    content_text = excluded.content_text
                 `).run(normalizedURL, Math.floor(Date.now() / 1000) + cacheTime, sha256hash, data);
-                debug("🎄🎄🎄 new data is saved as text")
-                resolve(data);
-            })
-            .catch(reject)
-    })
+        debug('🎄🎄🎄 new data is saved as text');
+        resolve(data);
+      })
+      .catch(reject);
+  });
 }
-
 
 /**
  * Saves results as a {@link Blob} datatype into the sqlite database.
@@ -134,72 +132,72 @@ export function fetchTextViaCache(normalizedURL: string,
  * @param forceFetch    Force cache invalidation and fetch the url.
  */
 export function fetchBlobViaCache(normalizedURL: string,
-                                  fetchOptions: RequestInit = {},
-                                  cacheTime: number = 60,
-                                  forceFetch: boolean = false): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-        // checks for db cache
-        debug(`======= fetchBlobViaCache(${normalizedURL}) ======= ${new Date()}`);
-        const dbResponse = db.prepare(`SELECT *
+  fetchOptions: RequestInit = {},
+  cacheTime: number = 60,
+  forceFetch: boolean = false): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    // checks for db cache
+    debug(`======= fetchBlobViaCache(${normalizedURL}) ======= ${new Date()}`);
+    const dbResponse = db.prepare(`SELECT *
                                        FROM http_cache
                                        WHERE url = ?`).get(normalizedURL) as http_cache | undefined;
-        debug("db response:");
-        debug(dbResponse);
+    debug('db response:');
+    debug(dbResponse);
 
-        // is cached value still valid?
-        if (dbResponse?.next_refresh !== undefined && Math.floor(Date.now() / 1000) < dbResponse.next_refresh && !forceFetch) {
-            debug(`✅✅✅ resolving content from cache`)
-            return resolve(dbResponse.content_blob);
-        }
+    // is cached value still valid?
+    if (dbResponse?.next_refresh !== undefined && Math.floor(Date.now() / 1000) < dbResponse.next_refresh && !forceFetch) {
+      debug(`✅✅✅ resolving content from cache`);
+      return resolve(dbResponse.content_blob);
+    }
 
-        // a new fetch needs to be sent out
-        debug(`🔥🔥🔥 cache is invalid or DNE`)
-        let sha256hash = '';
-        let disableThenChain = false;
-        fetch(normalizedURL, fetchOptions)
-            .then(async data => {
-                // calc sha256 for changes, if no changes then return existing storage and update cache
-                const buffer = Buffer.from(await data.clone().arrayBuffer());
-                sha256hash = createHash("sha256").update(buffer).digest("hex");
-                if (dbResponse?.sha256_og === sha256hash && !forceFetch) {
-                    db.prepare(`
+    // a new fetch needs to be sent out
+    debug(`🔥🔥🔥 cache is invalid or DNE`);
+    let sha256hash = '';
+    let disableThenChain = false;
+    fetch(normalizedURL, fetchOptions)
+      .then(async (data) => {
+        // calc sha256 for changes, if no changes then return existing storage and update cache
+        const buffer = Buffer.from(await data.clone().arrayBuffer());
+        sha256hash = createHash('sha256').update(buffer).digest('hex');
+        if (dbResponse?.sha256_og === sha256hash && !forceFetch) {
+          db.prepare(`
                         INSERT INTO http_cache (url, next_refresh)
                         VALUES (?, ?)
                         ON CONFLICT(url) DO UPDATE SET next_refresh = excluded.next_refresh
                     `).run(normalizedURL, Math.floor(Date.now() / 1000) + cacheTime);
-                    debug("⚡⚡⚡ short circuit with same sha256 hash")
-                    disableThenChain = true;
-                    resolve(dbResponse.content_blob);
-                }
+          debug('⚡⚡⚡ short circuit with same sha256 hash');
+          disableThenChain = true;
+          resolve(dbResponse.content_blob);
+        }
 
-                debug("💥💥💥 using custom parser")
-                return data.blob()
-            })
-            .then(async data => {
-                if (disableThenChain) {
-                    return;
-                }
+        debug('💥💥💥 using custom parser');
+        return data.blob();
+      })
+      .then(async (data) => {
+        if (disableThenChain) {
+          return;
+        }
 
-                if (data === undefined || data === null) {
-                    const msg = `fetching.ts#fetchBlobViaCache(${normalizedURL},
-                        ${JSON.stringify(fetchOptions)}) resulted in an undefined or null response`
-                    console.warn(msg);
-                    throw new Error(msg)
-                }
+        if (data === undefined || data === null) {
+          const msg = `fetching.ts#fetchBlobViaCache(${normalizedURL},
+                        ${JSON.stringify(fetchOptions)}) resulted in an undefined or null response`;
+          console.warn(msg);
+          throw new Error(msg);
+        }
 
-                const arrBuffer = await data.arrayBuffer();
-                const buffer = Buffer.from(arrBuffer);
+        const arrBuffer = await data.arrayBuffer();
+        const buffer = Buffer.from(arrBuffer);
 
-                db.prepare(`
+        db.prepare(`
                     INSERT INTO http_cache (url, next_refresh, sha256_og, content_blob)
                     VALUES (?, ?, ?, ?)
                     ON CONFLICT(url) DO UPDATE SET next_refresh = excluded.next_refresh,
                                                    sha256_og    = excluded.sha256_og,
                                                    content_blob = excluded.content_blob
                 `).run(normalizedURL, Math.floor(Date.now() / 1000) + cacheTime, sha256hash, buffer);
-                debug("🎄🎄🎄 new data is saved as blob")
-                resolve(data);
-            })
-            .catch(reject)
-    })
+        debug('🎄🎄🎄 new data is saved as blob');
+        resolve(data);
+      })
+      .catch(reject);
+  });
 }

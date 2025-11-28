@@ -6,7 +6,8 @@ function setValueByPath(obj: any, pathArray: string[], value: any) {
     const foundKey = Object.keys(current).find(k => k.toLowerCase() === key.toLowerCase());
     if (foundKey) {
       current = current[foundKey];
-    } else {
+    }
+    else {
       current[key] = {};
       current = current[key];
     }

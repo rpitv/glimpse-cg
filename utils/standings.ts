@@ -8,10 +8,10 @@ export class StandingsTeam {
 
   public constructor() {
     this.position = 0;
-    this.teamColor = "";
-    this.logoLink = "";
-    this.teamName = "";
-    this.record = "";
+    this.teamColor = '';
+    this.logoLink = '';
+    this.teamName = '';
+    this.record = '';
     this.points = 0;
   }
 }

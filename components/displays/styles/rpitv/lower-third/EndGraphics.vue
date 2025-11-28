@@ -1,20 +1,27 @@
 <template>
-	<div class="body" v-if="endGraphics.type === 'scroll'">
-		<div class="fade"></div>
-		<section class="scroll-text">
-			<div :class="{crawl: showCrawl}"
-				 :style="{animationDuration: `${endGraphics.length}s`}">
-				<h1 class="title">{{ endGraphics.title }}</h1>
-				<h2>{{ endGraphics.message }}</h2>
-			</div>
-		</section>
-	</div>
+  <div
+    v-if="endGraphics.type === 'scroll'"
+    class="body"
+  >
+    <div class="fade" />
+    <section class="scroll-text">
+      <div
+        :class="{ crawl: showCrawl }"
+        :style="{ animationDuration: `${endGraphics.length}s` }"
+      >
+        <h1 class="title">
+          {{ endGraphics.title }}
+        </h1>
+        <h2>{{ endGraphics.message }}</h2>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute();
 const replicants = await useReplicants();
-let channelIndex = ref(0);
+const channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 const channels = replicants.channels;
@@ -24,17 +31,17 @@ const showCrawl = ref(false);
 const endGraphicActive = computed(() => channels[channelIndex.value].endGraphic);
 
 watch(endGraphicActive, (newValue, oldValue) => {
-	if (oldValue) {
-		endGraphics.disabled = true;
-		setTimeout(() => {
-			endGraphics.disabled = false;
+  if (oldValue) {
+    endGraphics.disabled = true;
+    setTimeout(() => {
+      endGraphics.disabled = false;
       channels[channelIndex.value].endGraphic = false;
-			showCrawl.value = false;
-		}, 1000)
-	} else
-		showCrawl.value = true;
-})
-
+      showCrawl.value = false;
+    }, 1000);
+  }
+  else
+    showCrawl.value = true;
+});
 </script>
 
 <style scoped>

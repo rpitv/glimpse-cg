@@ -1,9 +1,15 @@
 <template>
   <UCard class="rounded-none">
     <template #header>
-      <USwitch v-model="channels[0]!.shootout" label="Scorebug Control" size="xl" :ui="{
-        label: 'text-2xl',
-      }" description="Turn on or off shootouts" />
+      <USwitch
+        v-model="channels[0]!.shootout"
+        label="Scorebug Control"
+        size="xl"
+        :ui="{
+          label: 'text-2xl',
+        }"
+        description="Turn on or off shootouts"
+      />
     </template>
   </UCard>
 </template>

@@ -1,44 +1,48 @@
+import { replicants } from '~/utils/replicants';
 
-import { replicants } from "~/utils/replicants";
-
-function setScore(params: any, deltaType: "up" | "down" | "set") {
+function setScore(params: any, deltaType: 'up' | 'down' | 'set') {
   const { param1, param2 } = params;
   const team = param1;
   if (!team) {
-    return { statusCode: 400, body: { code: 400, msg: "missing team to set score for" } };
+    return { statusCode: 400, body: { code: 400, msg: 'missing team to set score for' } };
   }
   let teamReplicant = null;
-  if (team === "team1") {
+  if (team === 'team1') {
     teamReplicant = replicants.scoreboard.homeTeam;
-  } else if (team === "team2") {
+  }
+  else if (team === 'team2') {
     teamReplicant = replicants.scoreboard.awayTeam;
-  } else {
+  }
+  else {
     return { statusCode: 400, body: { code: 400, msg: `invalid team: '${team}' (team1 | team2)` } };
   }
   const oldScore = teamReplicant.score;
   const deltaScore = param2;
   if (!deltaScore) {
-    return { statusCode: 400, body: { code: 400, msg: "missing score number to change or set" } };
+    return { statusCode: 400, body: { code: 400, msg: 'missing score number to change or set' } };
   }
   if (isNaN(Number(deltaScore))) {
-    return { statusCode: 400, body: { code: 400, msg: "score must be a valid integer." } };
+    return { statusCode: 400, body: { code: 400, msg: 'score must be a valid integer.' } };
   }
-  if (deltaType === "up") {
+  if (deltaType === 'up') {
     teamReplicant.score = teamReplicant.score + Number(deltaScore);
-  } else if (deltaType === "set") {
+  }
+  else if (deltaType === 'set') {
     teamReplicant.score = Number(deltaScore);
-  } else if (deltaType === "down") {
+  }
+  else if (deltaType === 'down') {
     teamReplicant.score = teamReplicant.score - Number(deltaScore);
-  } else {
+  }
+  else {
     return { statusCode: 400, body: { code: 400, msg: `score#setScore(delta: ${deltaType}) illegal state` } };
   }
   return { statusCode: 200, body: { code: 200, msg: `Changed team '${team}' score '${deltaType}' from '${teamReplicant.score}' to '${oldScore}'` } };
 }
 
 const endpointsScore = {
-  down: (params: any) => setScore(params, "down"),
-  up: (params: any) => setScore(params, "up"),
-  set: (params: any) => setScore(params, "set"),
+  down: (params: any) => setScore(params, 'down'),
+  up: (params: any) => setScore(params, 'up'),
+  set: (params: any) => setScore(params, 'set'),
 };
 
 // Main Nuxt API handler

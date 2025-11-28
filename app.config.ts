@@ -16,8 +16,6 @@ export default defineAppConfig({
       chevronDoubleRight: 'fa:angles-right',
 
       // Actions
-      check: 'fa:check',
-      close: 'fa:times',
       plus: 'fa:plus',
       minus: 'fa:minus',
 
@@ -38,7 +36,6 @@ export default defineAppConfig({
       paginationLast: 'fa:angles-right',
 
       // Misc / Forms
-      search: 'fa:magnifying-glass',
       spinner: 'fa:spinner',
       calendar: 'fa:calendar',
       clock: 'fa:clock',
@@ -47,6 +44,6 @@ export default defineAppConfig({
       menu: 'fa:bars',
       dotsHorizontal: 'fa:ellipsis',
       dotsVertical: 'fa:ellipsis-vertical',
-    }
-  }
-})
+    },
+  },
+});
