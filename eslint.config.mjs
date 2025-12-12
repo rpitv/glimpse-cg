@@ -14,6 +14,7 @@ export default withNuxt(
       '@typescript-eslint/no-unused-vars': 'off',
       'vue/no-side-effects-in-computed-properties': 'off',
       '@stylistic/multiline-ternary': 'off',
+      'vue/comma-dangle': 'off',
       'no-empty': 'off',
     },
   },

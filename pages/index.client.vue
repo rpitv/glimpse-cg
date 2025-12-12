@@ -220,7 +220,6 @@ export interface Timeline {
 const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
 
 const schedule = ref<Timeline[]>([]);
-const domParser = new DOMParser();
 const loading = ref(false);
 let scrollToView: null | number = null;
 
@@ -235,8 +234,7 @@ async function refresh(force = false) {
 
   let current = false;
   for (let i = 0; i < data.games.length; i++) {
-    const game = data.games[i];
-
+    const game = data.games[i]!;
     const preset = schools.find(s => game.opponent.includes(s.schoolName) || game.opponent.includes(s.shortName) || game.opponent.includes(s.abbr));
     const opponentData: Timeline = {
       val: {
@@ -259,9 +257,10 @@ async function refresh(force = false) {
       uni: i.toString(),
     };
     if (!current) {
-      if (new Date(game.date).getTime() >= Date.now()) {
+      if (new Date(game.date).getTime() >= Date.now() && game.homeGame) {
         current = true;
         selectedSchool.value = opponentData.val;
+        console.log("setting scroll to view for game date:", game.date);
         scrollToView = i;
       }
     }
@@ -299,8 +298,9 @@ onMounted(async () => {
 });
 
 watch((radioSchedule), () => {
-  if (radioSchedule.value)
+  if (radioSchedule.value) {
     document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center' });
+  }
 });
 </script>
 

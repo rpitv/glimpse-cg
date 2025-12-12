@@ -26,6 +26,7 @@
         <tr
           v-for="(credit, index) in creditsRef"
           :key="index"
+          class="border-t border-muted"
         >
           <td>
             <div class="w-full">
@@ -178,7 +179,6 @@ watch(creditsRef, () => {
 
 <style scoped>
 td {
-  border-top: 1px solid rgb(160 160 160);
   padding: 8px 10px;
 }
 </style>

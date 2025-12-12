@@ -32,7 +32,6 @@
         </UButton>
       </div>
       <p v-show="false">
-        {{ commentatorsRef }}
       </p>
       <table class="w-full">
         <thead>
@@ -45,8 +44,9 @@
           <tr
             v-for="(commentator, index) in commentatorsRef"
             :key="index"
+            class="border-t border-muted"
           >
-            <td class="border-t border-muted">
+            <td>
               <div class="w-full">
                 <UFormField
                   label="Name"
@@ -91,7 +91,7 @@
                 </UPopover>
               </div>
             </td>
-            <td class="border-t border-muted">
+            <td>
               <div class="flex gap-2 justify-center">
                 <UButton
                   size="sm"

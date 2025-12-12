@@ -1,5 +1,5 @@
 <template>
-  <div :class="(channels![channelIndex].goToBreak && !route.query.preview) || preview ? 'show' : 'hide'">
+  <div :class="(channels![channelIndex]!.goToBreak && !route.query.preview) || preview ? 'show' : 'hide'">
     <ESPNGoToBreak v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVGoToBreak v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
   </div>

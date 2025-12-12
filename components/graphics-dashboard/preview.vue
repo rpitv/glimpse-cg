@@ -1,10 +1,14 @@
 <template>
   <div>
-    <UCard class="rounded-none">
+    <UCard
+      class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)"
+      :ui="{
+      }"
+    >
       <p class="text-2xl">
         Preview
       </p>
-      <br></br>
+      <br>
       <div v-if="loading && graphicsStore.selectedGraphic.name">
         <UProgress indeterminate />
         <p class="text-center">

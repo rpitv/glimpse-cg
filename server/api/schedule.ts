@@ -25,10 +25,15 @@ export interface ScheduleResults {
  * @param time Whatever the time that's displayed on the page, this one is less picky since {@link Date} can resolve many varriations.
  */
 function calculateGameDate(date: string, seasonYear: string | number, time: string) {
-  const targetDateWeekday
-    = date?.substring(date?.indexOf('(') + 1, date?.lastIndexOf(')')) // sidearm format
-      || date?.split(',').length > 1 ? date?.split(', ')[0] // ACHA format
-      : undefined;
+  // Extract the weekday displayed on the schedule page.
+  // 1. Sidearm format: "Oct 3 (Fri)" → take text inside parentheses: "Fri"
+  // 2. ACHA format: "Fri, Oct 3" or "Oct 3, Fri" → take the first comma-separated part: "Fri"
+  const targetDateWeekday =
+    // Sidearm format (extract between parentheses)
+    date?.substring(date.indexOf('(') + 1, date.lastIndexOf(')')) ||
+    // ACHA format (contains a comma → take first part before comma)
+    (date.includes(',') ? date.split(', ')[0] : undefined);
+
   let fullGameDate = new Date(`${date} ${seasonYear} ${time}`);
   // the day of week generated doesn't match expected so it must be the next year in the season i.e. Jan date in a winter sport
   if (targetDateWeekday && fullGameDate.toLocaleDateString('en-us', { weekday: 'short' }) !== targetDateWeekday) {
@@ -108,7 +113,7 @@ function parseSidearmSite(document: Document, forceFetch: boolean) {
     const homeGame = gameElements[i]?.classList?.contains('sidearm-schedule-home-game');
     const neutralSite = gameElements[i]?.classList?.contains('sidearm-schedule-neutral-game');
     const fullGameDate = calculateGameDate(date, seasonYear, time);
-
+    console.log(fullGameDate);
     const game: ScheduledGame = {
       date: fullGameDate,
       opponent,

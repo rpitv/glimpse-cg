@@ -1,5 +1,17 @@
 <template>
   <div class="standings-editor">
+    <UModal v-model:open="showDeleteModal">
+      <template #content>
+        <div class="p-6">
+          <h3 class="text-lg font-bold mb-2">Delete All Teams?</h3>
+          <p class="mb-4">Are you sure you want to remove all standings? This action cannot be undone.</p>
+          <div class="flex justify-end gap-2">
+            <UButton color="neutral" variant="soft" @click="showDeleteModal = false">Cancel</UButton>
+            <UButton color="error" @click="deleteAllTeams">Delete All</UButton>
+          </div>
+        </div>
+      </template>
+    </UModal>
     <!-- Header Configuration -->
     <UCard class="mb-4 rounded-none">
       <template #header>
@@ -38,11 +50,9 @@
         <UTextarea
           v-model="standings.subtitle"
           class="w-full"
+          placeholder="Type in a subtitle for the standings graphic."
         />
       </UFormField>
-
-      <!-- <USelect :items="itemsTitle" label="Title" v-model="standings.title" /> -->
-      <!-- <UTextarea label="Subtitle" v-model="standings.subtitle" /> -->
     </UCard>
 
     <!-- Team Configuration -->
@@ -50,89 +60,103 @@
       <template #header>
         <h2>Team Configuration</h2>
       </template>
-      <div class="btns">
-        <UButton @click="fetchECACMenHockey">
+      <UFieldGroup>
+        <UButton variant="subtle" loading-auto @click="fetchECACMenHockey">
           Fetch ECAC Hockey Men's
         </UButton>
-        <UButton @click="fetchECACWomenHockey">
+        <UButton variant="subtle" loading-auto @click="fetchECACWomenHockey">
           Fetch ECAC Hockey Women's
         </UButton>
-        <UButton @click="standings.teams = [...standings.teams, new StandingsTeam()]">
+        <UButton color="secondary" variant="subtle" @click="standings.teams = [...standings.teams, new StandingsTeam()]">
           Manually Add Team
         </UButton>
-        <UButton @click="standings.teams = standings.teams.toSorted(sortByPosition)">
-          Sort Teams in Editor
-        </UButton>
         <UButton
-          color="warning"
+          variant="subtle"
+          color="error"
           :disabled="standings.teams.length === 0"
-          @click="confirmReset"
+          @click="showDeleteModal = true"
         >
           Delete All Teams
         </UButton>
-        <span>If position is 0, the team will not be displayed.</span>
-      </div>
+      </UFieldGroup>
     </UCard>
-
     <!-- Teams List -->
-    <table />
-    <UCard class="rounded-none">
-      <template #header>
-        <h2>Teams</h2>
-      </template>
-      <div
-        v-for="(team, i) in standings.teams"
-        :key="i"
-        class="team-form mb-4"
-      >
-        <UFormField label="Team Name">
-          <UInput v-model="team.teamName" />
-        </UFormField>
-        <UFormField label="Position">
-          <UInputNumber
-            v-model="team.position"
-            :min="0"
-            :step="1"
-          />
-        </UFormField>
-        <UFormField label="Team Record">
-          <UInput v-model="team.record" />
-        </UFormField>
-        <UFormField label="Points">
-          <UInputNumber
-            v-model="team.points"
-            :min="0"
-            :step="0.5"
-          />
-        </UFormField>
-        <ColorPicker
-          v-model="team.teamColor"
-          label="Team Color"
-          help="The color of the team"
-        />
-        <UFormField label="Logo Link">
-          <UInput v-model="team.logoLink" />
-        </UFormField>
-        <UButton
-          color="error"
-          @click="standings.teams = standings.teams.toSpliced(i, 1)"
+    <table>
+      <thead>
+        <tr>
+          <th class="text-left p-2">
+            Team Name
+          </th>
+          <th class="text-left p-2">
+            Logo Link
+          </th>
+          <th class="text-left p-2">
+            Record
+          </th>
+          <th class="text-left p-2">
+            Points
+          </th>
+          <th class="text-center p-2">
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody class="my-table-tbody">
+        <tr
+          v-for="(team, i) in standingsRef"
+          :key="i"
+          class="border-t border-muted team-settings"
         >
-          Delete Team
-        </UButton>
-        <hr v-if="i < standings.teams.length - 1">
-      </div>
-    </UCard>
+          <td>
+            <UInput v-model="standingsRef[i]!.teamName" placeholder="Team Name" class="w-full" />
+          </td>
+          <td>
+            <UInput v-model="standingsRef[i]!.logoLink" placeholder="Logo Link" class="w-full" />
+          </td>
+          <td>
+            <UInput v-model="standingsRef[i]!.record" placeholder="Record" class="w-full" />
+          </td>
+          <td>
+            <UInputNumber v-model="standingsRef[i]!.points" :min="0" :step="0.5" />
+          </td>
+          <td>
+            <div class="flex gap-2 justify-end">
+              <UButton
+                color="error"
+                @click="standings.teams = standings.teams.toSpliced(i, 1)"
+              >
+                Delete
+              </UButton>
+            </div>
+          </td>
+        </tr>
+        <tr v-if="standings.teams.length === 0">
+          <td
+            class="text-center text-muted w-full"
+            colspan="5"
+          >
+            There are no teams. Use the buttons above to add teams.
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { CommandPaletteGroup } from '@nuxt/ui';
-import ColorPicker from '~/components/ColorPicker.vue';
+import { useSortable } from '@vueuse/integrations/useSortable.mjs';
 
 const replicants = await useReplicants();
+const toast = useToast();
 const standings = replicants.fullscreen.standings;
 const channels = replicants.channels;
+const standingsRef = computed({
+  get: () => standings.teams,
+  set: val => (standings.teams = val),
+});
 const search = ref('');
+const showDeleteModal = ref(false);
 const itemsTitle = ref<CommandPaletteGroup[]>([
   {
     id: 'titles',
@@ -159,20 +183,19 @@ const itemsLinks = ref<CommandPaletteGroup[]>([
 const ECAC_MENS_HOCKEY_URL = 'https://ecachockey.com/standings.aspx?path=mhockey';
 const ECAC_WOMENS_HOCKEY_URL = 'https://ecachockey.com/standings.aspx?path=whockey';
 
-function sortByPosition(a: any, b: any) {
-  if (a.position < b.position) return -1;
-  if (a.position > b.position) return 1;
-  return 0;
+
+function deleteAllTeams() {
+  standings.teams = [];
+  showDeleteModal.value = false;
+  toast.add({
+    title: 'All Teams Deleted',
+    description: 'All teams have been removed from the standings.',
+    color: 'success'
+  });
 }
 
-function confirmReset() {
-  if (window.confirm('Are you sure you want to remove all standings?')) {
-    standings.teams = [];
-  }
-}
-
-function fetchECACHockeyRankings(men: boolean, link: string) {
-  $fetch('/api/omni-fetch?url=' + encodeURIComponent(link))
+async function fetchECACHockeyRankings(men: boolean, link: string) {
+  return $fetch('/api/omni-fetch?url=' + encodeURIComponent(link))
     .then((data) => {
       const parser = new DOMParser();
       const resDom = parser.parseFromString(data, 'text/html');
@@ -209,8 +232,8 @@ function fetchECACHockeyRankings(men: boolean, link: string) {
       const teamBuilder: any[] = [];
       for (const i in teams_raw) {
         const team: any = {
-          position: parseInt(i) + 1,
-          teamColor: '',
+          // position: parseInt(i) + 1,
+          // teamColor: '',
           logoLink: teams_raw[i].logo ?? '',
           teamName: teams_raw[i].name ?? '',
           record: teams_raw[i].conference.wlt ?? '',
@@ -219,24 +242,41 @@ function fetchECACHockeyRankings(men: boolean, link: string) {
         teamBuilder.push(team);
       }
       standings.teams = [...standings.teams, ...teamBuilder];
+      toast.add({
+        title: `ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings Fetched`,
+        description: `Fetched ${teamBuilder.length} teams from ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings.`,
+        color: 'success'
+      });
     })
     .catch((e) => {
       console.error(e);
-      if (window.confirm(`Failed to fetch ECAC ${men ? 'M' : 'Wom'}en"s Hockey Rankings Automatically!\nREASON >>> "${e}"\n\nDo you want to open the link in new tab and manually input the teams?`)) {
-        window?.open(link, '_blank')?.focus();
-      }
+      toast.add({
+        title: `Failed to fetch ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings`,
+        description: `REASON >>> "${e}"\n\nYou can copy the link below and manually input the teams.\n\n${link}`,
+        color: 'error'
+      });
     });
 }
 
 function fetchECACMenHockey() {
   channels[0]!.standings = false;
-  setTimeout(() => fetchECACHockeyRankings(true, ECAC_MENS_HOCKEY_URL), 1500);
+  return fetchECACHockeyRankings(true, ECAC_MENS_HOCKEY_URL);
 }
 
 function fetchECACWomenHockey() {
   channels[0]!.standings = false;
-  setTimeout(() => fetchECACHockeyRankings(false, ECAC_WOMENS_HOCKEY_URL), 1500);
+  return fetchECACHockeyRankings(false, ECAC_WOMENS_HOCKEY_URL);
 }
+
+const sortableInstance = useSortable('.my-table-tbody', standingsRef, { animation: 150 });
+watch(standingsRef, () => {
+  if (standingsRef.value.length === 0) {
+    sortableInstance.stop();
+  }
+  else {
+    sortableInstance.start();
+  }
+}, { immediate: true });
 
 watch(search, (val) => {
   standings.title = val;
@@ -249,13 +289,10 @@ watch(search, (val) => {
   flex-direction: column;
   gap: 2rem;
 }
-.btns {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1rem;
-}
 .team-form {
   margin-bottom: 2rem;
+}
+.team-settings > td {
+  padding: 0.5rem;
 }
 </style>

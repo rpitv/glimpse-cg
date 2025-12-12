@@ -1,5 +1,4 @@
 import type { Announcement } from '~/utils/announcement';
-import type { StandingsTeam } from '~/utils/standings';
 import { v4 } from 'uuid';
 
 export const defaultLowerThird = {
@@ -437,6 +436,21 @@ export class Channel {
     this.custom = this.custom.filter(g => g.id !== id);
   }
 }
+
+export class StandingsTeam {
+  public logoLink: string;
+  public teamName: string;
+  public record: string;
+  public points: number;
+
+  public constructor() {
+    this.logoLink = '';
+    this.teamName = '';
+    this.record = '';
+    this.points = 0;
+  }
+}
+
 
 export const defaultChannels: Channel[] = [new Channel()];
 

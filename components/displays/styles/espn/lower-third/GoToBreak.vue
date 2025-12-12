@@ -207,6 +207,7 @@ const formattedClockTime = computed<string>(() => {
 });
 
 const scaleTextToFit = () => {
+  console.log('Scaling text to fit...');
   const div = scalingDiv.value;
   const text = scalingText.value;
 
@@ -226,19 +227,19 @@ const scaleTextToFit = () => {
 };
 
 // Watch for changes in the text prop
-// watch([goToBreak.description.text, clock.value.time, goToBreak.description.autoFit,
-// 			goToBreak.description.fontSize, goToBreak.description.clock],
-// 	async () => {
-// 		if (!goToBreak.description.autoFit) {
-// 			const text = scalingText.value;
-// 			if (!text) return;
-// 			text.style.fontSize = goToBreak.description.fontSize+ 2.36 + "vh";
-// 			return;
-// 		}
-// 		await nextTick();
-// 		scaleTextToFit();
-// 	}
-// );
+watch([() => goToBreak.description.text, () => clock.value.time, () => goToBreak.description.autoFit,
+    () => goToBreak.description.fontSize, () => goToBreak.description.clock],
+	async () => {
+		if (!goToBreak.description.autoFit) {
+			const text = scalingText.value;
+			if (!text) return;
+			text.style.fontSize = goToBreak.description.fontSize+ 2.36 + "vh";
+			return;
+		}
+		await nextTick();
+		scaleTextToFit();
+	}
+);
 
 // Handle scaling on mount and cleanup on unmount
 onMounted(() => {

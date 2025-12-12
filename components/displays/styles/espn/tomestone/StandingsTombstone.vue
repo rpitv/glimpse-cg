@@ -26,11 +26,10 @@
           </td>
         </tr>
       </thead>
-      <tbody v-for="team in standings.teams.filter(team => 0 < team.position).sort(sortByPosition)">
+      <tbody v-for="(team, i) in standings.teams" :key="i">
         <tr>
           <td
             class="logo"
-            :style="{ background: team.teamColor }"
           >
             <img
               :src="team.logoLink"
@@ -38,13 +37,13 @@
             >
           </td>
           <td class="name">
-            {{ team.teamName }}
+            {{ standings.teams[i]!.teamName }}
           </td>
           <td class="record">
-            {{ team.record }}
+            {{ standings.teams[i]!.record }}
           </td>
           <td class="points">
-            {{ team.points }}
+            {{ standings.teams[i]!.points }}
           </td>
         </tr>
       </tbody>
@@ -53,19 +52,10 @@
 </template>
 
 <script setup lang="ts">
-import type { StandingsTeam } from '~/utils/standings';
 import TombstoneBuilder from './TombstoneBuilder.vue';
 
 const replicants = await useReplicants();
-const standings = ref(replicants.fullscreen.standings);
-
-function sortByPosition(a: StandingsTeam, b: StandingsTeam) {
-  if (a.position < b.position)
-    return -1;
-  if (a.position > b.position)
-    return 1;
-  return 0;
-}
+const standings = replicants.fullscreen.standings;
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UCard class="rounded-none max-height">
+    <UCard class="rounded-none max-height shadow-none inset-shadow-none ring-0 inset-ring-0 border-1 border-(--tw-ring-color)">
       <template #header>
         <p class="text-2xl">
           Customization

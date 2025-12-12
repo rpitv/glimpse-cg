@@ -6,19 +6,34 @@
     <UFormField class="mt-4" label="Offset Y" help="Adjust the vertical position of the Go To Break. Positive values move it up, negative values down.">
       <UInputNumber v-model="goToBreak.offsetY" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
     </UFormField> -->
-    <UFormField
-      class="mt-4"
-      label="Show Clock"
-      help="Toggle to show or hide the clock during the break screen."
-    >
-      <USwitch v-model="goToBreak.description.clock" />
-    </UFormField>
+    <div class="flex justify-between">
+      <UFormField
+        label="Show Clock"
+        help="Toggle to show or hide the clock during the break screen."
+      >
+        <USwitch v-model="goToBreak.description.clock" />
+      </UFormField>
+      <UFormField label="Auto Fit" help="Automatically adjust the size of the text to fit within the box.">
+        <USwitch v-model="goToBreak.description.autoFit" />
+      </UFormField>
+    </div>
     <UFormField
       class="mt-4"
       label="Description Text"
       help="The text to display when going to break."
     >
-      <UInput v-model="goToBreak.description.text" />
+      <UCommandPalette
+        :ui="{
+          root: 'border border-muted border-solid w-[50%]',
+        }"
+        :groups="itemsTitle"
+        :search-term="goToBreak.description.text"
+        :close="goToBreak.description.text.length > 0"
+        placeholder="Type in the description or click on one"
+        @update:model-value="(val) => goToBreak.description.text = val?.label || ''"
+        @update:search-term="(val: string) => goToBreak.description.text = val"
+        @update:open="goToBreak.description.text = ''"
+      />
     </UFormField>
     <UPopover arrow>
       <UButton
@@ -174,38 +189,54 @@
         </template>
       </UCard>
     </div>
-    <!-- <UAccordion class="mt-4" :items="teams">
-      <template #default="{ item }">
-        <p>{{ item.name }}</p>
-      </template>
-      <template #content="{ item }">
-        <USeparator />
-        <UFormField class="mt-4" label="Team Name" help="The name of the team.">
-          <UInput v-model="goToBreak[item.key].name" :placeholder="configuration![item.key].shortName"/>
-        </UFormField>
-        <ColorPicker class="mt-4" v-model="goToBreak[item.key].nameColor" label="Team Name Color" help="The color for the team name." />
-        <UFormField class="mt-4" label="Team Name Size" help="Adjust the size of the team name.">
-          <UInputNumber v-model="goToBreak[item.key].nameSize" :step="0.1" :format-options="{ minimumFractionDigits: 1 }" />
-        </UFormField>
-        <UFormField class="mt-4" label="Team Logo" help="The logo of the team.">
-          <UInput class="w-full" v-model="goToBreak[item.key].logo" :placeholder="configuration![item.key].logo" />
-        </UFormField>
-      </template>
-    </UAccordion> -->
   </div>
 </template>
 
 <script lang="ts" setup>
+import type { CommandPaletteGroup } from '@nuxt/ui';
+
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const goToBreak = replicants.lowerThird.goToBreak;
-const teams: {
-  name: string;
-  key: 'homeTeam' | 'awayTeam';
-}[] = [
-  { name: 'Away Team', key: 'awayTeam' },
-  { name: 'Home Team', key: 'homeTeam' },
-];
+
+const itemsTitle = ref<CommandPaletteGroup[]>([
+  {
+    id: 'titles',
+    label: 'Start/End of X',
+    items: [],
+  },
+]);
+
+if (replicants.configuration.style === 'football')
+  itemsTitle.value[0]!.items = [
+    {
+      label: 'End of 1st Quarter',
+      value: 'End of 1st Quarter',
+    },
+    {
+      label: 'Halftime',
+      value: 'Halftime',
+    },
+    {
+      label: 'End of 3rd Quarter',
+      value: 'End of 3rd Quarter',
+    },
+    {
+      label: 'Final',
+      value: 'Final',
+    }
+  ]
+else 
+  itemsTitle.value[0]!.items = [
+    { label: 'Start of 1st', value: 'Start of 1st' },
+    { label: 'End of 1st', value: 'End of 1st' },
+    { label: 'Start of 2nd', value: 'Start of 2nd' },
+    { label: 'End of 2nd', value: 'End of 2nd' },
+    { label: 'Start of 3rd', value: 'Start of 3rd' },
+    { label: 'End of 3rd', value: 'End of 3rd' },
+    { label: 'Final', value: 'Final' },
+  ]
+
 </script>
 
 <style>

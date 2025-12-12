@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UCard class="rounded-none">
+    <UCard class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)">
       <template #header>
         <p class="text-2xl">
           Graphics List
@@ -32,6 +32,7 @@
                   <USwitch
                     v-if="item.label !== 'Custom Graphics'"
                     v-model="(channels[0]![item.val.reference as keyof Channel] as boolean)"
+                    size="xl"
                     :debounce="75"
                   />
                 </div>
@@ -47,16 +48,16 @@
 <script setup lang="ts">
 import type { Channel } from '~/types/replicants';
 import { useGraphicsStore } from '~/store/graphics';
-import Bug from '../customization/bug.vue';
-import Commentators from '../customization/commentators.vue';
-import Copyright from '../customization/copyright.vue';
-import EndGraphics from '../customization/endgraphics.vue';
-import GoToBreak from '../customization/gotobreak.vue';
-import Locator from '../customization/locator.vue';
-import PlayerBio from '../customization/playerbio.vue';
-import Standings from '../customization/standings.vue';
-import Credits from '../customization/credits.vue';
-import CustomGraphics from '../customization/customgraphics.vue';
+import Bug from './customization/bug.vue';
+import Commentators from './customization/commentators.vue';
+import Copyright from './customization/copyright.vue';
+import EndGraphics from './customization/endgraphics.vue';
+import GoToBreak from './customization/gotobreak.vue';
+import Locator from './customization/locator.vue';
+import PlayerBio from './customization/playerbio.vue';
+import Standings from './customization/standings.vue';
+import Credits from './customization/credits.vue';
+import CustomGraphics from './customization/customgraphics.vue';
 import type { Component } from 'vue';
 
 const replicants = await useReplicants();

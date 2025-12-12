@@ -14,6 +14,15 @@
     />
     <div class="flex gap-4 mt-4">
       <UFormField
+        label="Info"
+        help="Additional information about the player to display below their name and number."
+      >
+        <USwitch
+          v-model="playerBio.info.show"
+          label="Show Additional Info"
+        />
+      </UFormField>
+      <UFormField
         label="Font Size"
         help="Adjust the font size of the player bio text."
       >
@@ -23,23 +32,15 @@
           :format-options="{ minimumFractionDigits: 1 }"
         />
       </UFormField>
-      <UFormField
-        label="Info"
-        help="Additional information about the player to display below their name and number."
-      >
-        <USwitch
-          v-model="playerBio.info.show"
-          label="Show Additional Info"
-        />
-      </UFormField>
     </div>
     <USeparator
       class="mt-4"
       size="md"
     />
-    <div class="mt-4 flex gap-4">
+    <div>
       <div 
         v-if="!loading"
+        class="mt-4 flex gap-4"
       >
         <div
           v-for="i in 2"
