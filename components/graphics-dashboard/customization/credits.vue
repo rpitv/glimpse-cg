@@ -24,7 +24,7 @@
       </thead>
       <tbody class="my-table-tbody">
         <tr
-          v-for="(credit, index) in creditsRef"
+          v-for="(credit, index) in credits.credit"
           :key="index"
           class="border-t border-muted"
         >
@@ -35,7 +35,7 @@
                 help="The title of the role."
               >
                 <UInput
-                  v-model="creditsRef[index]!.title"
+                  v-model="credits.credit[index]!.title"
                   placeholder="Title of the role"
                   class="w-full"
                 />
@@ -53,10 +53,9 @@
                     style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
                   >
                     <ColorPicker
-                      v-model="creditsRef[index]!.titleColor"
+                      v-model="credits.credit[index]!.titleColor"
                       label="Title Color"
                       help="The color for the title."
-                      @update:model-value="creditsRef = creditsRef"
                     />
                     <UFormField
                       class="mt-4"
@@ -64,12 +63,11 @@
                       help="Adjust the size of the role title."
                     >
                       <UInputNumber
-                        v-model="creditsRef[index]!.titleSize"
+                        v-model="credits.credit[index]!.titleSize"
                         :step="0.1"
                         :format-options="{
                           minimumFractionDigits: 1,
                         }"
-                        @update:model-value="creditsRef = creditsRef"
                       />
                     </UFormField>
                   </div>
@@ -83,7 +81,7 @@
               help="The people for this role."
             >
               <UInputTags
-                v-model="creditsRef[index]!.people"
+                v-model="credits.credit[index]!.people"
                 placeholder="Add a person"
                 class="w-full"
               />
@@ -101,7 +99,7 @@
                   style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
                 >
                   <ColorPicker
-                    v-model="creditsRef[index]!.peopleColor"
+                    v-model="credits.credit[index]!.peopleColor"
                     label="People Text Color"
                     help="The color for the people text."
                   />
@@ -111,7 +109,7 @@
                     help="Adjust the size of the names of the people."
                   >
                     <UInputNumber
-                      v-model="creditsRef[index]!.peopleSize"
+                      v-model="credits.credit[index]!.peopleSize"
                       :step="0.1"
                       :format-options="{
                         minimumFractionDigits: 1,

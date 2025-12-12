@@ -5,17 +5,17 @@
   >
   <div :style="commentatorsContainer">
     <div
-      v-for="(person, i) of people"
+      v-for="(person, i) of commentators.people"
       :key="i"
       class="commentator"
     >
       <span
-        v-if="person.name"
+        v-if="commentators.people[i]!.name"
         :style="{
-          color: person.nameColor || 'rgb(63, 64, 59)',
-          fontSize: person.nameSize + 3.5 + 'vh',
+          color: commentators.people[i]!.nameColor || 'rgb(63, 64, 59)',
+          fontSize: commentators.people[i]!.nameSize + 3.5 + 'vh',
         }"
-      >{{ person.name }}</span>
+      >{{ commentators.people[i]!.name }}</span>
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ import { computed } from 'vue';
 
 const replicants = await useReplicants();
 const commentators = replicants.lowerThird.commentators;
-const people = ref(commentators.people);
 
 const commentatorsImage = computed((): CSSProperties => {
   return {
@@ -48,9 +47,6 @@ const commentatorsContainer = computed((): CSSProperties => {
   };
 });
 
-watch(() => commentators, () => {
-  people.value = commentators.people;
-}, { deep: true });
 </script>
 
 <style scoped>

@@ -260,7 +260,6 @@ async function refresh(force = false) {
       if (new Date(game.date).getTime() >= Date.now() && game.homeGame) {
         current = true;
         selectedSchool.value = opponentData.val;
-        console.log("setting scroll to view for game date:", game.date);
         scrollToView = i;
       }
     }
@@ -276,16 +275,7 @@ function loadMatchup(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
 }
 
 function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['awayTeam' | 'homeTeam']) {
-  // configuration[props.teamSide] = { ...school };
-  configuration[teamSide].schoolName = school.schoolName;
-  configuration[teamSide].shortName = school.shortName;
-  configuration[teamSide].abbr = school.abbr;
-  configuration[teamSide].teamName = school.teamName;
-  configuration[teamSide].primaryColor = school.primaryColor;
-  configuration[teamSide].secondaryColor = school.secondaryColor;
-  configuration[teamSide].logo = school.logo;
-  configuration[teamSide].athletics = school.athletics || '';
-  configuration[teamSide].special = school.special || false;
+  configuration[teamSide] = { ...school };
   toast.add({
     title: 'Preset Loaded',
     description: `Loaded preset for ${school.schoolName}`,

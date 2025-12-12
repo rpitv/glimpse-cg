@@ -451,7 +451,6 @@ export class StandingsTeam {
   }
 }
 
-
 export const defaultChannels: Channel[] = [new Channel()];
 
 export const defaultReplicants = {

@@ -7,8 +7,8 @@
       <img
         :ref="el => imgRefs[i] = el"
         :style="graphicsProps(i)"
-        :src="customGraphic.imagePath"
-        :class="(!route.query.preview && channelGraphics![i]?.show) || (preview && route.query.id === customGraphic._id) ? 'show' : 'hide'"
+        :src="customGraphics[i]!.imagePath"
+        :class="(!route.query.preview && channelGraphics!.custom[i]?.show) || (preview && parseInt(route.query.index) === i) ? 'show' : 'hide'"
       >
     </div>
   </div>
@@ -19,18 +19,17 @@ import type { CSSProperties } from 'vue';
 
 const route = useRoute();
 const preview = ref(route.query.preview === 'customgraphic' || false);
-
 const channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);
 
 const replicants = await useReplicants();
-const channelGraphics = ref(replicants.channels[channelIndex.value]?.custom);
-const customGraphics = ref(replicants.fullscreen.custom);
+const channelGraphics = replicants.channels[channelIndex.value];
+const customGraphics = replicants.fullscreen.custom;
 const imgRefs = ref<HTMLImageElement[]>([]);
 
 function graphicsProps(i: number): CSSProperties {
-  const graphic = customGraphics.value?.[i];
+  const graphic = customGraphics[i];
   if (!graphic) return {};
   const style = {
     position: 'absolute',
@@ -66,22 +65,6 @@ function getImageWidth(index: number): number | undefined {
   const img = imgRefs.value[index];
   return img ? img.naturalWidth : undefined;
 }
-
-watch(
-  () => replicants.channels[channelIndex.value]?.custom,
-  (newVal) => {
-    channelGraphics.value = newVal;
-  },
-  { immediate: true },
-);
-
-watch(
-  () => replicants.fullscreen.custom,
-  (newVal) => {
-    customGraphics.value = newVal;
-  },
-  { immediate: true },
-);
 </script>
 
 <style scoped lang="scss">

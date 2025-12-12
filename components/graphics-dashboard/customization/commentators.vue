@@ -31,8 +31,7 @@
           Add Commentator
         </UButton>
       </div>
-      <p v-show="false">
-      </p>
+      <p v-show="false" />
       <table class="w-full">
         <thead>
           <tr>
@@ -42,7 +41,7 @@
         </thead>
         <tbody class="my-table-tbody">
           <tr
-            v-for="(commentator, index) in commentatorsRef"
+            v-for="(commentator, index) in commentators.people"
             :key="index"
             class="border-t border-muted"
           >
@@ -53,7 +52,7 @@
                   help="The name of the commentator."
                 >
                   <UInput
-                    v-model="commentatorsRef[index]!.name"
+                    v-model="commentators.people[index]!.name"
                     placeholder="Name"
                     class="w-full"
                   />
@@ -71,7 +70,7 @@
                       style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
                     >
                       <ColorPicker
-                        v-model="commentatorsRef[index]!.nameColor"
+                        v-model="commentators.people[index]!.nameColor"
                         label="Name Color"
                         help="The color for the commentator's name."
                       />
@@ -81,7 +80,7 @@
                         help="Adjust the size of the commentator's name."
                       >
                         <UInputNumber
-                          v-model="commentatorsRef[index]!.nameSize"
+                          v-model="commentators.people[index]!.nameSize"
                           :step="0.1"
                           :format-options="{ minimumFractionDigits: 1 }"
                         />
@@ -103,7 +102,7 @@
               </div>
             </td>
           </tr>
-          <tr v-if="commentatorsRef.length === 0">
+          <tr v-if="commentators.people.length === 0">
             <td
               class="text-center text-muted w-full"
               colspan="3"
@@ -129,11 +128,11 @@ const commentatorsRef = computed({
 });
 
 function addCommentator() {
-  commentatorsRef.value.push(new Commentator());
+  commentators.people = [...commentators.people, new Commentator()];
 }
 
 function deleteCommentator(index: number) {
-  commentatorsRef.value.splice(index, 1);
+  commentators.people.splice(index, 1);
 }
 
 const sortableInstance = useSortable('.my-table-tbody', commentatorsRef, { animation: 150 });

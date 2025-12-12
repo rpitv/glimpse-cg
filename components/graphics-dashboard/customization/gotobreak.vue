@@ -13,7 +13,10 @@
       >
         <USwitch v-model="goToBreak.description.clock" />
       </UFormField>
-      <UFormField label="Auto Fit" help="Automatically adjust the size of the text to fit within the box.">
+      <UFormField
+        label="Auto Fit"
+        help="Automatically adjust the size of the text to fit within the box."
+      >
         <USwitch v-model="goToBreak.description.autoFit" />
       </UFormField>
     </div>
@@ -224,9 +227,9 @@ if (replicants.configuration.style === 'football')
     {
       label: 'Final',
       value: 'Final',
-    }
-  ]
-else 
+    },
+  ];
+else
   itemsTitle.value[0]!.items = [
     { label: 'Start of 1st', value: 'Start of 1st' },
     { label: 'End of 1st', value: 'End of 1st' },
@@ -235,8 +238,7 @@ else
     { label: 'Start of 3rd', value: 'Start of 3rd' },
     { label: 'End of 3rd', value: 'End of 3rd' },
     { label: 'Final', value: 'Final' },
-  ]
-
+  ];
 </script>
 
 <style>

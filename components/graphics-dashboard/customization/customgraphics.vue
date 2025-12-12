@@ -52,16 +52,16 @@
       </thead>
       <tbody class="my-table-tbody">
         <tr
-          v-for="(graphic, index) in customGraphicsRef"
-          v-if="customGraphicsRef.length > 0"
-          :key="index"
-          :class="{ 'selected-row': graphicsStore.selectedGraphic.id === graphic._id }"
+          v-for="(graphic, i) in fullscreen.custom"
+          v-if="fullscreen.custom.length > 0"
+          :key="i"
+          :class="{ 'selected-row': graphicsStore.selectedGraphic.index === i }"
           style="cursor: pointer;"
-          @click="selectRow(index)"
+          @click="selectRow(i)"
         >
           <td class="p-2">
             <img
-              :src="graphic.imagePath"
+              :src="fullscreen.custom[i]!.imagePath"
               alt="Preview Image"
               class="w-full h-auto rounded-md custom-graphic"
             >
@@ -70,15 +70,15 @@
             <div class="flex justify-center gap-2">
               <UButton
                 variant="outline"
-                :color="channelsRef[index]?.show ? 'neutral' : 'primary'"
-                @click.stop="toggleCustomGraphic(index)"
+                :color="channel0!.custom[i]?.show ? 'neutral' : 'primary'"
+                @click.stop="toggleCustomGraphic(i)"
               >
-                {{ channelsRef[index]?.show ? 'Hide' : 'Show' }}
+                {{ channel0!.custom[i]?.show ? 'Hide' : 'Show' }}
               </UButton>
               <UButton
                 color="error"
                 variant="outline"
-                @click.stop="confirmDelete(index)"
+                @click.stop="confirmDelete(i)"
               >
                 Delete
               </UButton>
@@ -129,14 +129,7 @@ const toast = useToast();
 const graphicsStore = useGraphicsStore();
 const replicants = await useReplicants();
 const fullscreen = replicants.fullscreen;
-const customGraphicsRef = computed({
-  get: () => fullscreen.custom,
-  set: val => (fullscreen.custom = val),
-});
-const channelsRef = computed({
-  get: () => replicants.channels[0]!.custom,
-  set: val => (replicants.channels[0]!.custom = val),
-});
+const channel0 = replicants.channels[0]!;
 
 const modalState = ref(false);
 const graphicFile = ref<File | null>(null);
@@ -146,18 +139,17 @@ const deleteIndex = ref<number | null>(null);
 
 const selectRow = (index: number) => {
   if (index !== null) {
-    const graphic = customGraphicsRef.value[index]!;
-    graphicsStore.setGraphic({ component: markRaw(customgraphics), name: 'customgraphic', id: graphic._id });
+    graphicsStore.setGraphic({ component: markRaw(customgraphics), name: 'customgraphic', index });
   }
   else {
-    graphicsStore.setGraphic({ component: null, name: '', id: null });
+    graphicsStore.setGraphic({ component: null, name: '', index: -1 });
   }
 };
 
 function addGraphic(url: string) {
   if (url) {
     const newGraphic = new CustomGraphic(url);
-    customGraphicsRef.value = [...customGraphicsRef.value, newGraphic];
+    fullscreen.custom = [...fullscreen.custom, newGraphic];
     graphicUrl.value = '';
     modalState.value = false;
     addCustomGraphic(newGraphic._id);
@@ -175,7 +167,7 @@ function fileUpload() {
     reader.onload = function (e) {
       const base64Url = e.target?.result as string;
       const newGraphic = new CustomGraphic(base64Url);
-      customGraphicsRef.value = [...customGraphicsRef.value, newGraphic];
+      fullscreen.custom = [...fullscreen.custom, newGraphic];
       addCustomGraphic(newGraphic._id);
     };
     reader.readAsDataURL(graphicFile.value);
@@ -197,11 +189,11 @@ function confirmDelete(index: number) {
 
 function performDelete() {
   if (deleteIndex.value !== null) {
-    deleteCustomGraphic(customGraphicsRef.value[deleteIndex.value]!._id);
-    if (graphicsStore.selectedGraphic.id === customGraphicsRef.value[deleteIndex.value]!._id) {
-      graphicsStore.setGraphic({ component: null, name: 'customgraphic', id: null });
+    deleteCustomGraphic(fullscreen.custom[deleteIndex.value]!._id);
+    if (graphicsStore.selectedGraphic.index === deleteIndex.value) {
+      graphicsStore.setGraphic({ component: customgraphics, name: 'customgraphic', index: -1 });
     }
-    customGraphicsRef.value = customGraphicsRef.value.filter((_, i) => i !== deleteIndex.value);
+    fullscreen.custom = fullscreen.custom.filter((_, i) => i !== deleteIndex.value);
     deleteIndex.value = null;
     deleteModalState.value = false;
     toast.add({
@@ -213,8 +205,8 @@ function performDelete() {
 }
 
 function addCustomGraphic(id: string) {
-  replicants.channels[0]!.custom = [
-    ...(replicants.channels[0]!.custom || []),
+  channel0.custom = [
+    ...(channel0.custom || []),
     {
       id,
       show: false,
@@ -223,12 +215,12 @@ function addCustomGraphic(id: string) {
 }
 
 async function toggleCustomGraphic(index: number) {
-  replicants.channels[0]!.custom[index]!.show = !replicants.channels[0]!.custom[index]!.show;
-  replicants.channels[0]!.custom = [...replicants.channels[0]!.custom];
+  channel0.custom[index]!.show = !channel0.custom[index]!.show;
+  channel0.custom = [...channel0.custom];
 }
 
 function deleteCustomGraphic(id: string) {
-  channelsRef.value = channelsRef.value.filter(g => g.id !== id);
+  channel0.custom = channel0.custom.filter(g => g.id !== id);
 }
 </script>
 

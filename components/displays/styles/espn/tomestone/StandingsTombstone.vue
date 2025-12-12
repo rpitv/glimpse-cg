@@ -26,7 +26,10 @@
           </td>
         </tr>
       </thead>
-      <tbody v-for="(team, i) in standings.teams" :key="i">
+      <tbody
+        v-for="(team, i) in standings.teams"
+        :key="i"
+      >
         <tr>
           <td
             class="logo"

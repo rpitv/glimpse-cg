@@ -3,11 +3,26 @@
     <UModal v-model:open="showDeleteModal">
       <template #content>
         <div class="p-6">
-          <h3 class="text-lg font-bold mb-2">Delete All Teams?</h3>
-          <p class="mb-4">Are you sure you want to remove all standings? This action cannot be undone.</p>
+          <h3 class="text-lg font-bold mb-2">
+            Delete All Teams?
+          </h3>
+          <p class="mb-4">
+            Are you sure you want to remove all standings? This action cannot be undone.
+          </p>
           <div class="flex justify-end gap-2">
-            <UButton color="neutral" variant="soft" @click="showDeleteModal = false">Cancel</UButton>
-            <UButton color="error" @click="deleteAllTeams">Delete All</UButton>
+            <UButton
+              color="neutral"
+              variant="soft"
+              @click="showDeleteModal = false"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              color="error"
+              @click="deleteAllTeams"
+            >
+              Delete All
+            </UButton>
           </div>
         </div>
       </template>
@@ -61,13 +76,25 @@
         <h2>Team Configuration</h2>
       </template>
       <UFieldGroup>
-        <UButton variant="subtle" loading-auto @click="fetchECACMenHockey">
+        <UButton
+          variant="subtle"
+          loading-auto
+          @click="fetchECACMenHockey"
+        >
           Fetch ECAC Hockey Men's
         </UButton>
-        <UButton variant="subtle" loading-auto @click="fetchECACWomenHockey">
+        <UButton
+          variant="subtle"
+          loading-auto
+          @click="fetchECACWomenHockey"
+        >
           Fetch ECAC Hockey Women's
         </UButton>
-        <UButton color="secondary" variant="subtle" @click="standings.teams = [...standings.teams, new StandingsTeam()]">
+        <UButton
+          color="secondary"
+          variant="subtle"
+          @click="standings.teams = [...standings.teams, new StandingsTeam()]"
+        >
           Manually Add Team
         </UButton>
         <UButton
@@ -108,16 +135,32 @@
           class="border-t border-muted team-settings"
         >
           <td>
-            <UInput v-model="standingsRef[i]!.teamName" placeholder="Team Name" class="w-full" />
+            <UInput
+              v-model="standingsRef[i]!.teamName"
+              placeholder="Team Name"
+              class="w-full"
+            />
           </td>
           <td>
-            <UInput v-model="standingsRef[i]!.logoLink" placeholder="Logo Link" class="w-full" />
+            <UInput
+              v-model="standingsRef[i]!.logoLink"
+              placeholder="Logo Link"
+              class="w-full"
+            />
           </td>
           <td>
-            <UInput v-model="standingsRef[i]!.record" placeholder="Record" class="w-full" />
+            <UInput
+              v-model="standingsRef[i]!.record"
+              placeholder="Record"
+              class="w-full"
+            />
           </td>
           <td>
-            <UInputNumber v-model="standingsRef[i]!.points" :min="0" :step="0.5" />
+            <UInputNumber
+              v-model="standingsRef[i]!.points"
+              :min="0"
+              :step="0.5"
+            />
           </td>
           <td>
             <div class="flex gap-2 justify-end">
@@ -183,14 +226,13 @@ const itemsLinks = ref<CommandPaletteGroup[]>([
 const ECAC_MENS_HOCKEY_URL = 'https://ecachockey.com/standings.aspx?path=mhockey';
 const ECAC_WOMENS_HOCKEY_URL = 'https://ecachockey.com/standings.aspx?path=whockey';
 
-
 function deleteAllTeams() {
   standings.teams = [];
   showDeleteModal.value = false;
   toast.add({
     title: 'All Teams Deleted',
     description: 'All teams have been removed from the standings.',
-    color: 'success'
+    color: 'success',
   });
 }
 
@@ -245,7 +287,7 @@ async function fetchECACHockeyRankings(men: boolean, link: string) {
       toast.add({
         title: `ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings Fetched`,
         description: `Fetched ${teamBuilder.length} teams from ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings.`,
-        color: 'success'
+        color: 'success',
       });
     })
     .catch((e) => {
@@ -253,7 +295,7 @@ async function fetchECACHockeyRankings(men: boolean, link: string) {
       toast.add({
         title: `Failed to fetch ECAC ${men ? 'M' : 'Wom'}en's Hockey Rankings`,
         description: `REASON >>> "${e}"\n\nYou can copy the link below and manually input the teams.\n\n${link}`,
-        color: 'error'
+        color: 'error',
       });
     });
 }

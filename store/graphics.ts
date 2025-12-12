@@ -4,10 +4,10 @@ export const useGraphicsStore = defineStore('graphics', () => {
   const selectedGraphic = ref({
     component: null as Component | null,
     name: '',
-    id: null as string | null,
+    index: -1
   });
 
-  function setGraphic(graphic: { component: Component | null; name: string; id: string | null }) {
+  function setGraphic(graphic: { component: Component | null; name: string; index: number }) {
     selectedGraphic.value = graphic;
   }
 

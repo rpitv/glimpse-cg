@@ -12,19 +12,19 @@
   </div>
   <div :style="creditsContainer">
     <div
-      v-for="(credit, i) in creditPeople"
+      v-for="(credit, i) in credits.credit"
       :key="i"
       class="credit"
     >
-      <p :style="title[i]">
-        {{ credit.title }}
+      <p :style="titleStyles[i]">
+        {{ credits.credit[i]!.title }}
       </p>
       <p
-        v-for="person in credit.people"
-        :style="people[i]"
+        v-for="(person, j) in credits.credit[i]!.people"
+        :style="peopleStyles[i]"
         class="person"
       >
-        {{ person }}
+        {{ credit.people[j] }}
       </p>
     </div>
   </div>
@@ -38,7 +38,6 @@ import { computed } from 'vue';
 
 const replicants = await useReplicants();
 const credits = replicants.fullscreen.credits;
-const creditPeople = ref(credits.credit);
 
 const header = computed((): CSSProperties => {
   return {
@@ -63,7 +62,7 @@ const creditsContainer = computed((): CSSProperties => {
   };
 });
 
-const people = computed((): CSSProperties[] => {
+const peopleStyles = computed((): CSSProperties[] => {
   const styles: CSSProperties[] = [];
   for (const credit of credits.credit) {
     styles.push({
@@ -74,7 +73,7 @@ const people = computed((): CSSProperties[] => {
   return styles;
 });
 
-const title = computed((): CSSProperties[] => {
+const titleStyles = computed((): CSSProperties[] => {
   const styles: CSSProperties[] = [];
   for (const credit of credits.credit) {
     styles.push({
@@ -84,10 +83,6 @@ const title = computed((): CSSProperties[] => {
   }
   return styles;
 });
-
-watch(() => credits, () => {
-  creditPeople.value = credits.credit;
-}, { deep: true });
 </script>
 
 <style scoped lang="scss">

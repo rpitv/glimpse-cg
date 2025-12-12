@@ -28,11 +28,11 @@ function calculateGameDate(date: string, seasonYear: string | number, time: stri
   // Extract the weekday displayed on the schedule page.
   // 1. Sidearm format: "Oct 3 (Fri)" → take text inside parentheses: "Fri"
   // 2. ACHA format: "Fri, Oct 3" or "Oct 3, Fri" → take the first comma-separated part: "Fri"
-  const targetDateWeekday =
+  const targetDateWeekday
     // Sidearm format (extract between parentheses)
-    date?.substring(date.indexOf('(') + 1, date.lastIndexOf(')')) ||
+    = date?.substring(date.indexOf('(') + 1, date.lastIndexOf(')'))
     // ACHA format (contains a comma → take first part before comma)
-    (date.includes(',') ? date.split(', ')[0] : undefined);
+      || (date.includes(',') ? date.split(', ')[0] : undefined);
 
   let fullGameDate = new Date(`${date} ${seasonYear} ${time}`);
   // the day of week generated doesn't match expected so it must be the next year in the season i.e. Jan date in a winter sport

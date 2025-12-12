@@ -38,7 +38,7 @@
       size="md"
     />
     <div>
-      <div 
+      <div
         v-if="!loading"
         class="mt-4 flex gap-4"
       >
@@ -128,15 +128,15 @@ import type { CommandPaletteGroup } from '@nuxt/ui';
 import rpitvlogo from '~/assets/rpitv-modern/rpitv_logo.svg';
 
 interface Player {
-  custom1: string | null;
-  custom2: string | null;
+  // custom1: string | null;
+  // custom2: string | null;
   height: string;
   hometown: string;
   image: string;
   name: string;
   number: string;
-  position: string;
-  previousTeam: string;
+  // position: string;
+  // previousTeam: string;
   weight: string;
   year: string;
 }
@@ -190,8 +190,8 @@ function setPlayers(teamPlayers: { html: string; new: boolean }, team: 'home' | 
     playersDOM?.forEach((player) => {
       const name = player.querySelector('.s-person-card__header__person-details-personal__name')?.querySelector('span')?.textContent;
       const image = player.querySelector('[data-test-id="s-image-resized__img"]')?.getAttribute('src') || rpitvlogo;
-      const position = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-position-short"]');
-      position?.querySelector('span')?.remove();
+      // const position = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-position-short"]');
+      // position?.querySelector('span')?.remove();
       const year = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-academic-year-short"]');
       year?.querySelector('span')?.remove();
       const height = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-height"]');
@@ -204,15 +204,15 @@ function setPlayers(teamPlayers: { html: string; new: boolean }, team: 'home' | 
       const number = player.querySelector('[data-test-id="s-stamp__root"]')?.querySelector('span');
       number?.querySelector('span')?.remove();
       players.push({
-        custom1: null,
-        custom2: null,
+        // custom1: null,
+        // custom2: null,
         height: height?.textContent?.trim() as string,
         hometown: hometown?.textContent?.trim() as string,
         image: image,
         name: name as string,
         number: number?.textContent?.trim() as string,
-        position: position?.textContent?.trim() as string,
-        previousTeam: '',
+        // position: position?.textContent?.trim() as string,
+        // previousTeam: '',
         weight: weight?.textContent?.trim() as string,
         year: year?.textContent?.trim() as string,
       });
@@ -222,20 +222,24 @@ function setPlayers(teamPlayers: { html: string; new: boolean }, team: 'home' | 
     const playersDOM = teamDOM.querySelectorAll('.sidearm-roster-player');
     playersDOM.forEach((player) => {
       let imageLink = null;
-      if (player.querySelector('img')?.dataset.src)
-        imageLink = ((team === 'home' ? homeTeam.value.athletics : awayTeam.value.athletics) + player.querySelector('img')?.dataset.src)
+      if (player.querySelector('img')?.dataset.src) {
+        imageLink = player.querySelector('img')?.dataset.src!
           .replace(/(width=)\d+/, '$1300')
           .replace(/(quality=)\d+/, '$170');
+        // Schools such as yale do not have their images on their website, and source it from other websites.
+        if (!imageLink?.startsWith('https'))
+          imageLink = (team === 'home' ? homeTeam.value.athletics : awayTeam.value.athletics) + imageLink;
+      }
       players.push({
-        custom1: player.querySelector('.sidearm-roster-player-custom1')?.textContent?.trim() ?? null,
-        custom2: player.querySelector('.sidearm-roster-player-custom2')?.textContent?.trim() ?? null,
+        // custom1: player.querySelector('.sidearm-roster-player-custom1')?.textContent?.trim() ?? null,
+        // custom2: player.querySelector('.sidearm-roster-player-custom2')?.textContent?.trim() ?? null,
         height: player.querySelector('.sidearm-roster-player-height')?.textContent?.trim() as string,
         hometown: player.querySelector('.sidearm-roster-player-hometown')?.textContent?.trim() as string,
         image: imageLink || rpitvlogo,
-        name: player.querySelector('h3')?.textContent?.trim() as string,
+        name: player.querySelector('h3')?.textContent?.trim() as string || player.querySelector('h2')?.textContent?.trim() as string,
         number: player.querySelector('.sidearm-roster-player-jersey-number')?.textContent?.trim() as string,
-        position: player.querySelector('.sidearm-roster-player-position-long-short')?.textContent?.trim() as string,
-        previousTeam: player.querySelector('.sidearm-roster-player-highschool')?.textContent?.trim() as string,
+        // position: player.querySelector('.sidearm-roster-player-position-long-short')?.textContent?.trim() as string,
+        // previousTeam: player.querySelector('.sidearm-roster-player-highschool')?.textContent?.trim() as string,
         weight: player.querySelector('.sidearm-roster-player-weight')?.textContent?.trim() as string,
         year: player.querySelector('.sidearm-roster-player-academic-year')?.textContent?.trim() as string,
       });
@@ -249,7 +253,7 @@ function updateSelectedPlayer(i: number) {
     playerBio.value.teamside = i === 1 ? 'awayTeam' : 'homeTeam';
     playerBio.value.playerName = selectedPlayer.value.name;
     playerBio.value.playerNumber = selectedPlayer.value.number;
-    playerBio.value.position = selectedPlayer.value.position;
+    // playerBio.value.position = selectedPlayer.value.position;
     playerBio.value.info.year = selectedPlayer.value.year;
     playerBio.value.info.height = selectedPlayer.value.height;
     playerBio.value.info.weight = selectedPlayer.value.weight;
