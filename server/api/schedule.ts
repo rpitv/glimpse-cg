@@ -113,7 +113,6 @@ function parseSidearmSite(document: Document, forceFetch: boolean) {
     const homeGame = gameElements[i]?.classList?.contains('sidearm-schedule-home-game');
     const neutralSite = gameElements[i]?.classList?.contains('sidearm-schedule-neutral-game');
     const fullGameDate = calculateGameDate(date, seasonYear, time);
-    console.log(fullGameDate);
     const game: ScheduledGame = {
       date: fullGameDate,
       opponent,
@@ -134,7 +133,6 @@ function parseAchaSite(document: Document, forceFetch: boolean) {
 
   const seasonYear = document.querySelector('h1.p-4')?.textContent?.trim()?.split('-')[0] || 2000;
   const gameElements = document.querySelector('table')?.querySelectorAll('tbody tr') || [];
-  console.log(gameElements);
   for (let i = 0; i < gameElements.length; i++) {
     if (!gameElements[i])
       continue;

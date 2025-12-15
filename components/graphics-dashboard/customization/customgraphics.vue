@@ -163,22 +163,36 @@ function addGraphic(url: string) {
 
 function fileUpload() {
   if (graphicFile.value) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const base64Url = e.target?.result as string;
-      const newGraphic = new CustomGraphic(base64Url);
-      fullscreen.custom = [...fullscreen.custom, newGraphic];
-      addCustomGraphic(newGraphic._id);
-    };
-    reader.readAsDataURL(graphicFile.value);
-    toast.add({
-      title: 'Graphic Added',
-      description: 'The custom graphic has been added successfully.',
-      color: 'success',
-    });
-    graphicFile.value = null;
-    graphicUrl.value = '';
-    modalState.value = false;
+    const formData = new FormData();
+    formData.append('file', graphicFile.value);
+
+    fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        const imagePath = `/api/cache/${data.filename}`;
+        const newGraphic = new CustomGraphic(imagePath);
+        fullscreen.custom = [...fullscreen.custom, newGraphic];
+        addCustomGraphic(newGraphic._id);
+        toast.add({
+          title: 'Graphic Added',
+          description: 'The custom graphic has been added successfully.',
+          color: 'success',
+        });
+        graphicFile.value = null;
+        graphicUrl.value = '';
+        modalState.value = false;
+      })
+      .catch(error => {
+        console.error('Upload failed:', error);
+        toast.add({
+          title: 'Upload Failed',
+          description: 'Failed to upload the graphic.',
+          color: 'error',
+        });
+      });
   }
 }
 

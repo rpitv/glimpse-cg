@@ -51,7 +51,6 @@ import { useGraphicsStore } from '~/store/graphics';
 import Bug from './customization/bug.vue';
 import Commentators from './customization/commentators.vue';
 import Copyright from './customization/copyright.vue';
-import EndGraphics from './customization/endgraphics.vue';
 import GoToBreak from './customization/gotobreak.vue';
 import Locator from './customization/locator.vue';
 import PlayerBio from './customization/playerbio.vue';
@@ -77,11 +76,6 @@ interface Graphic {
 
 const graphics: Graphic[] = [
   {
-    label: 'Bottom Text Bar',
-    val: { name: 'bottomtextbar', component: null, reference: 'bottomTextBar' },
-    restrictions: ['rpitv'],
-  },
-  {
     label: 'Bug',
     val: { name: 'bug', component: markRaw(Bug), reference: 'bug' },
     restrictions: [],
@@ -100,11 +94,6 @@ const graphics: Graphic[] = [
     label: 'Credits',
     val: { name: 'credits', component: markRaw(Credits), reference: 'credits' },
     restrictions: [],
-  },
-  {
-    label: 'End Graphics',
-    val: { name: 'endgraphics', component: markRaw(EndGraphics), reference: 'endGraphic' },
-    restrictions: ['rpitv'],
   },
   {
     label: 'Go To Break',
@@ -134,7 +123,7 @@ const graphics: Graphic[] = [
 ];
 
 function changeGraphic(graphicVal: { name: string; component: Component; reference: string }) {
-  graphicsStore.setGraphic({ component: graphicVal.component, name: graphicVal.name, id: null });
+  graphicsStore.setGraphic({ component: graphicVal.component, name: graphicVal.name, index: -1 });
 }
 
 const computedGraphics = computed(() => {

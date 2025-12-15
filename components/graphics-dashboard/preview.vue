@@ -95,13 +95,13 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useGraphicsStore } from '~/store/graphics';
 
 const replicants = await useReplicants();
 const graphicsStore = useGraphicsStore();
 const loading = ref(true);
-const fullscreen = replicants.fullscreen;
+let fullscreen = replicants.fullscreen;
 
 watch(() => graphicsStore.selectedGraphic, (n, o) => {
   if (n.name !== o.name || n.index !== o.index)
@@ -111,15 +111,11 @@ watch(() => graphicsStore.selectedGraphic, (n, o) => {
     graphicsStore.selectedGraphic.index = -1;
 });
 
-// watch(currentGraphic, (newVal) => {
-//   if (newVal) {
-//     const index = fullscreen.value.custom.findIndex(graphic => graphic._id === newVal._id);
-//     if (index !== -1) {
-//       fullscreen.value.custom[index] = newVal;
-//       fullscreen.value.custom = [...fullscreen.value.custom]; // Trigger reactivity
-//     }
-//   }
-// }, { deep: true });
+watch(() => replicants.fullscreen, (n, o) => {
+  if (n !== o && replicants) {
+    fullscreen = replicants.fullscreen;
+  }
+});
 </script>
 
 <style>

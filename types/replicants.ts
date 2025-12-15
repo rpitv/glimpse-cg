@@ -2,26 +2,6 @@ import type { Announcement } from '~/utils/announcement';
 import { v4 } from 'uuid';
 
 export const defaultLowerThird = {
-  bottomTextBar: {
-    greyText: {
-      text: '',
-      alignment: 'center' as 'left' | 'center' | 'right',
-      textSize: 0,
-      offsetX: 0,
-      offsetY: 0,
-      textColor: '#FFFFFF',
-      bgColor: '#000000',
-    },
-    redText: {
-      text: '',
-      alignment: 'center' as 'left' | 'center' | 'right',
-      textSize: 0,
-      offsetX: 0,
-      offsetY: 0,
-      textColor: '#FFFFFF',
-      autoResize: false,
-    },
-  },
   bug: {
     offsetX: 0,
     offsetY: 0,
@@ -37,13 +17,6 @@ export const defaultLowerThird = {
     text: `©${new Date().getFullYear()} RPI TV`,
     textColor: '',
     textSize: 0,
-  },
-  endGraphics: {
-    disabled: false,
-    title: 'RPI TV Crew',
-    message: 'Director\nProducer\nReplay Operator\nCamera Operator',
-    length: 30,
-    type: 'box' as 'scroll' | 'box',
   },
   goToBreak: {
     offsetX: 0,
@@ -352,15 +325,6 @@ export const defaultFullscreen = {
   custom: [] as CustomGraphic[],
 };
 
-export const defaultExternal = {
-  awayTeam: {
-    athleticsURL: '',
-  },
-  homeTeam: {
-    athleticsURL: '',
-  },
-};
-
 export class CustomGraphic {
   public _id: string;
   public offsetX = 0;
@@ -458,7 +422,6 @@ export const defaultReplicants = {
   configuration: defaultConfiguration,
   scoreboard: defaultScoreboard,
   fullscreen: defaultFullscreen,
-  external: defaultExternal,
   channels: defaultChannels,
 };
 
@@ -466,6 +429,5 @@ export type LowerThird = typeof defaultLowerThird;
 export type Configuration = typeof defaultConfiguration;
 export type Scoreboard = typeof defaultScoreboard;
 export type Fullscreen = typeof defaultFullscreen;
-export type External = typeof defaultExternal;
 export type Channels = typeof defaultChannels;
 export type Replicants = typeof defaultReplicants;
