@@ -151,6 +151,7 @@ import TeamConfig from '~/components/configuration/teamConfig.vue';
 import { URadioGroup } from '#components';
 import type { ScheduleResults } from '~/server/api/schedule';
 
+
 const toast = useToast();
 const replicants = await useReplicants();
 const configuration = replicants.configuration;

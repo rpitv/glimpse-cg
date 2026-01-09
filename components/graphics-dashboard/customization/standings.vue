@@ -3,9 +3,9 @@
     <UModal v-model:open="showDeleteModal">
       <template #content>
         <div class="p-6">
-          <h3 class="text-lg font-bold mb-2">
+          <p class="text-lg font-bold mb-2">
             Delete All Teams?
-          </h3>
+          </p>
           <p class="mb-4">
             Are you sure you want to remove all standings? This action cannot be undone.
           </p>
@@ -28,10 +28,11 @@
       </template>
     </UModal>
     <!-- Header Configuration -->
-    <UCard class="mb-4 rounded-none">
-      <template #header>
-        <h2>Header Configuration</h2>
-      </template>
+    <UCard class="rounded-none" :ui="{
+      'header': 'border-t-0'
+    }">
+      <h1>Header Configuration</h1>
+      <USeparator class="mt-2 mb-4" />
       <div class="flex gap-4">
         <UCommandPalette
           :ui="{
@@ -68,13 +69,9 @@
           placeholder="Type in a subtitle for the standings graphic."
         />
       </UFormField>
-    </UCard>
 
-    <!-- Team Configuration -->
-    <UCard class="mb-4 rounded-none">
-      <template #header>
-        <h2>Team Configuration</h2>
-      </template>
+      <h1 class="!mt-4">Team Configuration</h1>
+      <USeparator class="mt-2 mb-4" />
       <UFieldGroup>
         <UButton
           variant="subtle"

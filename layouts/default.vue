@@ -3,6 +3,7 @@
     <UNavigationMenu
       class="w-full"
       :items="items"
+
     />
     <slot />
   </div>
@@ -37,18 +38,8 @@ const items = ref<NavigationMenuItem[][]>([[
   {
     label: 'Preview',
     icon: 'i-heroicons-eye-20-solid',
-    onSelect: async () => {
-      await navigateTo({
-        path: '/display',
-        query: {
-          dev: '1',
-        },
-      }, {
-        open: {
-          target: '_blank',
-        },
-      });
-    },
+    to: '/display?dev=1',
+    target: '_blank',
   },
 ]]);
 </script>

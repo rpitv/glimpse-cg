@@ -6,6 +6,8 @@ export const useGraphicsStore = defineStore('graphics', () => {
     name: '',
     index: -1
   });
+  const customizationFocused = ref(false);
+  const previewFocused = ref(false);
 
   function setGraphic(graphic: { component: Component | null; name: string; index: number }) {
     selectedGraphic.value = graphic;

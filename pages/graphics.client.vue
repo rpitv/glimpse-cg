@@ -1,10 +1,10 @@
 <template>
   <div id="graphics-dashboard">
     <GraphicsList />
-    <Customization>
+    <Customization ref="customization" >
       <component :is="graphicsStore.selectedGraphic.component" />
     </Customization>
-    <Preview />
+    <Preview ref="preview" />
   </div>
 </template>
 
@@ -15,12 +15,14 @@ import Preview from '~/components/graphics-dashboard/preview.vue';
 import { useGraphicsStore } from '~/store/graphics';
 
 const graphicsStore = useGraphicsStore();
-const { selectedGraphic } = graphicsStore;
+
+
 </script>
 
 <style>
 #graphics-dashboard {
   display: grid;
   grid-template-columns: 2fr 5fr 3fr;
+  align-items: start;
 }
 </style>

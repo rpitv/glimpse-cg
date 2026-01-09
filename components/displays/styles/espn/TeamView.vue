@@ -1,10 +1,11 @@
 <template>
   <div class="team-section">
-    <div class="logo-section">
+    <div class="logo-section" :style="`background-color: ${scoreboardTeam.primaryColor || team.primaryColor}`">
       <img
         v-if="team.logo"
         :src="team.logo"
         :alt="team.schoolName"
+        :style="`height: ${scoreboardTeam.logoSize}%`"
       >
     </div>
     <div class="name-section">
@@ -34,7 +35,6 @@ const replicants = await useReplicants();
 
 const scoreboardTeam = replicants.scoreboard[props.team];
 const team = replicants.configuration[props.team];
-const logoBgColor = ref(scoreboardTeam.primaryColor);
 </script>
 
 <style scoped lang="scss">
@@ -51,8 +51,6 @@ const logoBgColor = ref(scoreboardTeam.primaryColor);
 
 		width: 3.5vw;
 		height: 100%;
-
-		background-color: v-bind(logoBgColor);
 
 		img {
 			height: 90%;

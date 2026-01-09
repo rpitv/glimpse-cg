@@ -3,15 +3,15 @@
     <div>
       <UCard class="rounded-none">
         <template #header>
-          <USwitch
-            v-model="channels[0]!.scoreboard"
-            label="Scorebug Control"
-            size="xl"
-            :ui="{
-              label: 'text-2xl',
-            }"
-            description="Turn on or off the scorebug"
-          />
+          <h1 class="text-2xl">Scoreboard Control</h1>
+          <div class="flex items-center gap-2 mt-2">
+            <USwitch
+              v-model="channels[0]!.scoreboard"
+              size="xl"
+              label="Display Scorebug"
+            />
+            <UKbd v-if="!inputFocus.isInputFocused.value">SPACE</UKbd>
+          </div>
         </template>
       </UCard>
       <div class="flex justify-center">
@@ -60,13 +60,18 @@ import PeriodControl from './PeriodControl.vue';
 import AnnouncementSection from './AnnouncemntSection.vue';
 
 const replicants = await useReplicants();
+const inputFocus = useInputFocus();
 const scoreboard = replicants.scoreboard;
 const channels = replicants.channels;
 
-const awayTeam = replicants.configuration.awayTeam;
-const homeTeam = replicants.configuration.homeTeam;
 const awayTeamScoreboard = scoreboard.awayTeam;
 const homeTeamScoreboard = scoreboard.homeTeam;
+
+defineShortcuts({
+  ' ': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.scoreboard = !channels[0]?.scoreboard;
+  },
+});
 </script>
 
 <style scoped>

@@ -3,15 +3,15 @@
     <div>
       <UCard class="rounded-none">
         <template #header>
-          <USwitch
-            v-model="channels[0]!.scoreboard"
-            label="Scorebug Control"
-            size="xl"
-            :ui="{
-              label: 'text-2xl',
-            }"
-            description="Turn on or off the scorebug"
-          />
+          <h1 class="text-2xl">Scoreboard Control</h1>
+          <div class="flex items-center gap-2 mt-2">
+            <USwitch
+              v-model="channels[0]!.scoreboard"
+              size="xl"
+              label="Display Scorebug"
+            />
+            <UKbd v-if="!inputFocus.isInputFocused.value">SPACE</UKbd>
+          </div>
         </template>
       </UCard>
       <div class="flex justify-center">
@@ -26,17 +26,22 @@
       </div>
       <UCard class="rounded-none">
         <template #footer>
-          <USwitch
-            v-model="replicants.channels[0]!.sog"
-            size="xl"
-            label="Display SOG"
-          />
-          <USwitch
-            v-model="replicants.channels[0]!.faceoff"
-            class="mt-4"
-            size="xl"
-            label="Display Faceoffs"
-          />
+          <div class="flex items-center gap-2">
+            <USwitch
+              v-model="replicants.channels[0]!.sog"
+              size="xl"
+              label="Display SOG"
+            />
+            <UKbd v-if="!inputFocus.isInputFocused.value">G</UKbd>
+          </div>
+          <div class="flex items-center gap-2 mt-2">
+            <USwitch
+              v-model="replicants.channels[0]!.faceoff"
+              size="xl"
+              label="Display Faceoffs"
+            />
+            <UKbd v-if="!inputFocus.isInputFocused.value">F</UKbd>
+          </div>
         </template>
       </UCard>
       <UCard class="rounded-none mt-8">
@@ -77,11 +82,24 @@ import ShootoutControl from './ShootoutControl.vue';
 import TeamScore from './TeamScore.vue';
 
 const replicants = await useReplicants();
+const inputFocus = useInputFocus();
 const scoreboard = replicants.scoreboard;
 const channels = replicants.channels;
 
 const awayTeamScoreboard = scoreboard.awayTeam;
 const homeTeamScoreboard = scoreboard.homeTeam;
+
+defineShortcuts({
+  ' ': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.scoreboard = !channels[0]?.scoreboard;
+  },
+  'g': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.sog = !channels[0]?.sog;
+  },
+  'f': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.faceoff = !channels[0]?.faceoff;
+  },
+})
 </script>
 
 <style scoped>
