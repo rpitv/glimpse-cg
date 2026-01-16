@@ -25,7 +25,6 @@ logs
 
 # Local env files
 .env
-.env.*
 !.env.example
 
 # db
@@ -34,3 +33,4 @@ replicants.db
 
 # eriks fontawesome stuff
 .npmrc
+.eslintcache

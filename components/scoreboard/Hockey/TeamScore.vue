@@ -36,7 +36,7 @@
               </UInputNumber>
             </UTooltip>
           </div>
-          <div class="mt-4">
+          <!-- <div class="mt-4">
             <u class="block text-[16px]">FACEOFFS</u>
             <UTooltip
               :disabled="!sync[team].hockey.faceoff"
@@ -68,7 +68,7 @@
                 </template>
               </UInputNumber>
             </UTooltip>
-          </div>
+          </div> -->
         </div>
         <div>
           <u class="block text-[20px]">SCORE</u>
@@ -145,12 +145,6 @@
                       :placeholder="configuration[team].abbr"
                     />
                   </UFormField>
-                  <ColorPicker
-                    v-model="teamScoreboard!.nameColor"
-                    class="mt-4"
-                    label="Team Name Color"
-                    help="The color for the team name"
-                  />
                   <UFormField
                     class="mt-4"
                     label="Team Name Size"

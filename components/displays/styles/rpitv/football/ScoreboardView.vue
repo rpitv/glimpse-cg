@@ -255,30 +255,33 @@ watch(homeTeamScore, (n, o) => {
   runAnimation();
 });
 
+const awayPrimaryColor = computed(() => scoreboard.awayTeam.primaryColor || configuration.awayTeam.primaryColor);
+const homePrimaryColor = computed(() => scoreboard.homeTeam.primaryColor || configuration.homeTeam.primaryColor);
+
 const possessionColors = computed(() => {
   const colors = ['#2b2b2b', '#dfdfdf', 'black'];
   if (scoreboard.football.possession === '<') {
-    const linearGradient = calcLinearGrad(awayTeam.primaryColor);
-    if (!isLighter(awayTeam.primaryColor, linearGradient)) {
-      colors[0] = awayTeam.primaryColor;
+    const linearGradient = calcLinearGrad(awayPrimaryColor.value);
+    if (!isLighter(awayPrimaryColor.value, linearGradient)) {
+      colors[0] = awayPrimaryColor.value;
       colors[1] = linearGradient;
       colors[2] = isLightColor(colors[0]) ? 'white' : 'black';
     }
     else {
-      colors[1] = awayTeam.primaryColor;
+      colors[1] = awayPrimaryColor.value;
       colors[0] = linearGradient;
       colors[2] = isLightColor(colors[1]) ? 'white' : 'black';
     }
   }
   else if (scoreboard.football.possession === '>') {
-    const linearGradient = calcLinearGrad(homeTeam.primaryColor);
-    if (!isLighter(homeTeam.primaryColor, linearGradient)) {
-      colors[0] = homeTeam.primaryColor;
+    const linearGradient = calcLinearGrad(homePrimaryColor.value);
+    if (!isLighter(homePrimaryColor.value, linearGradient)) {
+      colors[0] = homePrimaryColor.value;
       colors[1] = linearGradient;
       colors[2] = isLightColor(colors[0]) ? 'white' : 'black';
     }
     else {
-      colors[1] = homeTeam.primaryColor;
+      colors[1] = homePrimaryColor.value;
       colors[0] = linearGradient;
       colors[2] = isLightColor(colors[1]) ? 'white' : 'black';
     }
@@ -415,9 +418,9 @@ const possessionColors = computed(() => {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 77.35vw;
-	position: fixed;
-	bottom: 9vh;
+	width: 100%;
+	position: absolute;
+  height: 100%;
 	font-size: 6.2vh;
 	font-family: 'Roboto Condensed', sans-serif;
 }

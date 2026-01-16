@@ -1,10 +1,11 @@
 <template>
-  <div class="team">
+  <div class="team" :style="teamContainer">
     <div class="logo">
       <img
         id="logoImg"
-        :src="team.logo"
-        :alt="team.schoolName"
+        :src="scoreboardTeam.logo || team.logo"
+        :alt="scoreboardTeam.name || team.schoolName"
+        :style="`height: ${scoreboardTeam.logoSize * (3.6 / 100)}vh;`"
       >
     </div>
     <div class="team-name">
@@ -17,7 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { isLightColor, calcLinearGrad, isLighter } from '../../../util';
+import type { CSSProperties } from 'vue';
+import { isLightColor, calcLinearGrad, isLighter } from '~/components/displays/util';
 
 const props = defineProps({
   team: {
@@ -31,40 +33,47 @@ const scoreboardTeam = replicants.scoreboard[props.team];
 
 const fontColor = ref('black');
 
+const primaryColor = computed(() => scoreboardTeam.primaryColor || team.primaryColor)
+
 const color1 = computed(() => {
-  const linearGradient = calcLinearGrad(team.primaryColor);
-  if (!isLighter(team.primaryColor, linearGradient))
+  const linearGradient = calcLinearGrad(primaryColor.value);
+  if (!isLighter(primaryColor.value, linearGradient))
     return linearGradient;
-  return team.primaryColor;
+  return primaryColor.value;
 });
 
 const color2 = computed(() => {
-  const linearGradient = calcLinearGrad(team.primaryColor);
-  if (!isLighter(team.primaryColor, linearGradient))
-    return team.primaryColor;
+  const linearGradient = calcLinearGrad(primaryColor.value);
+  if (!isLighter(primaryColor.value, linearGradient))
+    return primaryColor.value;
   return linearGradient;
 });
 
-if (isLightColor(color1.value)) fontColor.value = 'white';
-else fontColor.value = 'black';
+if (isLightColor(color1.value)) 
+  fontColor.value = 'white';
+else 
+  fontColor.value = 'black';
 
 watch(color1, (n, o) => {
   if (isLightColor(n)) fontColor.value = 'white';
   else fontColor.value = 'black';
 });
+
+const teamContainer = computed((): CSSProperties => {
+  return {
+    alignItems: 'center',
+    background: `linear-gradient(${color1.value}, ${color2.value})`,
+    color: fontColor.value,
+    display: 'flex',
+    fontSize: '3.5vh',
+    justifyContent: 'space-between',
+    textShadow: '0 0 0.2vh black',
+  };
+})
+
 </script>
 
 <style scoped>
-.team {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background: linear-gradient(v-bind(color1), v-bind(color2));
-	font-size: 3.5vh;
-	color: v-bind(fontColor);
-	text-shadow: 0 0 0.2vh black;
-}
-
 .logo {
 	display: flex;
 	align-items: center;

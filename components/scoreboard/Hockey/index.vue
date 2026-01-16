@@ -3,7 +3,7 @@
     <div>
       <UCard class="rounded-none">
         <template #header>
-          <h1 class="text-2xl">Scoreboard Control</h1>
+          <b class="text-2xl">Scoreboard Control</b>
           <div class="flex items-center gap-2 mt-2">
             <USwitch
               v-model="channels[0]!.scoreboard"
@@ -34,14 +34,14 @@
             />
             <UKbd v-if="!inputFocus.isInputFocused.value">G</UKbd>
           </div>
-          <div class="flex items-center gap-2 mt-2">
+          <!-- <div class="flex items-center gap-2 mt-2">
             <USwitch
               v-model="replicants.channels[0]!.faceoff"
               size="xl"
               label="Display Faceoffs"
             />
             <UKbd v-if="!inputFocus.isInputFocused.value">F</UKbd>
-          </div>
+          </div> -->
         </template>
       </UCard>
       <UCard class="rounded-none mt-8">
@@ -96,9 +96,9 @@ defineShortcuts({
   'g': () => {
     if (!inputFocus.isInputFocused.value) channels[0]!.sog = !channels[0]?.sog;
   },
-  'f': () => {
-    if (!inputFocus.isInputFocused.value) channels[0]!.faceoff = !channels[0]?.faceoff;
-  },
+  // 'f': () => {
+  //   if (!inputFocus.isInputFocused.value) channels[0]!.faceoff = !channels[0]?.faceoff;
+  // },
 })
 </script>
 

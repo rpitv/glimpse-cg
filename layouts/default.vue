@@ -3,7 +3,7 @@
     <UNavigationMenu
       class="w-full"
       :items="items"
-
+      @click.capture="blurActive"
     />
     <slot />
   </div>
@@ -25,7 +25,7 @@ const items = ref<NavigationMenuItem[][]>([[
   },
   {
     label: 'Scoreboard',
-    icon: 'i-heroicons-information-circle-20-solid',
+    icon: 'i-heroicons-window-20-solid',
     to: '/scoreboard',
   },
   {
@@ -37,11 +37,16 @@ const items = ref<NavigationMenuItem[][]>([[
 [
   {
     label: 'Preview',
-    icon: 'i-heroicons-eye-20-solid',
+    icon: 'i-heroicons-tv-20-solid',
     to: '/display?dev=1',
     target: '_blank',
   },
 ]]);
+
+function blurActive() {
+  const el = document.activeElement as HTMLElement | null;
+  if (el && typeof el.blur === 'function') el.blur();
+}
 </script>
 
 <style>

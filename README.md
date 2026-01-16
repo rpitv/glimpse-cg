@@ -1,75 +1,48 @@
-# Nuxt Minimal Starter
+# Glimpse Character Generator
+Glimpse Character Generator or Glimpse CG is a specialized character generator designed 
+for RPI TV to assist the creation of on-screen graphics and text overlays. It provides 
+a user-friendly interface for generating professional-quality graphics suitable for 
+broadcast and streaming applications.
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Installation
 
-## Setup
+### Prerequisites
+- Node.js v22.20.0
+- Google Chrome (required for puppeteer-core)
 
-Make sure to install dependencies:
-
+### Install Dependencies
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npm i
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+### Environment Variables
+Create a `.env` file in the root directory and add the following environment variable:
 
 ```bash
-# npm
+CHROME_PATH=/path/to/your/chrome.exe
+```
+In `.env.sample`, the default path for Chrome on Windows is provided.
+
+### Fontawesome PRO
+This project uses Fontawesome PRO icons. To use them, you need to set up a `.npmrc` 
+file in the root directory with your Fontawesome authentication token. This file is provided in the RPI TV discord server.
+
+### Development
+To start the development server, run:
+```bash
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
+The app will be available at: http://localhost:3000
 
-## Production
-
-Build the application for production:
-
+### Build for Production
+To build the application for production, run:
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
-
+### Preview Production Build
+To preview the production build, run:
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+The app will be available at: http://localhost:3000

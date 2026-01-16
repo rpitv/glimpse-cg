@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true,
     },
+    externals: {
+      external: ['puppeteer-core']
+    }
   },
   eslint: {
     config: {
@@ -27,4 +30,12 @@ export default defineNuxtConfig({
     },
     checker: true,
   },
+  vite: {
+    css: {
+      devSourcemap: false,
+    },
+    optimizeDeps: {
+      exclude: ['puppeteer-core', 'jsdom']
+    }
+  }
 });

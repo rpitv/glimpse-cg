@@ -42,7 +42,6 @@ const scoreboard = computed((): CSSProperties => {
     bottom: playerBio.offsetY + 5.93 + 'vh',
     display: 'flex',
     height: '10.2vh',
-    left: playerBio.offsetX + 'vw',
     overflow: 'hidden',
     width: '77.35vw',
   };

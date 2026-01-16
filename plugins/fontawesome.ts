@@ -1,18 +1,20 @@
 import { library, config } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// Import Pro styles
-import { fas } from '@fortawesome/pro-solid-svg-icons';
-import { far } from '@fortawesome/pro-regular-svg-icons';
-import { fal } from '@fortawesome/pro-light-svg-icons';
-import { fat } from '@fortawesome/pro-thin-svg-icons';
-import { fad } from '@fortawesome/pro-duotone-svg-icons';
+// Import only the FontAwesome icons actually used in the app to minimize bundle size
+import {
+  faMinus,
+  faPlus,
+  faPenToSquare,
+  faPause,
+  faPlay,
+} from '@fortawesome/pro-solid-svg-icons';
 
 // Prevent FA from injecting CSS automatically
 config.autoAddCss = false;
 
-// Add your chosen sets
-library.add(fas, far, fal, fat, fad);
+// Add only the specific icons we use
+library.add(faMinus, faPlus, faPenToSquare, faPause, faPlay);
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon);

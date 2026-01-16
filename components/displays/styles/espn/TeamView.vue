@@ -2,9 +2,8 @@
   <div class="team-section">
     <div class="logo-section" :style="`background-color: ${scoreboardTeam.primaryColor || team.primaryColor}`">
       <img
-        v-if="team.logo"
-        :src="team.logo"
-        :alt="team.schoolName"
+        :src="scoreboardTeam.logo || team.logo"
+        :alt="scoreboardTeam.name || team.schoolName"
         :style="`height: ${scoreboardTeam.logoSize}%`"
       >
     </div>

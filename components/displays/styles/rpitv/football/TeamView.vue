@@ -31,36 +31,39 @@ const replicants = await useReplicants();
 const team = replicants.configuration[props.team];
 const scoreboardTeam = replicants.scoreboard[props.team];
 
+const primaryColor = computed(() => scoreboardTeam.primaryColor || team.primaryColor);
+const secondaryColor = computed(() => scoreboardTeam.secondaryColor || team.secondaryColor);
+
 const color1 = computed(() => {
-  const linearGradient = calcLinearGrad(team.primaryColor);
-  if (!isLighter(team.primaryColor, linearGradient))
+  const linearGradient = calcLinearGrad(primaryColor.value);
+  if (!isLighter(primaryColor.value, linearGradient))
     return linearGradient;
-  return team.primaryColor;
+  return primaryColor.value;
 });
 
 const color2 = computed(() => {
-  const linearGradient = calcLinearGrad(team.primaryColor);
-  if (!isLighter(team.primaryColor, linearGradient))
-    return team.primaryColor;
+  const linearGradient = calcLinearGrad(primaryColor.value);
+  if (!isLighter(primaryColor.value, linearGradient))
+    return primaryColor.value;
   return linearGradient;
 });
 
 const color3 = computed(() => {
-  const linearGradient = calcLinearGrad(team.secondaryColor);
-  if (!isLighter(team.secondaryColor, linearGradient))
+  const linearGradient = calcLinearGrad(secondaryColor.value);
+  if (!isLighter(secondaryColor.value, linearGradient))
     return linearGradient;
-  return team.secondaryColor;
+  return secondaryColor.value;
 });
 
 const color4 = computed(() => {
-  const linearGradient = calcLinearGrad(team.secondaryColor);
-  if (!isLighter(team.secondaryColor, linearGradient))
-    return team.secondaryColor;
+  const linearGradient = calcLinearGrad(secondaryColor.value);
+  if (!isLighter(secondaryColor.value, linearGradient))
+    return secondaryColor.value;
   return linearGradient;
 });
 
-const nameColor = computed(() => isLightColor(team.primaryColor) ? 'white' : 'black');
-const scoreColor = computed(() => isLightColor(team.secondaryColor) ? 'white' : 'black');
+const nameColor = computed(() => isLightColor(primaryColor.value) ? 'white' : 'black');
+const scoreColor = computed(() => isLightColor(secondaryColor.value) ? 'white' : 'black');
 
 const score = computed(() => scoreboardTeam.score);
 watch(score, (n, o) => {

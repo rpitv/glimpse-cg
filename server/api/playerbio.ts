@@ -1,22 +1,31 @@
 import { replicants } from '~/utils/replicants';
-import puppeteer from 'puppeteer';
-import type { Browser } from 'puppeteer';
+import type { Browser } from 'puppeteer-core';
 
 let browser: Browser | null = null;
+let browserPromise: Promise<Browser | null> | null = null;
 
-(async () => {
-  browser = await puppeteer.launch({
+async function launchBrowser() {
+  const puppeteer = await import('puppeteer-core');
+  const b = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: process.env.CHROME_PATH || undefined,
   });
-})();
+  return b as Browser;
+}
 
 async function getBrowser() {
-  // Wait for browser to be ready
-  while (!browser) {
-    await new Promise(res => setTimeout(res, 100));
-  }
-  return browser;
+  if (browser) return browser;
+  if (browserPromise) return await browserPromise;
+  browserPromise = (async () => {
+    try {
+      browser = await launchBrowser();
+      return browser;
+    } finally {
+      browserPromise = null;
+    }
+  })();
+  return await browserPromise;
 }
 
 export default defineEventHandler(async (event) => {

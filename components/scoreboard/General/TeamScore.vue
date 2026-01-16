@@ -44,12 +44,6 @@
                       :placeholder="configuration[team].abbr"
                     />
                   </UFormField>
-                  <ColorPicker
-                    v-model="teamScoreboard!.nameColor"
-                    class="mt-4"
-                    label="Team Name Color"
-                    help="The color for the team name"
-                  />
                   <UFormField
                     class="mt-4"
                     label="Team Name Size"
