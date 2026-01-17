@@ -31,7 +31,6 @@ import GoToBreakView from './LowerThirdViews/GoToBreakView.vue';
 import ScoreboardView from './ScoreboardView.vue';
 import PlayerBioView from './LowerThirdViews/PlayerBioView.vue';
 import ESPNTombstone from './styles/espn/tomestone/Tombstone.vue';
-import BottomTextBar from './LowerThirdViews/BottomTextBar.vue';
 
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
