@@ -1,16 +1,4 @@
 <template>
-  <div class="copyright-main">
-    <div
-      v-if="endGraphics.type === 'box'"
-      class="center-graphics"
-    >
-      <div class="background">
-        <span class="header">{{ endGraphics.title }}</span>
-        <br>
-        <span class="text">{{ endGraphics.message.trim() }}</span>
-      </div>
-    </div>
-  </div>
   <div
     :style="copyrightContainer"
     class="center-copyright"
@@ -26,10 +14,8 @@
 
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
-import type { LowerThird } from '~/types/replicants';
 
 const replicants = await useReplicants();
-const endGraphics = replicants.lowerThird.endGraphics;
 const copyright = replicants.lowerThird.copyright;
 
 const copyrightContainer = computed((): CSSProperties => {
