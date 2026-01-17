@@ -78,7 +78,7 @@
           <td>
             <UFormField
               label="People"
-              help="The people for this role."
+              help="People can be added by pressing enter after typing a name."
             >
               <UInputTags
                 v-model="credits.credit[index]!.people"

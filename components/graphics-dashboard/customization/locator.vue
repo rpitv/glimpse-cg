@@ -10,7 +10,7 @@
         minimumFractionDigits: 1,
       }" />
     </UFormField> -->
-    <UFormField
+    <!-- <UFormField
       class="mt-4"
       label="Location"
       help="The location of the event."
@@ -19,8 +19,8 @@
         v-model="locator.location.name"
         placeholder="Default Value"
       />
-    </UFormField>
-    <UPopover arrow>
+    </UFormField> -->
+    <!-- <UPopover arrow>
       <UButton
         class="mt-2"
         label="Show Advanced Settings"
@@ -49,7 +49,7 @@
           </UFormField>
         </div>
       </template>
-    </UPopover>
+    </UPopover> -->
     <div class="flex justify-around mt-2">
       <UCard class="w-full rounded-none">
         <template #header>

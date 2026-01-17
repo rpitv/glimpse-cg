@@ -8,13 +8,15 @@ import {
   faPenToSquare,
   faPause,
   faPlay,
+  faInfoCircle,
+  faMagnifyingGlass,
 } from '@fortawesome/pro-solid-svg-icons';
 
 // Prevent FA from injecting CSS automatically
 config.autoAddCss = false;
 
 // Add only the specific icons we use
-library.add(faMinus, faPlus, faPenToSquare, faPause, faPlay);
+library.add(faMinus, faPlus, faPenToSquare, faPause, faPlay, faInfoCircle, faMagnifyingGlass);
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon);

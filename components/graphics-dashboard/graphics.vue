@@ -3,7 +3,11 @@
     <UCard class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)">
       <template #header>
         <p class="text-2xl">
-          Graphics List
+          Graphics List 
+          <Info>
+            Use the keyboard shortcuts to quickly enable/disable <br>
+            graphics while not focused on an input field.
+          </Info>
         </p>
       </template>
       <template #default>

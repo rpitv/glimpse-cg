@@ -6,9 +6,9 @@
       }"
       :groups
       :search-term="playerBio.description"
-      :close="true"
+      :close="playerBio.description.length > 0"
       placeholder="Type in the descriptor or click on one"
-      @update:model-value="(val) => playerBio.description = val.label || ''"
+      @update:model-value="(val) => playerBio.description = val?.label || ''"
       @update:search-term="(val: string) => playerBio.description = val"
       @update:open="playerBio.description = ''"
     />
@@ -37,79 +37,37 @@
       class="mt-4"
       size="md"
     />
-    <div>
-      <div
-        v-if="!loading"
-        class="mt-4 flex gap-4"
-      >
-        <div
-          v-for="i in 2"
-          :key="i"
-          class="w-full"
-        >
-          <UInput
-            v-if="i === 1"
-            v-model="awaySearchPlayer"
-            class="mt-2 w-full"
-            size="md"
-            variant="outline"
+    <div class="mt-2">
+      <div class="flex items-center">
+        <p class="text-2xl">Player Cards
+          <Info>
+            <ul class="list-disc ml-3">
+              <li>The graphic can also be toggled with <UKbd>Enter</UKbd> while in the input field.</li>
+              <li>You can filter players by name or number.</li>
+              <li>You can add players to filter with <UKbd>,</UKbd>.</li>
+              <li>Pressing <UKbd>Enter</UKbd> cycles through the filtered players in order.</li>
+            </ul>
+          </Info>
+        </p>
+      </div>
+      <div v-if="!loading" class="mt-4 flex gap-4">
+        <div class="w-full">
+          <PlayerSearch
+            :players="awayPlayers"
+            color="error"
             placeholder="Search away player"
-            @keydown.enter="toggleGraphic('away')"
-          >
-            <template #leading>
-              <FontAwesomeIcon
-                :icon="['fa', 'magnifying-glass']"
-                class="inline-block align-middle"
-              />
-            </template>
-          </UInput>
-          <UInput
-            v-else-if="i === 2"
-            v-model="homeSearchPlayer"
-            class="mt-2 w-full"
-            size="md"
-            variant="outline"
+            @selected="onSelectedAway"
+            @enter="() => toggleGraphic('away')"
+          />
+        </div>
+        <div class="w-full">
+          <PlayerSearch
+            :players="homePlayers"
+            color="success"
             placeholder="Search home player"
-            @keydown.enter="toggleGraphic('home')"
-          >
-            <template #leading>
-              <FontAwesomeIcon
-                :icon="['fa', 'magnifying-glass']"
-                class="inline-block align-middle"
-              />
-            </template>
-          </UInput>
-          <div class="max-height">
-            <URadioGroup
-              v-model="selectedPlayer"
-              :color="i === 1 ? 'error' : 'success'"
-              class="w-full mt-4"
-              :items="i === 1 ? filteredAwayPlayers.map((player) => ({ name: player.name, value: { ...player } })) : filteredHomePlayers.map((player) => ({ name: player.name, value: { ...player } }))"
-              label-key="name"
-              variant="table"
-              indicator="hidden"
-              :ui="{
-                item: '!rounded-none hover:bg-gray-100 dark:hover:bg-gray-800',
-                root: 'h-[300px]',
-              }"
-              @update:model-value="updateSelectedPlayer(i)"
-            >
-              <template #label="{ item }">
-                <div class="flex items-center gap-2">
-                  <img
-                    :src="item.value!.image"
-                    alt="Player Image"
-                    class="w-12 h-12 object-cover rounded"
-                  >
-                  <div class="text-left">
-                    <div class="font-bold text-lg">
-                      <span>#{{ item.value!.number }}</span> {{ item.value!.name }}
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </URadioGroup>
-          </div>
+            @selected="onSelectedHome"
+            @enter="() => toggleGraphic('home')"
+          />
         </div>
       </div>
       <div
@@ -126,6 +84,7 @@
 <script lang="ts" setup>
 import type { CommandPaletteGroup } from '@nuxt/ui';
 import rpitvlogo from '~/assets/rpitv-modern/rpitv_logo.svg';
+import PlayerSearch from './PlayerSearch.vue';
 
 interface Player {
   // custom1: string | null;
@@ -147,13 +106,9 @@ const awayTeam = computed(() => configuration.awayTeam);
 const homeTeam = computed(() => configuration.homeTeam);
 const awayPlayers = ref<Player[]>([]);
 const homePlayers = ref<Player[]>([]);
-const awayIndex = ref(0);
-const homeIndex = ref(0);
 const selectedPlayer = ref<Player | null>(null);
-const awaySearchPlayer = ref('');
-const homeSearchPlayer = ref('');
 const loading = ref(true);
-const playerBio = computed(() => replicants.lowerThird.playerBio);
+const playerBio = replicants.lowerThird.playerBio
 const domParser = new DOMParser();
 
 const groups = ref<CommandPaletteGroup[]>([
@@ -176,6 +131,8 @@ async function refresh() {
   await $fetch('/api/playerbio').then((data) => {
     awayPlayers.value = setPlayers(data!.awayPlayers, 'away');
     homePlayers.value = setPlayers(data!.homePlayers, 'home');
+  }).catch(e => {
+    console.error('Error fetching player data:', e);
   }).finally(() => {
     loading.value = false;
   });
@@ -250,88 +207,50 @@ function setPlayers(teamPlayers: { html: string; new: boolean }, team: 'home' | 
 
 function updateSelectedPlayer(i: number) {
   if (selectedPlayer.value) {
-    playerBio.value.teamside = i === 1 ? 'awayTeam' : 'homeTeam';
-    playerBio.value.playerName = selectedPlayer.value.name;
-    playerBio.value.playerNumber = selectedPlayer.value.number;
-    // playerBio.value.position = selectedPlayer.value.position;
-    playerBio.value.info.year = selectedPlayer.value.year;
-    playerBio.value.info.height = selectedPlayer.value.height;
-    playerBio.value.info.weight = selectedPlayer.value.weight;
-    playerBio.value.info.hometown = selectedPlayer.value.hometown;
-    // playerBio.value.previousTeam = selectedPlayer.value.previousTeam;
-    // playerBio.value.custom1 = selectedPlayer.value.custom1;
-    // playerBio.value.custom2 = selectedPlayer.value.custom2;
-    playerBio.value.imageURL = selectedPlayer.value.image;
+    playerBio.teamside = i === 1 ? 'awayTeam' : 'homeTeam';
+    playerBio.playerName = selectedPlayer.value.name;
+    playerBio.playerNumber = selectedPlayer.value.number;
+    // playerBio.position = selectedPlayer.value.position;
+    playerBio.info.year = selectedPlayer.value.year;
+    playerBio.info.height = selectedPlayer.value.height;
+    playerBio.info.weight = selectedPlayer.value.weight;
+    playerBio.info.hometown = selectedPlayer.value.hometown;
+    // playerBio.previousTeam = selectedPlayer.value.previousTeam;
+    // playerBio.custom1 = selectedPlayer.value.custom1;
+    // playerBio.custom2 = selectedPlayer.value.custom2;
+    playerBio.imageURL = selectedPlayer.value.image;
   }
   else {
-    playerBio.value.playerName = '';
-    playerBio.value.playerNumber = '';
-    playerBio.value.position = '';
-    playerBio.value.info.year = '';
-    playerBio.value.info.height = '';
-    playerBio.value.info.weight = '';
-    playerBio.value.info.hometown = '';
-    // playerBio.value.previousTeam = "";
-    // playerBio.value.custom1 = null;
-    // playerBio.value.custom2 = null;
-    playerBio.value.imageURL = '';
+    playerBio.playerName = '';
+    playerBio.playerNumber = '';
+    playerBio.position = '';
+    playerBio.info.year = '';
+    playerBio.info.height = '';
+    playerBio.info.weight = '';
+    playerBio.info.hometown = '';
+    // playerBio.previousTeam = "";
+    // playerBio.custom1 = null;
+    // playerBio.custom2 = null;
+    playerBio.imageURL = '';
   }
 }
 
-const filteredAwayPlayers = computed(() => {
-  awayIndex.value = 0;
-  const values = awaySearchPlayer.value.split(',').map(v => v.trim().toLowerCase()).filter(v => v !== '');
-  if (values.length === 0) return awayPlayers.value;
+// selection is driven by child components via events
 
-  // Filter and sort by search value order
-  const filtered = awayPlayers.value.filter(player =>
-    values.some(value => player.name.toLowerCase().includes(value) || player.number === value),
-  );
+function onSelectedAway(player: Player) {
+  selectedPlayer.value = player;
+  updateSelectedPlayer(1);
+}
 
-  // Sort by first matching search value index
-  return filtered.sort((a, b) => {
-    const aIndex = values.findIndex(value => a.name.toLowerCase().includes(value) || a.number === value);
-    const bIndex = values.findIndex(value => b.name.toLowerCase().includes(value) || b.number === value);
-    return aIndex - bIndex;
-  });
-});
-
-const filteredHomePlayers = computed(() => {
-  homeIndex.value = 0;
-  const values = homeSearchPlayer.value.split(',').map(v => v.trim().toLowerCase()).filter(v => v !== '');
-  if (values.length === 0) return homePlayers.value;
-
-  const filtered = homePlayers.value.filter(player =>
-    values.some(value => player.name.toLowerCase().includes(value) || player.number === value),
-  );
-
-  return filtered.sort((a, b) => {
-    const aIndex = values.findIndex(value => a.name.toLowerCase().includes(value) || a.number === value);
-    const bIndex = values.findIndex(value => b.name.toLowerCase().includes(value) || b.number === value);
-    return aIndex - bIndex;
-  });
-});
+function onSelectedHome(player: Player) {
+  selectedPlayer.value = player;
+  updateSelectedPlayer(0);
+}
 
 function toggleGraphic(team: 'home' | 'away') {
-  if (team === 'home') {
-    if (filteredHomePlayers.value.length > 0 && homeSearchPlayer.value.trim() !== '') {
-      selectedPlayer.value = filteredHomePlayers.value[homeIndex.value]!;
-      if (replicants.channels[0]!.playerBio)
-        homeIndex.value++;
-      if (homeIndex.value >= filteredHomePlayers.value.length)
-        homeIndex.value = 0;
-    }
-    updateSelectedPlayer(0);
-  }
-  else if (team === 'away') {
-    if (filteredAwayPlayers.value.length > 0 && awaySearchPlayer.value.trim() !== '') {
-      selectedPlayer.value = filteredAwayPlayers.value[0]!;
-      if (replicants.channels[0]!.playerBio)
-        awayIndex.value++;
-      if (awayIndex.value >= filteredAwayPlayers.value.length)
-        awayIndex.value = 0;
-    }
-    updateSelectedPlayer(1);
+  const idx = team === 'home' ? 0 : 1;
+  if (!replicants.channels[0]!.playerBio) {
+    updateSelectedPlayer(idx);
   }
   replicants.channels[0]!.playerBio = !replicants.channels[0]!.playerBio;
 }

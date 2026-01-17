@@ -33,6 +33,7 @@
               label="Display SOG"
             />
             <UKbd v-if="!inputFocus.isInputFocused.value">G</UKbd>
+            <Info>SOG will automatically be turned off if the scorebug is turned off.</Info>
           </div>
           <!-- <div class="flex items-center gap-2 mt-2">
             <USwitch
