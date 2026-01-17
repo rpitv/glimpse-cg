@@ -12,7 +12,6 @@
     <LocatorView id="locator" />
     <GoToBreakView id="break-scoreboard" />
     <PlayerBioView id="PlayerBio" />
-    <BottomTextBar id="bottom-text-bar" />
     <CopyrightView id="copyright" />
     <BugView />
   </div>
