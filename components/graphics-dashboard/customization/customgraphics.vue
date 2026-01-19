@@ -171,7 +171,7 @@ function fileUpload() {
       body: formData,
     })
       .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         const imagePath = `/api/cache/${data.filename}`;
         const newGraphic = new CustomGraphic(imagePath);
         fullscreen.custom = [...fullscreen.custom, newGraphic];
@@ -185,7 +185,7 @@ function fileUpload() {
         graphicUrl.value = '';
         modalState.value = false;
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Upload failed:', error);
         toast.add({
           title: 'Upload Failed',

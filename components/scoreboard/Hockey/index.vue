@@ -10,7 +10,9 @@
               size="xl"
               label="Display Scorebug"
             />
-            <UKbd v-if="!inputFocus.isInputFocused.value">SPACE</UKbd>
+            <UKbd v-if="!inputFocus.isInputFocused.value">
+              SPACE
+            </UKbd>
           </div>
         </template>
       </UCard>
@@ -32,7 +34,9 @@
               size="xl"
               label="Display SOG"
             />
-            <UKbd v-if="!inputFocus.isInputFocused.value">G</UKbd>
+            <UKbd v-if="!inputFocus.isInputFocused.value">
+              G
+            </UKbd>
             <Info>SOG will automatically be turned off if the scorebug is turned off.</Info>
           </div>
           <!-- <div class="flex items-center gap-2 mt-2">
@@ -100,7 +104,7 @@ defineShortcuts({
   // 'f': () => {
   //   if (!inputFocus.isInputFocused.value) channels[0]!.faceoff = !channels[0]?.faceoff;
   // },
-})
+});
 </script>
 
 <style scoped>

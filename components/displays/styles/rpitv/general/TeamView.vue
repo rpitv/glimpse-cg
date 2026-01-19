@@ -1,5 +1,8 @@
 <template>
-  <div class="team" :style="teamContainer">
+  <div
+    class="team"
+    :style="teamContainer"
+  >
     <div class="logo">
       <img
         id="logoImg"
@@ -33,7 +36,7 @@ const scoreboardTeam = replicants.scoreboard[props.team];
 
 const fontColor = ref('black');
 
-const primaryColor = computed(() => scoreboardTeam.primaryColor || team.primaryColor)
+const primaryColor = computed(() => scoreboardTeam.primaryColor || team.primaryColor);
 
 const color1 = computed(() => {
   const linearGradient = calcLinearGrad(primaryColor.value);
@@ -49,9 +52,9 @@ const color2 = computed(() => {
   return linearGradient;
 });
 
-if (isLightColor(color1.value)) 
+if (isLightColor(color1.value))
   fontColor.value = 'white';
-else 
+else
   fontColor.value = 'black';
 
 watch(color1, (n, o) => {
@@ -69,8 +72,7 @@ const teamContainer = computed((): CSSProperties => {
     justifyContent: 'space-between',
     textShadow: '0 0 0.2vh black',
   };
-})
-
+});
 </script>
 
 <style scoped>

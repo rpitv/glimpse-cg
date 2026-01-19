@@ -9,7 +9,10 @@
       @keydown.enter.prevent="onEnter"
     >
       <template #leading>
-        <FontAwesomeIcon :icon="['fa', 'magnifying-glass']" class="inline-block align-middle" />
+        <FontAwesomeIcon
+          :icon="['fa', 'magnifying-glass']"
+          class="inline-block align-middle"
+        />
       </template>
     </UInput>
 
@@ -30,7 +33,11 @@
       >
         <template #label="{ item }">
           <div class="flex items-center gap-2">
-            <img :src="item.value!.image" alt="Player Image" class="w-12 h-12 object-cover rounded" />
+            <img
+              :src="item.value!.image"
+              alt="Player Image"
+              class="w-12 h-12 object-cover rounded"
+            >
             <div class="text-left">
               <div class="font-bold text-lg">
                 <span>#{{ item.value!.number }}</span> {{ item.value!.name }}
@@ -94,7 +101,7 @@ function onSelect(val: Player | null) {
 
 function onEnter() {
   if (filtered.value.length > 0 && search.value.trim() !== '') {
-    const p = filtered.value[cycleIndex]!
+    const p = filtered.value[cycleIndex]!;
     localSelected.value = p;
     if (replicants.channels[0]!.playerBio)
       cycleIndex++;

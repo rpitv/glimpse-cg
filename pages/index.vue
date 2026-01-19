@@ -151,7 +151,6 @@ import TeamConfig from '~/components/configuration/teamConfig.vue';
 import { URadioGroup } from '#components';
 import type { ScheduleResults } from '~/server/api/schedule';
 
-
 const toast = useToast();
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
@@ -276,7 +275,15 @@ function loadMatchup(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
 }
 
 function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['awayTeam' | 'homeTeam']) {
-  configuration[teamSide] = { ...school };
+  configuration[teamSide].abbr = school.abbr;
+  configuration[teamSide].schoolName = school.schoolName;
+  configuration[teamSide].shortName = school.shortName;
+  configuration[teamSide].teamName = school.teamName;
+  configuration[teamSide].logo = school.logo;
+  configuration[teamSide].primaryColor = school.primaryColor;
+  configuration[teamSide].secondaryColor = school.secondaryColor;
+  configuration[teamSide].athletics = school.athletics;
+
   toast.add({
     title: 'Preset Loaded',
     description: `Loaded preset for ${school.schoolName}`,

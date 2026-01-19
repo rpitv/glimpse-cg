@@ -3,14 +3,18 @@
     <div>
       <UCard class="rounded-none">
         <template #header>
-          <h1 class="text-2xl">Scoreboard Control</h1>
+          <h1 class="text-2xl">
+            Scoreboard Control
+          </h1>
           <div class="flex items-center gap-2 mt-2">
             <USwitch
               v-model="channels[0]!.scoreboard"
               size="xl"
               label="Display Scorebug"
             />
-            <UKbd v-if="!inputFocus.isInputFocused.value">SPACE</UKbd>
+            <UKbd v-if="!inputFocus.isInputFocused.value">
+              SPACE
+            </UKbd>
           </div>
         </template>
       </UCard>

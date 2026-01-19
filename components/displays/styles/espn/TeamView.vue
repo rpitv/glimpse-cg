@@ -1,6 +1,9 @@
 <template>
   <div class="team-section">
-    <div class="logo-section" :style="`background-color: ${scoreboardTeam.primaryColor || team.primaryColor}`">
+    <div
+      class="logo-section"
+      :style="`background-color: ${scoreboardTeam.primaryColor || team.primaryColor}`"
+    >
       <img
         :src="scoreboardTeam.logo || team.logo"
         :alt="scoreboardTeam.name || team.schoolName"

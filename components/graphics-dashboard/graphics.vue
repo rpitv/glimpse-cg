@@ -3,7 +3,7 @@
     <UCard class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)">
       <template #header>
         <p class="text-2xl">
-          Graphics List 
+          Graphics List
           <Info>
             Use the keyboard shortcuts to quickly enable/disable <br>
             graphics while not focused on an input field.
@@ -34,7 +34,7 @@
                     {{ item.label }}
                   </p>
                   <div class="flex gap-4 items-center">
-                    <UKbd 
+                    <UKbd
                       v-if="!inputFocus.isInputFocused.value && item.kbd"
                     >
                       {{ item.kbd }}
@@ -115,9 +115,8 @@ defineShortcuts({
   },
   '8': () => {
     if (!inputFocus.isInputFocused.value) channels[0]!.standings = !channels[0]?.standings;
-  }
+  },
 });
-
 
 const graphics: Graphic[] = [
   {

@@ -39,7 +39,8 @@
     />
     <div class="mt-2">
       <div class="flex items-center">
-        <p class="text-2xl">Player Cards
+        <p class="text-2xl">
+          Player Cards
           <Info>
             <ul class="list-disc ml-3">
               <li>The graphic can also be toggled with <UKbd>Enter</UKbd> while in the input field.</li>
@@ -50,7 +51,10 @@
           </Info>
         </p>
       </div>
-      <div v-if="!loading" class="mt-4 flex gap-4">
+      <div
+        v-if="!loading"
+        class="mt-4 flex gap-4"
+      >
         <div class="w-full">
           <PlayerSearch
             :players="awayPlayers"
@@ -72,7 +76,7 @@
       </div>
       <div
         v-else
-        class="w-full h-full text-center"
+        class="w-full h-full text-center mt-2"
       >
         <UProgress />
         <p>Loading Players...</p>
@@ -87,15 +91,15 @@ import rpitvlogo from '~/assets/rpitv-modern/rpitv_logo.svg';
 import PlayerSearch from './PlayerSearch.vue';
 
 interface Player {
-  // custom1: string | null;
-  // custom2: string | null;
+  custom1: string | null;
+  custom2: string | null;
   height: string;
   hometown: string;
   image: string;
   name: string;
   number: string;
-  // position: string;
-  // previousTeam: string;
+  position: string;
+  previousTeam: string;
   weight: string;
   year: string;
 }
@@ -108,7 +112,7 @@ const awayPlayers = ref<Player[]>([]);
 const homePlayers = ref<Player[]>([]);
 const selectedPlayer = ref<Player | null>(null);
 const loading = ref(true);
-const playerBio = replicants.lowerThird.playerBio
+const playerBio = replicants.lowerThird.playerBio;
 const domParser = new DOMParser();
 
 const groups = ref<CommandPaletteGroup[]>([
@@ -129,79 +133,93 @@ const groups = ref<CommandPaletteGroup[]>([
 async function refresh() {
   loading.value = true;
   await $fetch('/api/playerbio').then((data) => {
-    awayPlayers.value = setPlayers(data!.awayPlayers, 'away');
-    homePlayers.value = setPlayers(data!.homePlayers, 'home');
-  }).catch(e => {
+    awayPlayers.value = setPlayers(data!.awayPlayers.html, 'away');
+    homePlayers.value = setPlayers(data!.homePlayers.html, 'home');
+  }).catch((e) => {
     console.error('Error fetching player data:', e);
   }).finally(() => {
     loading.value = false;
   });
 }
 
-function setPlayers(teamPlayers: { html: string; new: boolean }, team: 'home' | 'away'): Player[] {
-  const teamDOM = domParser.parseFromString(teamPlayers.html, 'text/html');
+function setPlayers(html: string, team: 'home' | 'away'): Player[] {
+  const teamDOM = domParser.parseFromString(html, 'text/html');
   const players: Player[] = [];
-  if (teamPlayers.new) {
-    const playersGrid = teamDOM.querySelector('.c-rosterpage__players--rail');
-    const playersDOM = playersGrid?.querySelectorAll('.s-person-card');
-    playersDOM?.forEach((player) => {
-      const name = player.querySelector('.s-person-card__header__person-details-personal__name')?.querySelector('span')?.textContent;
-      const image = player.querySelector('[data-test-id="s-image-resized__img"]')?.getAttribute('src') || rpitvlogo;
-      // const position = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-position-short"]');
-      // position?.querySelector('span')?.remove();
-      const year = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-academic-year-short"]');
-      year?.querySelector('span')?.remove();
-      const height = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-height"]');
-      height?.querySelector('span')?.remove();
-      const weight = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-weight"]');
-      weight?.querySelector('span')?.remove();
-      const hometown = player.querySelector('[data-test-id="s-person-card-standard__content-person-details-home-town"]');
-      hometown?.querySelector('span')?.remove();
-      hometown?.querySelector('svg')?.remove();
-      const number = player.querySelector('[data-test-id="s-stamp__root"]')?.querySelector('span');
-      number?.querySelector('span')?.remove();
-      players.push({
-        // custom1: null,
-        // custom2: null,
-        height: height?.textContent?.trim() as string,
-        hometown: hometown?.textContent?.trim() as string,
-        image: image,
-        name: name as string,
-        number: number?.textContent?.trim() as string,
-        // position: position?.textContent?.trim() as string,
-        // previousTeam: '',
-        weight: weight?.textContent?.trim() as string,
-        year: year?.textContent?.trim() as string,
+
+  const scripts = teamDOM.querySelectorAll("script");
+  for (const script in scripts) {
+    const text = scripts[script]?.textContent;
+    if (text?.startsWith("window.__INITIAL_STATE__")) {
+      const jsonString = text
+        .substring("window.__INITIAL_STATE__='".length, text.length - 1) // remove the starting assignment and closing '
+        .replace(/\\'/g, "'") // escaped single quote ' get unescaped
+        .replaceAll("\\\\", "\\") // escaped \ get unescaped
+      console.log("HELLO");
+      const data = JSON.parse(jsonString)
+      // @ts-expect-error because making an interface for JSON format used this singular time is not worth it
+      data["rostersModule"]["roster"][Object.keys(data["rostersModule"]["roster"])]["players"].forEach(player => {
+        players.push({
+          custom1: player["custom1"] ? player["custom1"] : "",
+          custom2: player["custom2"] ? player["custom2"] : "",
+          height: (player["heightFeet"] && player["heightInches"]) ? `${player["heightFeet"]}' ${player["heightInches"]}"` : "",
+          hometown: player["hometown"] ? player["hometown"] : "",
+          image: player["image"]["absoluteUrl"],
+          name: `${player["firstName"]} ${player["lastName"]}`,
+          number: player["jerseyNumberSecond"] ? player["jerseyNumberSecond"] : "",
+          position: player["positionShort"] ? player["positionShort"] : "",
+          previousTeam: player["highSchool"] ? player["highSchool"] : "",
+          weight: player["weight"] ? `${player["weight"]} lbs` : "",
+          year: player["academicYearShort"] ? player["academicYearShort"] : ""
+        })
       });
-    });
+      return players;
+    }
   }
-  else {
-    const playersDOM = teamDOM.querySelectorAll('.sidearm-roster-player');
-    playersDOM.forEach((player) => {
-      let imageLink = null;
-      if (player.querySelector('img')?.dataset.src) {
-        imageLink = player.querySelector('img')?.dataset.src!
-          .replace(/(width=)\d+/, '$1300')
-          .replace(/(quality=)\d+/, '$170');
-        // Schools such as yale do not have their images on their website, and source it from other websites.
-        if (!imageLink?.startsWith('https'))
-          imageLink = (team === 'home' ? homeTeam.value.athletics : awayTeam.value.athletics) + imageLink;
+  const playersDOM = teamDOM.querySelectorAll(".sidearm-roster-player, .s-person-card");
+  playersDOM.forEach((player) => {
+    // processes image URLs into absolute URLs
+    const originUrl = player.querySelector("img")?.dataset?.src || player.querySelector("img")?.src || ""
+    let imgUrl;
+    try {
+      // attempts to verify url as absolute path
+      imgUrl = new URL(originUrl).href;
+    } catch (e) {
+      // fails due to relative path, try adding domain
+      try {
+        imgUrl = new URL(originUrl, replicants.configuration[`${team}Team` as 'awayTeam' | 'homeTeam'].athletics).href;
+      } catch (e) {
+        // ultimate fail so resort to whatever the original is
+        imgUrl = originUrl
       }
-      players.push({
-        // custom1: player.querySelector('.sidearm-roster-player-custom1')?.textContent?.trim() ?? null,
-        // custom2: player.querySelector('.sidearm-roster-player-custom2')?.textContent?.trim() ?? null,
-        height: player.querySelector('.sidearm-roster-player-height')?.textContent?.trim() as string,
-        hometown: player.querySelector('.sidearm-roster-player-hometown')?.textContent?.trim() as string,
-        image: imageLink || rpitvlogo,
-        name: player.querySelector('h3')?.textContent?.trim() as string || player.querySelector('h2')?.textContent?.trim() as string,
-        number: player.querySelector('.sidearm-roster-player-jersey-number')?.textContent?.trim() as string,
-        // position: player.querySelector('.sidearm-roster-player-position-long-short')?.textContent?.trim() as string,
-        // previousTeam: player.querySelector('.sidearm-roster-player-highschool')?.textContent?.trim() as string,
-        weight: player.querySelector('.sidearm-roster-player-weight')?.textContent?.trim() as string,
-        year: player.querySelector('.sidearm-roster-player-academic-year')?.textContent?.trim() as string,
-      });
+    }
+
+    const imageLink = imgUrl
+        .replace(/(width=)\d+/, "$1300")
+        .replace(/(quality=)\d+/, "$170")
+        .replace("/crop", "/convert") // converts cropping links to converter links
+        .replace(/(height=)\d+/, "$1") // removes the height limiter since a width limiter exists
+    players.push({
+      custom1: player.querySelector(".sidearm-roster-player-custom1")?.textContent?.trim() ?? null,
+      custom2: player.querySelector(".sidearm-roster-player-custom2")?.textContent?.trim() ?? null,
+      height: player.querySelector(".sidearm-roster-player-height")?.textContent?.trim() as string ||
+          player.querySelector("[data-test-id='s-person-details__bio-stats-person-season']")?.textContent?.replace(/height/gi, "")?.trim() as string,
+      hometown: player.querySelector(".sidearm-roster-player-hometown")?.textContent?.trim() as string ||
+          player.querySelector("[data-test-id='s-person-card-list__content-location-person-hometown']")?.textContent?.replace(/hometown/gi, "")?.trim() as string,
+      image: imageLink || rpitvlogo,
+      name: player.querySelector("h3")?.textContent?.trim() as string ||
+          player.querySelector("h2")?.textContent?.trim() as string,
+      number: player.querySelector(".sidearm-roster-player-jersey-number")?.textContent?.trim() as string ||
+          player.querySelector("[data-test-id='s-stamp__root']")?.textContent?.replace(/jersey number/gi, "")?.trim() as string,
+      position: 
+          player.querySelector(".sidearm-roster-player-position-long-short")?.textContent?.trim() as string ||
+          player.querySelector(".sidearm-roster-player-position > span.text-bold")?.textContent?.trim() as string ||
+          player.querySelector("[data-test-id='s-person-details__bio-stats-person-position-short']")?.textContent?.replace(/position/gi, "")?.trim() as string,
+      previousTeam: player.querySelector(".sidearm-roster-player-highschool")?.textContent?.trim() as string,
+      weight: player.querySelector(".sidearm-roster-player-weight")?.textContent?.trim() as string, //|| player.querySelector("[data-test-id='s-person-details__bio-stats-person-weight']")?.textContent?.trim() as string,
+      year: player.querySelector(".sidearm-roster-player-academic-year")?.textContent?.trim() as string ||
+          player.querySelector("[data-test-id='s-person-details__bio-stats-person-title']")?.textContent?.replace(/academic year/gi, "")?.trim() as string,
     });
-  }
+  });
   return players;
 }
 

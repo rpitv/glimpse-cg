@@ -1,32 +1,4 @@
 import { replicants } from '~/utils/replicants';
-import type { Browser } from 'puppeteer-core';
-
-let browser: Browser | null = null;
-let browserPromise: Promise<Browser | null> | null = null;
-
-async function launchBrowser() {
-  const puppeteer = await import('puppeteer-core');
-  const b = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: process.env.CHROME_PATH || undefined,
-  });
-  return b as Browser;
-}
-
-async function getBrowser() {
-  if (browser) return browser;
-  if (browserPromise) return await browserPromise;
-  browserPromise = (async () => {
-    try {
-      browser = await launchBrowser();
-      return browser;
-    } finally {
-      browserPromise = null;
-    }
-  })();
-  return await browserPromise;
-}
 
 export default defineEventHandler(async (event) => {
   const configuration = replicants.configuration;
@@ -74,38 +46,34 @@ export default defineEventHandler(async (event) => {
   awayPlayers += suffix;
   homePlayers += suffix;
 
-  const { html: awayHTML, new: awayNew } = await checkForButton(awayPlayers);
-  const { html: homeHTML, new: homeNew } = await checkForButton(homePlayers);
+  const { html: awayHTML } = await grabHTML(awayPlayers);
+  const { html: homeHTML } = await grabHTML(homePlayers);
 
   return {
     awayPlayers: {
       html: awayHTML,
-      new: awayNew,
     },
     homePlayers: {
       html: homeHTML,
-      new: homeNew,
     },
   };
 });
 
-const cache: Record<string, { html: string; new: boolean; timestamp: number }> = {};
+const cache: Record<string, { html: string; timestamp: number }> = {};
 
-async function checkForButton(url: string) {
+async function grabHTML(url: string) {
   const now = Date.now();
   if (cache[url] && now - cache[url].timestamp < 12 * 60 * 60 * 1000) {
     return cache[url];
   }
-  const browserInstance = await getBrowser();
-  const page = await browserInstance.newPage();
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
-  const button = await page.$('#_viewType_card');
-
-  if (button) {
-    await button.click();
+  try {
+    const res = await fetch(url);
+    const html = await res.text();
+    cache[url] = { html, timestamp: now };
+    return cache[url];
   }
-  const html = await page.content();
-  await page.close();
-  cache[url] = { html, new: !!button, timestamp: now };
-  return cache[url];
+  catch (err) {
+    cache[url] = { html: '', timestamp: now };
+    return cache[url];
+  }
 }

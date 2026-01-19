@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
@@ -16,9 +15,14 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true,
     },
-    externals: {
-      external: ['puppeteer-core']
-    }
+  },
+  vite: {
+    css: {
+      devSourcemap: false,
+    },
+    optimizeDeps: {
+      exclude: ['jsdom'],
+    },
   },
   eslint: {
     config: {
@@ -28,14 +32,10 @@ export default defineNuxtConfig({
         semi: true,
       },
     },
-    checker: true,
+    checker: false,
   },
-  vite: {
-    css: {
-      devSourcemap: false,
-    },
-    optimizeDeps: {
-      exclude: ['puppeteer-core', 'jsdom']
-    }
-  }
+  ssr: false,
+  typescript: {
+    typeCheck: false
+  },
 });

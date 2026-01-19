@@ -1,7 +1,7 @@
 <template>
   <div id="graphics-dashboard">
     <GraphicsList />
-    <Customization ref="customization" >
+    <Customization ref="customization">
       <component :is="graphicsStore.selectedGraphic.component" />
     </Customization>
     <Preview ref="preview" />
@@ -15,8 +15,6 @@ import Preview from '~/components/graphics-dashboard/preview.vue';
 import { useGraphicsStore } from '~/store/graphics';
 
 const graphicsStore = useGraphicsStore();
-
-
 </script>
 
 <style>

@@ -28,9 +28,12 @@
       </template>
     </UModal>
     <!-- Header Configuration -->
-    <UCard class="rounded-none" :ui="{
-      'header': 'border-t-0'
-    }">
+    <UCard
+      class="rounded-none"
+      :ui="{
+        header: 'border-t-0'
+      }"
+    >
       <h1>Header Configuration</h1>
       <USeparator class="mt-2 mb-4" />
       <div class="flex gap-4">
@@ -70,7 +73,9 @@
         />
       </UFormField>
 
-      <h1 class="!mt-4">Team Configuration</h1>
+      <h1 class="!mt-4">
+        Team Configuration
+      </h1>
       <USeparator class="mt-2 mb-4" />
       <UFieldGroup>
         <UButton

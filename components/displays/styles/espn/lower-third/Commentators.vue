@@ -46,7 +46,6 @@ const commentatorsContainer = computed((): CSSProperties => {
     width: '72vw',
   };
 });
-
 </script>
 
 <style scoped>

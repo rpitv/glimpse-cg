@@ -15,7 +15,7 @@ function isEditableElement(el: HTMLElement | null): boolean {
 
 export function useInputFocus() {
   // ensure this runs only once per app lifecycle
-  if (process.client) {
+  if (import.meta.client) {
     const onFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement | null;
       focused.value = isEditableElement(target);

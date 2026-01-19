@@ -4,7 +4,7 @@ export const useGraphicsStore = defineStore('graphics', () => {
   const selectedGraphic = ref({
     component: null as Component | null,
     name: '',
-    index: -1
+    index: -1,
   });
   const customizationFocused = ref(false);
   const previewFocused = ref(false);
