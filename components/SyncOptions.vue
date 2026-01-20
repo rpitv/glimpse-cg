@@ -117,12 +117,21 @@
           />
         </div>
       </div>
-      <UButton
-        class="mt-12"
-        @click="syncEverything"
-      >
-        Enable Sync For Everything
-      </UButton>
+      <UFieldGroup class="mt-12">
+        <UButton
+          variant="outline"
+          @click="syncEverything"
+        >
+          Enable Sync For Everything
+        </UButton>
+        <UButton
+          variant="outline"
+          color="error"
+          @click="disableEverything"
+        >
+          Disable Sync For Everything
+        </UButton>
+      </UFieldGroup>
     </template>
   </UCard>
 </template>
@@ -148,6 +157,25 @@ function syncEverything() {
   sync.football.playClock = true;
   sync.awayTeam.football.timeouts = true;
   sync.homeTeam.football.timeouts = true;
+}
+
+function disableEverything() {
+  sync.clock = false;
+  sync.period = false;
+  sync.awayTeam.score = false;
+  sync.homeTeam.score = false;
+  sync.awayTeam.hockey.sog = false;
+  sync.awayTeam.hockey.faceoff = false;
+  sync.awayTeam.hockey.penalty = false;
+  sync.homeTeam.hockey.sog = false;
+  sync.homeTeam.hockey.faceoff = false;
+  sync.homeTeam.hockey.penalty = false;
+  sync.football.downs = false;
+  sync.football.yardsToGo = false;
+  sync.football.possession = false;
+  sync.football.playClock = false;
+  sync.awayTeam.football.timeouts = false;
+  sync.homeTeam.football.timeouts = false;
 }
 </script>
 

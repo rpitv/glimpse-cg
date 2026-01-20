@@ -15,7 +15,7 @@
     <div class="flex gap-4 mt-4">
       <UFormField
         label="Info"
-        help="Additional information about the player to display below their name and number."
+        help="Additional information shown below their name and number."
       >
         <USwitch
           v-model="playerBio.info.show"

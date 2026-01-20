@@ -9,7 +9,7 @@
           label="Display Shootout"
         />
         <UKbd v-if="!inputFocus.isInputFocused.value">
-          SPACE
+          S
         </UKbd>
       </div>
     </template>

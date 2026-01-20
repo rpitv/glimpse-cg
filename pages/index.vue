@@ -10,36 +10,77 @@
         v-if="configuration"
         #default
       >
-        <UFormField label="Graphic Style">
-          <USelect
-            v-model="configuration.style"
-            :class="width"
-            :items="styles"
-          />
-        </UFormField>
-        <UFormField
-          class="mt-4"
-          label="Sport"
-        >
-          <USelect
-            v-model="configuration.sport"
-            :class="width"
-            :items="sports"
-            @update:model-value="refresh()"
-          />
-        </UFormField>
-        <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
-          <UFormField
-            class="mt-4"
-            label="Type (Important for Rosters)"
-          >
-            <USelect
-              v-model="configuration.type"
-              :class="width"
-              :items="type"
-              @update:model-value="refresh()"
-            />
-          </UFormField>
+        <div class="flex justify-between">
+          <div>
+            <UFormField label="Graphic Style">
+              <USelect
+                v-model="configuration.style"
+                :class="width"
+                :items="styles"
+              />
+            </UFormField>
+            <UFormField
+              class="mt-4"
+              label="Sport"
+            >
+              <USelect
+                v-model="configuration.sport"
+                :class="width"
+                :items="sports"
+                @update:model-value="scheduleCard!.refresh()"
+              />
+            </UFormField>
+            <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
+              <UFormField
+                class="mt-4"
+                label="Type (Important for Rosters)"
+              >
+                <USelect
+                  v-model="configuration.type"
+                  :class="width"
+                  :items="type"
+                  @update:model-value="scheduleCard!.refresh()"
+                />
+              </UFormField>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <UFormField class="text-right">
+              <template #help>
+                <p>Resets the state of the scoreboard. <br>Useful when prepping for a new game.</p>
+              </template>
+              <UModal
+                :close="true"
+                :ui="{
+                  footer: 'justify-end'
+                }"
+              >
+                <UButton color="error">
+                  <FontAwesomeIcon icon="fas fa-explosion" />
+                  Reset Scoreboard
+                </UButton>
+                <template #header>
+                  <p class="text-2xl font-bold">Reset Scoreboard</p>
+                </template>
+                <template #body>
+                  <p class="text-lg font-bold mb-4">Are you sure you want to reset the scoreboard?</p>
+                  <p class="text-muted">This will reset everything except the team configurations.</p>
+                </template>
+                <template #footer>
+                  <UButton
+                    color="error"
+                    @click="resetScoreboard"
+                  >
+                    Reset Scoreboard
+                  </UButton>
+                </template>
+              </UModal>
+            </UFormField>
+            <div class="flex justify-end mt-4">
+              <UCheckbox label="Reset scoreboard on startup" size="xl" v-model="configuration.startup.resetScoreboard">
+              </UCheckbox>
+            </div>
+          </div>
         </div>
         <div class="mt-8 flex gap-5">
           <TeamConfig
@@ -55,92 +96,7 @@
         </div>
       </template>
     </UCard>
-    <UCard
-      id="schedule-card"
-      class="rounded-none"
-    >
-      <template #header>
-        <h1 class="text-2xl">
-          Schedule
-        </h1>
-        <USwitch
-          v-model="homeToggle"
-          label="Only Show Home Games"
-        />
-      </template>
-      <div v-if="loading">
-        <UProgress />
-        <p>Getting schedule...</p>
-      </div>
-      <div v-else>
-        <URadioGroup
-          id="schedule"
-          ref="radioSchedule"
-          v-model="selectedSchool"
-          :loop="true"
-          indicator="hidden"
-          variant="table"
-          value-key="val"
-          :items="schedule.filter(g => {
-            if (homeToggle)
-              return g.val.homeGame
-            return true
-          })"
-          @dblclick="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }"
-        >
-          <template #label="{ item }">
-            <div
-              :id="item.uni"
-              class="flex items-center gap-2"
-            >
-              <img
-                class="schedule-logo"
-                :src="item.val.opponentLogo?.src"
-              >
-              <div>
-                <p class="text-muted text-left">
-                  {{ configuration?.type === 'men' || (configuration.sport === 'acha' || configuration.sport === 'football') ? '(MEN)' : '(WOMEN)' }}
-                </p>
-                <p class="text-left text-xl">
-                  {{ item.val.title }}
-                </p>
-                <p class="text-muted text-left">
-                  {{ item.val.description }}
-                </p>
-              </div>
-            </div>
-          </template>
-        </URadioGroup>
-        <div class="flex items-center justify-between gap-2">
-          <UTooltip
-            :disabled="!!selectedSchool?.preset"
-            text="This school does not have a preset available."
-            :delay-duration="0"
-          >
-            <UButton
-              class="mt-2"
-              :disabled="!selectedSchool || !selectedSchool.preset"
-              @click="() => { if (selectedSchool?.preset) loadMatchup(selectedSchool?.preset) }"
-            >
-              Load Matchup
-            </UButton>
-          </UTooltip>
-          <span
-            v-if="lastUpdated != ''"
-            id="lastUpdated"
-            class="flex items-center gap-2"
-          >
-            <span>Last Updated: {{ lastUpdated }}</span>
-            <UButton @click="refresh(true)">
-              <UIcon
-                name="material-symbols-light:sync"
-                class="size-full"
-              />
-            </UButton>
-          </span>
-        </div>
-      </div>
-    </UCard>
+    <ScheduleCard ref="scheduleCard" :configuration="configuration" @load-matchup="loadMatchup"  />
   </div>
 </template>
 
@@ -148,16 +104,16 @@
 import type { Configuration } from '~/types/replicants';
 import schools from '~/assets/schools.json';
 import TeamConfig from '~/components/configuration/teamConfig.vue';
-import { URadioGroup } from '#components';
-import type { ScheduleResults } from '~/server/api/schedule';
+import ScheduleCard from '~/components/configuration/ScheduleCard.vue';
 
 const toast = useToast();
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
+const locator = replicants.lowerThird.locator;
+const goToBreak = replicants.lowerThird.goToBreak;
+const scoreboard = replicants.scoreboard;
+const scheduleCard = useTemplateRef<typeof ScheduleCard>('scheduleCard');
 const width = 'w-48';
-const height = 'h-5';
-const lastUpdated = ref('');
-const homeToggle = ref(true);
 
 const styles = [{
   label: 'RPI TV',
@@ -202,79 +158,48 @@ const type = [{
   value: 'women',
 }];
 
-export interface Timeline {
-  val: {
-    description: string;
-    title: string;
-    type: string;
-    homeGame: boolean;
-    opponentLogo?: {
-      src: string;
-      alt: string;
-    };
-    preset: Configuration['awayTeam' | 'homeTeam'] | null;
-  };
-  uni: string;
-}
-
-const radioSchedule = useTemplateRef<typeof URadioGroup>('radioSchedule');
-
-const schedule = ref<Timeline[]>([]);
-const loading = ref(false);
-let scrollToView: null | number = null;
-
-const selectedSchool = ref<Timeline['val']>();
-
-async function refresh(force = false) {
-  loading.value = true;
-  schedule.value = [];
-  const data: ScheduleResults = await $fetch(`/api/schedule?force=${force}`, {}).catch((error) => {
-    console.error('Error fetching.ts schedule:', error);
-  });
-
-  let current = false;
-  for (let i = 0; i < data.games.length; i++) {
-    const game = data.games[i]!;
-    const preset = schools.find(s => game.opponent.includes(s.schoolName) || game.opponent.includes(s.shortName) || game.opponent.includes(s.abbr));
-    const opponentData: Timeline = {
-      val: {
-        description: new Date(game.date).toLocaleString([], {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-        homeGame: game.homeGame,
-        title: `${game.opponent} @ ${game.location}`,
-        type: configuration.value?.type || 'mens',
-        opponentLogo: {
-          src: game.opponentLogo,
-          alt: game.opponentLogoAlt,
-        },
-        preset: preset || null as Configuration['awayTeam' | 'homeTeam'] | null,
-      },
-      uni: i.toString(),
-    };
-    if (!current) {
-      if (new Date(game.date).getTime() >= Date.now() && game.homeGame) {
-        current = true;
-        selectedSchool.value = opponentData.val;
-        scrollToView = i;
-      }
-    }
-    schedule.value.push(opponentData);
-  }
-  lastUpdated.value = new Date(data.lastUpdated).toLocaleString();
-  loading.value = false;
-}
-
 function loadMatchup(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
   loadPreset('awayTeam', teamConfig);
   loadPreset('homeTeam', schools[0]!);
 }
 
 function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['awayTeam' | 'homeTeam']) {
+  // Avoid unnecessary updates
+  console.log(JSON.stringify(configuration[teamSide]), "\n\n", JSON.stringify(school));
+  if (JSON.stringify(configuration[teamSide]) === JSON.stringify(school)) {
+    return;
+  }
+
+  // Reset locator, gotobreak, and scoreboard for the team
+  locator[teamSide].logo = '';
+  locator[teamSide].logoColor = '';
+  locator[teamSide].logoSize = 100;
+  locator[teamSide].name = '';
+  locator[teamSide].nameColor = '';
+  locator[teamSide].nameSize = 0;
+  locator[teamSide].primaryColor = '';
+  locator[teamSide].secondaryColor = '';
+
+  goToBreak[teamSide].logo = '';
+  goToBreak[teamSide].logoColor = '';
+  goToBreak[teamSide].logoSize = 100;
+  goToBreak[teamSide].name = '';
+  goToBreak[teamSide].nameColor = '';
+  goToBreak[teamSide].nameSize = 0;
+  goToBreak[teamSide].primaryColor = '';
+  goToBreak[teamSide].secondaryColor = '';
+  goToBreak[teamSide].scoreColor = '';
+  goToBreak[teamSide].scoreSize = 0;
+
+  scoreboard[teamSide].logo = '';
+  scoreboard[teamSide].logoSize = 100;
+  scoreboard[teamSide].name = '';
+  scoreboard[teamSide].nameSize = 0;
+  scoreboard[teamSide].primaryColor = '';
+  scoreboard[teamSide].secondaryColor = '';
+  scoreboard[teamSide].scoreColor = '';
+  scoreboard[teamSide].scoreSize = 0;
+
   configuration[teamSide].abbr = school.abbr;
   configuration[teamSide].schoolName = school.schoolName;
   configuration[teamSide].shortName = school.shortName;
@@ -291,92 +216,29 @@ function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['aw
   });
 }
 
-onMounted(async () => {
-  await refresh();
-});
-
-watch((radioSchedule), () => {
-  if (radioSchedule.value) {
-    document.getElementById(scrollToView?.toString() || '')?.scrollIntoView({ block: 'center' });
-  }
-});
+async function resetScoreboard() {
+  await useFetch('/api/resetScoreboard', {
+    method: 'POST',
+  }).then(() => {
+    toast.add({
+      title: 'Scoreboard Reset',
+      description: 'The scoreboard has been reset successfully.',
+      duration: 3000,
+    });
+  }).catch(() => {
+    toast.add({
+      title: 'Error',
+      description: 'There was an error resetting the scoreboard.',
+      duration: 3000,
+      color: 'error',
+    });
+  });
+}
 </script>
 
 <style>
 #configuration-page {
   display: grid;
   grid-template-columns: 7fr 4fr;
-}
-
-#schedule-card {
-  min-height: 400px;
-  min-width: 400px;
-}
-
-#schedule {
-  padding: 5px 0;
-  overflow-y: scroll;
-  max-height: 500px;
-  transition: color .3s ease;
-  color: var(--ui-bg);
-  mask-image: linear-gradient(transparent 0%, var(--ui-bg) 5%, var(--ui-bg) 95%, transparent 100%);
-  transition: 1s;
-}
-
-.schedule-item {
-  display: flex;
-  color: rgb(32, 32, 32);
-  transition: all .3s;
-  outline: none;
-}
-
-.men {
-  background: linear-gradient(180deg, rgb(153, 153, 255), rgb(130, 130, 255));
-  transition: all 0.3s;
-  border: 3px solid var(--ui-bg);
-}
-
-.women {
-  background: linear-gradient(180deg, rgb(255, 141, 141), rgb(255, 112, 112) 40%);
-  transition: all 0.3s;
-  border: 3px solid var(--ui-bg);
-}
-
-.men:hover, .men:focus {
-  transition: all .3s;
-  border: 3px rgb(38, 78, 255) solid;
-}
-
-.women:hover, .women:focus {
-  border: 3px rgb(255, 45, 45) solid;
-  transition: all .3s;
-}
-
-.schedule-logo {
-  filter: drop-shadow(0 0 3px rgb(0, 0, 0));
-  width: 100px;
-}
-
-.schedule-content {
-  > h2 {
-    font-size: 1.1rem;
-    margin: 0;
-    padding: 0 10px;
-    font-weight: bold;
-  }
-  > p {
-    font-size: 0.9rem;
-    margin: 0;
-    padding: 0 10px;
-    color: rgba(8, 8, 8, 0.637);
-  }
-}
-
-.schedule:hover {
-  color: rgba(231, 231, 231, 0.3);
-}
-
-.loading {
-  color: white;
 }
 </style>

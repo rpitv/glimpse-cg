@@ -18,6 +18,7 @@
 
     <div class="max-height">
       <URadioGroup
+        v-if="items.length > 0"
         v-model="localSelected"
         :color="color"
         class="w-full mt-4"
@@ -46,6 +47,9 @@
           </div>
         </template>
       </URadioGroup>
+      <i class="text-center w-full block text-muted mt-2">
+        No players found.
+      </i>
     </div>
   </div>
 </template>

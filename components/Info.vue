@@ -1,7 +1,7 @@
 <template>
   <UTooltip
     :delay-duration="600"
-    :ui="{ text: 'whitespace-pre-line', content: 'h-auto bg-black text-sm' }"
+    :ui="{ text: 'whitespace-pre-line', content: 'h-auto bg-gray-950 text-sm' }"
     v-model:open="open"
   >
     <template #content>

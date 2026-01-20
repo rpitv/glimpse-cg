@@ -17,6 +17,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    build: {
+      sourcemap: false,
+    },
     css: {
       devSourcemap: false,
     },
@@ -38,4 +41,8 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: false
   },
+  experimental: {
+    buildCache: true,
+  },
+  
 });

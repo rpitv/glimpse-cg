@@ -20,11 +20,9 @@
       </UCard>
       <div class="flex justify-center">
         <TeamScore
-          v-model="awayTeamScoreboard"
           team="awayTeam"
         />
         <TeamScore
-          v-model="homeTeamScoreboard"
           team="homeTeam"
         />
       </div>
@@ -65,11 +63,7 @@ import AnnouncementSection from './AnnouncemntSection.vue';
 
 const replicants = await useReplicants();
 const inputFocus = useInputFocus();
-const scoreboard = replicants.scoreboard;
 const channels = replicants.channels;
-
-const awayTeamScoreboard = scoreboard.awayTeam;
-const homeTeamScoreboard = scoreboard.homeTeam;
 
 defineShortcuts({
   ' ': () => {

@@ -136,34 +136,30 @@ export const defaultConfiguration = {
   awayTeam: {
     // The abbreviation of the school, typically 3-5 characters.
     abbr: '',
-    // The short name of the team with a max of 14 characters.
-    shortName: '',
-    // The full name of the school.
-    schoolName: '',
-    // The full name of the team. Ex: RPI Engineers
-    teamName: '',
+    athletics: '',
     logo: '',
     primaryColor: '#000000',
+    // The full name of the school.
+    schoolName: '',
+    // The short name of the team with a max of 14 characters.
     secondaryColor: '#FFFFFF',
-    // :)
-    special: false,
-    athletics: '',
+    shortName: '',
+    // The full name of the team. Ex: RPI Engineers
+    teamName: '',
   },
   homeTeam: {
     // The abbreviation of the school, typically 3-5 characters.
     abbr: '',
-    // The short name of the team with a max of 14 characters.
-    shortName: '',
-    // The full name of the school.
-    schoolName: '',
-    // The full name of the team. Ex: RPI Engineers
-    teamName: '',
+    athletics: '',
     logo: '',
     primaryColor: '#000000',
+    // The full name of the school.
+    schoolName: '',
+    // The short name of the team with a max of 14 characters.
     secondaryColor: '#FFFFFF',
-    // :)
-    special: false,
-    athletics: '',
+    shortName: '',
+    // The full name of the team. Ex: RPI Engineers
+    teamName: '',
   },
   sync: {
     daktronics: {
@@ -211,6 +207,9 @@ export const defaultConfiguration = {
       playClock: true,
     },
   },
+  startup: {
+    resetScoreboard: true
+  }
 };
 
 export const defaultScoreboard = {

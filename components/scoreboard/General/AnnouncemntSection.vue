@@ -9,11 +9,11 @@
         >
         <col
           span="1"
-          style="width: 30%;"
+          style="width: 35%;"
         >
         <col
           span="1"
-          style="width: 30%;"
+          style="width: 25%;"
         >
       </colgroup>
       <thead>
@@ -29,7 +29,7 @@
           </th>
         </tr>
       </thead>
-      <tbody :class="name">
+      <tbody :class="`${name} [&>tr]:h-[90px]`">
         <tr
           v-for="(announcement, index) in announcmentRef"
           :key="index"
@@ -84,7 +84,21 @@
         </tr>
       </tbody>
     </table>
-    <table>
+    <table class="w-full">
+      <colgroup>
+        <col
+          span="1"
+          style="width: 40%;"
+        >
+        <col
+          span="1"
+          style="width: 35%;"
+        >
+        <col
+          span="1"
+          style="width: 25%;"
+        >
+      </colgroup>
       <tbody>
         <tr>
           <td>
@@ -106,6 +120,8 @@
           </td>
           <td class="text-center">
             <UButton
+              size="xl"
+              variant="outline"
               class="rounded-full"
               @click="addAnnouncement()"
             >

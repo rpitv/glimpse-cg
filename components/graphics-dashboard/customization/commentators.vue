@@ -25,14 +25,19 @@
       class="mt-2"
       size="md"
     />
-    <div class="mt-2">
-      <div class="flex justify-end mb-2">
+    <div class="mt-4">
+      <div class="flex justify-between mb-2">
+        <p class="text-2xl font-bold">Credits Table
+          <Info>
+            The order of the commentators can be changed by dragging and dropping the rows.
+          </Info>
+        </p>
         <UButton @click="addCommentator">
           Add Commentator
         </UButton>
       </div>
       <p v-show="false" />
-      <table class="w-full">
+      <table class="w-full mt-2">
         <thead>
           <tr>
             <th>Commentator</th>

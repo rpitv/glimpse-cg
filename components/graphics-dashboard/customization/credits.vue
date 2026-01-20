@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div class="flex justify-end mb-2">
+    <div class="flex justify-between mb-2">
+      <p class="text-2xl font-bold">Credits Table
+        <Info>
+          The order of the credits can be changed by dragging and dropping the rows.
+        </Info>
+      </p>
       <UButton @click="addCredit">
         Add Credit
       </UButton>

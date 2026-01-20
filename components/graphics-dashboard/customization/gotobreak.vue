@@ -27,9 +27,11 @@
     >
       <UCommandPalette
         :ui="{
-          root: 'border border-muted border-solid w-[50%]',
+          root: 'border border-muted border-solid w-[70%]',
+          content: 'max-h-70 overflow-y-auto',
+          label: 'text-lg text-gray-400'
         }"
-        :groups="itemsTitle"
+        :groups="GoToBreakDescriptors"
         :search-term="goToBreak.description.text"
         :close="goToBreak.description.text.length > 0"
         placeholder="Type in the description or click on one"
@@ -197,48 +199,12 @@
 
 <script lang="ts" setup>
 import type { CommandPaletteGroup } from '@nuxt/ui';
+import GoToBreakDescriptors from "~/assets/gotobreak.json";
 
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const goToBreak = replicants.lowerThird.goToBreak;
 
-const itemsTitle = ref<CommandPaletteGroup[]>([
-  {
-    id: 'titles',
-    label: 'Start/End of X',
-    items: [],
-  },
-]);
-
-if (replicants.configuration.style === 'football')
-  itemsTitle.value[0]!.items = [
-    {
-      label: 'End of 1st Quarter',
-      value: 'End of 1st Quarter',
-    },
-    {
-      label: 'Halftime',
-      value: 'Halftime',
-    },
-    {
-      label: 'End of 3rd Quarter',
-      value: 'End of 3rd Quarter',
-    },
-    {
-      label: 'Final',
-      value: 'Final',
-    },
-  ];
-else
-  itemsTitle.value[0]!.items = [
-    { label: 'Start of 1st', value: 'Start of 1st' },
-    { label: 'End of 1st', value: 'End of 1st' },
-    { label: 'Start of 2nd', value: 'Start of 2nd' },
-    { label: 'End of 2nd', value: 'End of 2nd' },
-    { label: 'Start of 3rd', value: 'Start of 3rd' },
-    { label: 'End of 3rd', value: 'End of 3rd' },
-    { label: 'Final', value: 'Final' },
-  ];
 </script>
 
 <style>

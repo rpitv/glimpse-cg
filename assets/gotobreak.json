@@ -1,0 +1,45 @@
+[
+  {
+    "id": "end-of-x",
+    "label": "End of X",
+    "items": [
+      { "label": "End of 1st", "value": "End of 1st" },
+      { "label": "End of 2nd", "value": "End of 2nd" },
+      { "label": "End of 3rd", "value": "End of 3rd" },
+      { "label": "End of 4th", "value": "End of 4th" },
+      { "label": "End of Regulation", "value": "End of Regulation" },
+      { "label": "End of OT", "value": "End of OT" },
+      { "label": "End 1st OT", "value": "End 1st OT" },
+      { "label": "End 2nd OT", "value": "End 2nd OT" }
+    ]
+  },
+  {
+    "id": "start-of-x",
+    "label": "Start of X",
+    "items": [
+      { "label": "Start of 1st", "value": "Start of 1st" },
+      { "label": "Start of 2nd", "value": "Start of 2nd" },
+      { "label": "Start of 3rd", "value": "Start of 3rd" },
+      { "label": "Start of 4th", "value": "Start of 4th" }
+    ]
+  },
+  {
+    "id": "x-intermission",
+    "label": "X Intermission",
+    "items": [
+      { "label": "1st Intermission", "value": "1st Intermission" },
+      { "label": "2nd Intermission", "value": "2nd Intermission" },
+      { "label": "3rd Intermission", "value": "3rd Intermission" },
+      { "label": "4th Intermission", "value": "4th Intermission" }
+    ]
+  },
+  {
+    "id": "final",
+    "label": "Final",
+    "items": [
+      { "label": "Final", "value": "Final" },
+      { "label": "Final OT", "value": "Final OT" },
+      { "label": "Final S/O", "value": "Final S/O" }
+    ]
+  }
+]

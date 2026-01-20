@@ -24,7 +24,6 @@
     "@vueuse/core": "^13.6.0",
     "@vueuse/integrations": "^13.6.0",
     "better-sqlite3": "^12.2.0",
-    "dotenv": "^17.2.3",
     "gsap": "^3.13.0",
     "jsdom": "^26.1.0",
     "nuxt": "^4.0.0",
