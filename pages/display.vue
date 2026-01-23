@@ -1,7 +1,6 @@
 <template>
   <div
     id="graphics"
-    :style="route.query.dev === '1' ? 'background-color: white;' : ''"
   >
     <MainView />
   </div>
@@ -11,13 +10,18 @@
 import MainView from '~/components/displays/main.vue';
 
 const route = useRoute();
+useHead({
+  bodyAttrs: {
+    class: 'bg-transparent'
+  }
+})
 
 definePageMeta({
   layout: 'none',
 });
 </script>
 
-<style>
+<style scoped>
 #graphics {
   position: absolute;
   top: 0;
