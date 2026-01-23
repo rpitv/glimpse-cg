@@ -1,7 +1,11 @@
 <template>
   <UCard class="rounded-none">
     <template #header>
-      <b class="text-2xl">Period Control</b>
+      <b class="text-2xl">Period Control
+        <Info>
+          The period control has one extra tick intended for the <br>penultimate tiebreaker state (Ex: shootout) at all times.
+        </Info>
+      </b>
     </template>
     <template #default>
       <p class="text-center text-2xl">

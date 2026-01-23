@@ -8,9 +8,12 @@
         Schedule
       </h1>
       <USwitch
+        class="mt-2"
         v-model="homeToggle"
         label="Only Show Home Games"
+        size="lg"
       />
+      <p v-if="configuration.sport === 'acha'" class="text-muted mt-2 italic">Note: ACHA times are in UTC</p>
     </template>
 
     <div v-if="loading">

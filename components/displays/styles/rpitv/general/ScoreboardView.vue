@@ -33,7 +33,7 @@
   </div>
   <div class="global-announcements">
     <p v-if="scoreboard!.announcement.length > 0">
-      {{ computedMessage(scoreboard!.announcement[0]!).value }}
+      {{ computedMessage('global').value }}
     </p>
 
     <p v-else-if="powerPlaySync.type === 'global'">
@@ -42,7 +42,7 @@
   </div>
   <div class="team-announcements homeTeam">
     <p v-if="scoreboard!.homeTeam.announcement.length > 0">
-      {{ computedMessage(scoreboard!.homeTeam.announcement[0]!).value }}
+      {{ computedMessage('homeTeam').value }}
     </p>
     <p v-else-if="powerPlaySync.type === 'home'">
       {{ powerPlaySync.status }} {{ powerPlayClock }}
@@ -53,7 +53,7 @@
   </div>
   <div class="team-announcements awayTeam">
     <p v-if="scoreboard!.awayTeam.announcement.length > 0">
-      {{ computedMessage(scoreboard.awayTeam.announcement[0]!).value }}
+      {{ computedMessage('awayTeam').value }}
     </p>
     <p v-else-if="powerPlaySync.type === 'away'">
       {{ powerPlaySync.status }} {{ powerPlayClock }}
@@ -85,8 +85,6 @@ const configuration = replicants.configuration;
 const channels = replicants.channels;
 const clock = scoreboard.clock;
 const period = scoreboard.period;
-const awayTeam = scoreboard.awayTeam;
-const homeTeam = scoreboard.homeTeam;
 
 const announcementsPos = ref('21vw');
 const awayTeamPos = ref('11.5vh');
@@ -129,7 +127,7 @@ function hideTeam(teamPos: Ref<string>, element: string) {
 }
 
 function runAnimation(team: 'awayTeam' | 'homeTeam') {
-  scoreboardColor.value = configuration[team].primaryColor;
+  scoreboardColor.value = scoreboard[team].primaryColor || configuration[team].primaryColor;
   animationText.value = isLightColor(scoreboardColor.value) ? 'white' : 'black';
   const t1 = gsap.timeline();
   const t2 = gsap.timeline();
@@ -139,8 +137,8 @@ function runAnimation(team: 'awayTeam' | 'homeTeam') {
   const t6 = gsap.timeline();
   const disappearance = 1.5;
   t1.to('.game-info', { top: '-4vh', duration: disappearance });
-  t2.to('.team-view-1', { top: '5vh', left: '-10.5vw', duration: disappearance });
-  t3.to('.team-view-2', { top: '5vh', left: '21vw', duration: disappearance });
+  t2.to('.home-team-view', { top: '5vh', left: '-10.5vw', duration: disappearance });
+  t3.to('.away-team-view', { top: '5vh', left: '21vw', duration: disappearance });
   t4.fromTo('.text1', { left: '', filter: '', letterSpacing: 0, fontSize: '100vh' }, { fontSize: '8vh', duration: 2 });
   t4.to('.text1', { fontSize: '9vh', duration: 0.5 });
   t5.to('.text1', { letterSpacing: '1vw', duration: 2 }, '+=2');
@@ -152,8 +150,8 @@ function runAnimation(team: 'awayTeam' | 'homeTeam') {
   scorer.value = configuration[team].shortName;
   t4.fromTo('.text2', { left: '75vw', letterSpacing: 0 }, { left: '0vw', duration: 1, ease: 'power3.out' }, '-=1.25');
   t1.to('.game-info', { top: '0vh', duration: disappearance }, '+=4');
-  t2.to('.team-view-1', { top: '0vh', left: '0vw', duration: disappearance }, '+=4');
-  t3.to('.team-view-2', { top: '0vh', left: '12.5vw', duration: disappearance }, '+=4');
+  t2.to('.home-team-view', { top: '0vh', left: '0vw', duration: disappearance }, '+=4');
+  t3.to('.away-team-view', { top: '0vh', left: '12.5vw', duration: disappearance }, '+=4');
 }
 
 const awayTeamScore = computed(() => scoreboard.awayTeam.score);
@@ -173,31 +171,34 @@ watch(homeTeamScore, (n, o) => {
 const awayTeamFontColor = ref('black');
 const homeTeamFontColor = ref('black');
 
+const awaySecondaryColor = computed(() => scoreboard.awayTeam.secondaryColor || configuration.awayTeam.secondaryColor);
+const homeSecondaryColor = computed(() => scoreboard.homeTeam.secondaryColor || configuration.homeTeam.secondaryColor);
+
 const awayTeamColor1 = computed(() => {
-  const linearGradient = calcLinearGrad(awayTeam.secondaryColor);
-  if (!isLighter(awayTeam.secondaryColor, linearGradient))
+  const linearGradient = calcLinearGrad(awaySecondaryColor.value);
+  if (!isLighter(awaySecondaryColor.value, linearGradient))
     return linearGradient;
-  return awayTeam.secondaryColor;
+  return awaySecondaryColor.value;
 });
 
 const awayTeamColor2 = computed(() => {
-  const linearGradient = calcLinearGrad(awayTeam.secondaryColor);
-  if (!isLighter(awayTeam.secondaryColor, linearGradient))
-    return awayTeam.secondaryColor;
+  const linearGradient = calcLinearGrad(awaySecondaryColor.value);
+  if (!isLighter(awaySecondaryColor.value, linearGradient))
+    return awaySecondaryColor.value;
   return linearGradient;
 });
 
 const homeTeamColor1 = computed(() => {
-  const linearGradient = calcLinearGrad(homeTeam.secondaryColor);
-  if (!isLighter(homeTeam.secondaryColor, linearGradient))
+  const linearGradient = calcLinearGrad(homeSecondaryColor.value);
+  if (!isLighter(homeSecondaryColor.value, linearGradient))
     return linearGradient;
-  return homeTeam.secondaryColor;
+  return homeSecondaryColor.value;
 });
 
 const homeTeamColor2 = computed(() => {
-  const linearGradient = calcLinearGrad(homeTeam.secondaryColor);
-  if (!isLighter(homeTeam.secondaryColor, linearGradient))
-    return homeTeam.secondaryColor;
+  const linearGradient = calcLinearGrad(homeSecondaryColor.value);
+  if (!isLighter(homeSecondaryColor.value, linearGradient))
+    return homeSecondaryColor.value;
   return linearGradient;
 });
 
@@ -229,25 +230,25 @@ const awayAnnouncement = computed(() => scoreboard.awayTeam.announcement);
 const homeAnnouncement = computed(() => scoreboard.homeTeam.announcement);
 
 watch(globalAnnouncement, (n, o) => {
-  if (n.length === 0 && powerPlaySync.value.type !== 'global')
+  if (globalAnnouncement.value.length === 0 && powerPlaySync.value.type !== 'global')
     hideGlobal();
   else
     showGlobal();
-});
+}, { deep: true });
 
 watch(awayAnnouncement, (n, o) => {
-  if (!n.length && powerPlaySync.value.type !== 'away')
+  if (!awayAnnouncement.value.length && powerPlaySync.value.type !== 'away')
     hideTeam(awayTeamPos, '.awayTeam');
   else
     showTeam(awayTeamPos, '.awayTeam');
-});
+}, { deep: true });
 
 watch(homeAnnouncement, (n, o) => {
-  if (!n.length && powerPlaySync.value.type !== 'home')
+  if (!homeAnnouncement.value.length && powerPlaySync.value.type !== 'home')
     hideTeam(homeTeamPos, '.homeTeam');
   else
     showTeam(homeTeamPos, '.homeTeam');
-});
+}, { deep: true });
 
 const shootout = computed(() => channels[channelIndex.value]!.shootout);
 
@@ -486,23 +487,26 @@ const formattedPeriod = computed<string>(() => {
   }
 });
 
-function computedMessage(message: Announcement) {
+function computedMessage(section: 'awayTeam' | 'homeTeam' | 'global') {
   return computed(() => {
-    if (!message.timer || !message.timer.visible) {
-      return message.message;
+    let board: { announcement: Announcement[] } = replicants.scoreboard;
+    if (section !== 'global') {
+      board = replicants.scoreboard[section];
+    }
+    if (!board.announcement[0]?.timer || !board.announcement[0].timer.visible) {
+      return board.announcement[0]?.message;
     }
     else {
-      const timeRemaining = message.timer.length - (message.timer.startedAt - scoreboard.clock.time);
-
+      const timeRemaining = board.announcement[0].timer.length - (board.announcement[0].timer.startedAt - scoreboard.clock.time);
       const minutes = Math.max(0, Math.floor(timeRemaining / 60000)).toString();
       // noinspection TypeScriptUnresolvedFunction - Not sure why this is happening in my IDE
       const seconds = Math.max(0, Math.floor((timeRemaining % 60000) / 1000)).toString().padStart(2, '0');
 
       if (minutes === '0') {
-        return message.message + ' :' + seconds;
+        return board.announcement[0].message + ' :' + seconds;
       }
       else {
-        return message.message + ' ' + minutes + ':' + seconds;
+        return board.announcement[0].message + ' ' + minutes + ':' + seconds;
       }
     }
   });
@@ -649,9 +653,8 @@ onMounted(() => {
 
 .animation {
 	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  display: grid;
+  place-items: center;
 	height: 9vh;
 	width: 25vw;
 }
@@ -661,14 +664,11 @@ onMounted(() => {
 	color: black;
 	position: absolute;
 	z-index: 0;
-	height: 9vh;
-	bottom: 0.5vh;
 	font-family: "Roboto Condensed";
 	color: v-bind(animationText);
 }
 
 .text2 {
-	top: 2.25vh;
 	font-size: 4vh;
 	white-space: nowrap;
 	text-align: center;

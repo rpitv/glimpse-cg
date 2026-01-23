@@ -8,7 +8,7 @@
           size="xl"
           label="Display Shootout"
         />
-        <UKbd v-if="!inputFocus.isInputFocused.value">
+        <UKbd :class="`${inputFocus.isInputFocused.value ? 'opacity-20' : 'opacity-100'} transition-all`">
           S
         </UKbd>
       </div>

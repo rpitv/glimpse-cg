@@ -220,6 +220,16 @@
     "teamName": "Friars"
   },
   {
+    "abbr": "PENN",
+    "athletics": "https://pennathletics.com",
+    "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fPenn_State.png&height=200&width=200&type=webp",
+    "primaryColor": "#041E42",
+    "schoolName": "Penn State University",
+    "secondaryColor": "#FFFFFF",
+    "shortName": "Penn State",
+    "teamName": "Nittany Lions"
+  },
+  {
     "abbr": "PRI",
     "athletics": "http://www.goprincetontigers.com",
     "logo": "https://images.sidearmdev.com/fit?url=https%3a%2f%2fdxbhsrqyrr690.cloudfront.net%2fsidearm.nextgen.sites%2frpiathletics.com%2fimages%2flogos%2fPrinceton_Tigers.png&height=200&width=200&type=webp",

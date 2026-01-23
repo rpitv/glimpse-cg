@@ -35,7 +35,8 @@
                   </p>
                   <div class="flex gap-4 items-center">
                     <UKbd
-                      v-if="!inputFocus.isInputFocused.value && item.kbd"
+                      v-if="item.kbd"
+                      :class="`${inputFocus.isInputFocused.value ? 'opacity-20' : 'opacity-100'} transition-all`"
                     >
                       {{ item.kbd }}
                     </UKbd>

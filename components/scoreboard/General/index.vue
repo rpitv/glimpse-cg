@@ -32,16 +32,16 @@
         </template>
         <div class="grid grid-cols-2 gap-4 mt-4">
           <AnnouncementSection
-            :section="replicants.scoreboard.awayTeam"
+            section="awayTeam"
             name="Away"
           />
           <AnnouncementSection
-            :section="replicants.scoreboard.homeTeam"
+            section="homeTeam"
             name="Home"
           />
           <AnnouncementSection
             class="mt-4"
-            :section="replicants.scoreboard"
+            section="global"
             name="Global"
           />
         </div>

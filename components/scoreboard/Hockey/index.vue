@@ -10,7 +10,7 @@
               size="xl"
               label="Display Scorebug"
             />
-            <UKbd v-if="!inputFocus.isInputFocused.value">
+            <UKbd :class="`${inputFocus.isInputFocused.value ? 'opacity-20' : 'opacity-100'} transition-all`">
               SPACE
             </UKbd>
           </div>
@@ -33,7 +33,7 @@
               label="Display SOG"
             />
             <Info class="text-xl">SOG will automatically be turned off if the scorebug is turned off.</Info>
-            <UKbd v-if="!inputFocus.isInputFocused.value">
+            <UKbd :class="`${inputFocus.isInputFocused.value ? 'opacity-20' : 'opacity-100'} transition-all`">
               G
             </UKbd>
           </div>
@@ -58,16 +58,16 @@
         </template>
         <div class="grid grid-cols-2 gap-4 mt-4">
           <AnnouncemntSection
-            :section="replicants.scoreboard.awayTeam"
+            section="awayTeam"
             name="Away"
           />
           <AnnouncemntSection
-            :section="replicants.scoreboard.homeTeam"
+            section="homeTeam"
             name="Home"
           />
           <AnnouncemntSection
             class="mt-4"
-            :section="replicants.scoreboard"
+            section="global"
             name="Global"
           />
         </div>
@@ -104,6 +104,9 @@ defineShortcuts({
   // 'f': () => {
   //   if (!inputFocus.isInputFocused.value) channels[0]!.faceoff = !channels[0]?.faceoff;
   // },
+  's': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.shootout = !channels[0]?.shootout;
+  }
 });
 </script>
 

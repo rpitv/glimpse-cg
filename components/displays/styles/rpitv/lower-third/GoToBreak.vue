@@ -25,14 +25,14 @@
       :src="gtbAwayTeam.logo || awayTeam.logo"
       :alt="awayTeam.shortName"
     >
-    <div :style="rightTeamName">
+    <div :style="awayTeamName">
       {{ gtbAwayTeam.name || awayTeam.shortName }}
     </div>
   </div>
   <div :style="homeTeamScore">
     {{ gtbHomeTeam.score || scoreboard.homeTeam.score }}
   </div>
-  <div :style="rightTeamScore">
+  <div :style="awayTeamScore">
     {{ gtbAwayTeam.score || scoreboard.awayTeam.score }}
   </div>
   <div :style="description">
@@ -55,7 +55,7 @@ const awayTeam = replicants.configuration.awayTeam;
 
 const homeTeamName = computed((): CSSProperties => {
   return {
-    color: gtbHomeTeam.nameColor,
+    color: gtbHomeTeam.nameColor || 'black',
     fontSize: gtbHomeTeam.nameSize + 2.5 + 'vh',
     position: 'relative',
     textAlign: 'center',
@@ -74,15 +74,15 @@ const homeTeamScore = computed((): CSSProperties => {
     width: '10.5vw',
   };
 });
-const rightTeamName = computed((): CSSProperties => {
+const awayTeamName = computed((): CSSProperties => {
   return {
-    color: gtbAwayTeam.nameColor,
+    color: gtbAwayTeam.nameColor || 'black',
     fontSize: gtbAwayTeam.nameSize + 2.5 + 'vh',
     position: 'relative',
     textAlign: 'center',
   };
 });
-const rightTeamScore = computed((): CSSProperties => {
+const awayTeamScore = computed((): CSSProperties => {
   return {
     alignItems: 'center',
     bottom: '16.6vh',

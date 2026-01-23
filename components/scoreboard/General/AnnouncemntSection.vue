@@ -31,7 +31,7 @@
       </thead>
       <tbody :class="`${name} [&>tr]:h-[90px]`">
         <tr
-          v-for="(announcement, index) in announcmentRef"
+          v-for="(announcement, index) in announcementRef"
           :key="index"
         >
           <td>
@@ -74,7 +74,7 @@
             </div>
           </td>
         </tr>
-        <tr v-if="announcmentRef.length === 0">
+        <tr v-if="announcementRef.length === 0">
           <td
             class="text-center text-muted w-full"
             colspan="3"
@@ -176,6 +176,18 @@
         </UButton>
       </template>
     </UModal>
+    <p class="mt-2 ">Quickplay Buttons</p>
+    <div class="flex flex-wrap gap-2 mb-4">
+      <UButton
+        v-for="(button, index) in props.section === 'global' ? globalButtons : teamButtons"
+        :key="index"
+        size="md"
+        variant="outline"
+        @click="button.action"
+      >
+        {{ button.label }}
+      </UButton>
+    </div>
   </div>
 </template>
 
@@ -188,24 +200,24 @@ import { parseTimeString } from '~/utils/parseTimeString';
 
 const toast = useToast();
 const replicants = await useReplicants();
-const scoreboard = replicants.scoreboard;
 
 const props = defineProps<{
-  section: {
-    announcement: Announcement[];
-  };
+  section: 'awayTeam' | 'homeTeam' | 'global';
   name: 'Away' | 'Home' | 'Global';
 }>();
 
-const announcmentRef = computed({
-  get: () => {
-    return props.section.announcement;
-  },
+let board: { announcement: Announcement[] } = replicants.scoreboard;
+if (props.section !== 'global') {
+  board = replicants.scoreboard[props.section];
+}
+
+
+const announcementRef = computed({
+  get: () => board.announcement,
   set: (val: Announcement[]) => {
-    props.section.announcement = val;
+    board.announcement = val;
   },
 });
-
 const announcementMessage = ref('');
 const time = ref('');
 const modalState = ref(false);
@@ -214,6 +226,7 @@ const editedMessage = ref('');
 const editedTimer = ref('');
 
 function addAnnouncement(message: string = announcementMessage.value, timer: string = time.value) {
+  console.log('Adding announcement:', message, timer);
   if (message.trim() === '') {
     toast.add({
       title: 'Error',
@@ -242,7 +255,7 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
     timerEndsAction: 'removeAnnouncement',
     visible: true,
   };
-  announcmentRef.value.push(new Announcement(announcementMessage.value, (totalTime > 0 ? announcementTimer : undefined)));
+  board.announcement.push(new Announcement(message, (totalTime > 0 ? announcementTimer : undefined)));
 
   time.value = '';
   announcementMessage.value = '';
@@ -253,10 +266,28 @@ function addAnnouncement(message: string = announcementMessage.value, timer: str
   });
 }
 
+const teamButtons = [
+  { label: '2:00 Powerplay', action: () => addAnnouncement('Powerplay', '2:00')},
+  { label: '5:00 Powerplay', action: () => addAnnouncement('Powerplay', '5:00')},
+  { label: '0:30 Manup', action: () => addAnnouncement('Manup', '0:30')},
+  { label: '1:00 Manup', action: () => addAnnouncement('Manup', '1:00')},
+  { label: '2:00 Manup', action: () => addAnnouncement('Manup', '2:00')},
+  { label: '3:00 Manup', action: () => addAnnouncement('Manup', '3:00')},
+  { label: '5:00 Manup', action: () => addAnnouncement('Manup', '5:00')},
+  { label: 'Timeout', action: () => addAnnouncement('Timeout')},
+]
+
+const globalButtons = [
+  { label: 'Official Review', action: () => addAnnouncement('Official Review')},
+  { label: 'Timeout', action: () => addAnnouncement('Timeout')},
+  { label: 'Empty Net', action: () => addAnnouncement('Empty Net')},
+  { label: 'Delayed Penalty', action: () => addAnnouncement('Delayed Penalty')},
+]
+
 function editAnnouncement() {
-  props.section.announcement[openedAnnouncement.value]!.message = editedMessage.value;
+  board.announcement[openedAnnouncement.value]!.message = editedMessage.value;
   if (editedTimer.value.trim() === '') {
-    props.section.announcement[openedAnnouncement.value]!.timer = null;
+    board.announcement[openedAnnouncement.value]!.timer = null;
   }
   else {
     let totalTime = -1;
@@ -271,7 +302,7 @@ function editAnnouncement() {
       });
       return;
     }
-    props.section.announcement[openedAnnouncement.value]!.timer = {
+    board.announcement[openedAnnouncement.value]!.timer = {
       length: totalTime,
       startedAt: replicants.scoreboard.clock.time,
       timerEndsAction: 'removeAnnouncement',
@@ -288,7 +319,7 @@ function editAnnouncement() {
 }
 
 function deleteAnnouncement(index: number) {
-  announcmentRef.value.splice(index, 1);
+  board.announcement.splice(index, 1);
   toast.add({
     title: 'Success',
     description: 'Announcement deleted successfully.',
@@ -303,9 +334,9 @@ function cancelEdit() {
 
 function openModal(index: number) {
   openedAnnouncement.value = index;
-  editedMessage.value = props.section.announcement[openedAnnouncement.value]!.message;
-  if (props.section.announcement[openedAnnouncement.value]!.timer) {
-    editedTimer.value = millisToString(props.section.announcement[openedAnnouncement.value]!.timer!.length);
+  editedMessage.value = board.announcement[openedAnnouncement.value]!.message;
+  if (board.announcement[openedAnnouncement.value]!.timer) {
+    editedTimer.value = millisToString(board.announcement[openedAnnouncement.value]!.timer!.length);
   }
   else {
     editedTimer.value = '';
@@ -313,7 +344,7 @@ function openModal(index: number) {
   modalState.value = true;
 }
 
-const sortableInstance = useSortable(`.${props.name}`, announcmentRef, { animation: 150 });
+const sortableInstance = useSortable(`.${props.name}`, announcementRef, { animation: 150 });
 </script>
 
 <style scoped>
