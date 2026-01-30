@@ -37,7 +37,6 @@ function calculateGameDate(date: string, seasonYear: string | number, time: stri
   let fullGameDate = new Date(`${date} ${seasonYear} ${time}`);
   // the day of week generated doesn't match expected so it must be the next year in the season i.e. Jan date in a winter sport
   if (targetDateWeekday && fullGameDate.toLocaleDateString('en-us', { weekday: 'short' }) !== targetDateWeekday) {
-    fullGameDate = new Date(`${date.substring(0, date.indexOf('('))}, ${(Number(seasonYear) || 2000) + 1} ${time}`);
     fullGameDate = new Date(`${date.substring(0, date.indexOf('(')) || date.substring(date.indexOf(','), date.length)}, ${(Number(seasonYear) || 2000) + 1} ${time}`);
   }
   return fullGameDate;
@@ -140,7 +139,6 @@ function parseAchaSite(document: Document, forceFetch: boolean) {
 
     const date = gameElements[i]?.querySelector('.date i')?.textContent?.trim() || '';
     const time = gameElements[i]?.querySelector('[aria-colindex="3"]')?.textContent?.trim().match(/^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(am|pm)$/i)?.[0] || '';
-    console.log(gameElements[i]?.querySelector('[aria-colindex="3"]')?.textContent?.trim());
     const opponent = gameElements[i]?.querySelector('h3')?.textContent?.trim() || 'Unknown Opponent';
     const opponentLogo
       = `/api/img?force=${forceFetch}&src=`

@@ -25,6 +25,7 @@
         class="person"
       >
         {{ credit.people[j] }}
+        {{ credits.credit[i]!.people[j] }}
       </p>
     </div>
   </div>
@@ -64,10 +65,10 @@ const creditsContainer = computed((): CSSProperties => {
 
 const peopleStyles = computed((): CSSProperties[] => {
   const styles: CSSProperties[] = [];
-  for (const credit of credits.credit) {
+  for (let i = 0; i < credits.credit.length; i++) {
     styles.push({
-      color: credit.peopleColor,
-      fontSize: credit.peopleSize + 2.4 + 'vh',
+      color: credits.credit[i]!.peopleColor,
+      fontSize: credits.credit[i]!.peopleSize + 2.4 + 'vh',
     });
   }
   return styles;
@@ -75,10 +76,10 @@ const peopleStyles = computed((): CSSProperties[] => {
 
 const titleStyles = computed((): CSSProperties[] => {
   const styles: CSSProperties[] = [];
-  for (const credit of credits.credit) {
+  for (let i = 0; i < credits.credit.length; i++) {
     styles.push({
-      color: credit.titleColor,
-      fontSize: credit.titleSize + 3.3 + 'vh',
+      color: credits.credit[i]!.titleColor,
+      fontSize: credits.credit[i]!.titleSize + 3.3 + 'vh',
     });
   }
   return styles;

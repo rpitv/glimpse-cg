@@ -77,6 +77,7 @@
       <ClockControl />
       <PeriodControl class="mt-8" />
       <ShootoutControl class="mt-8" />
+      <PenaltyBox class="mt-8" />
     </div>
     <div />
   </div>
@@ -88,6 +89,7 @@ import ClockControl from '../General/ClockControl.vue';
 import PeriodControl from '../General/PeriodControl.vue';
 import ShootoutControl from './ShootoutControl.vue';
 import TeamScore from './TeamScore.vue';
+import PenaltyBox from './PenaltyBox.vue';
 
 const replicants = await useReplicants();
 const inputFocus = useInputFocus();

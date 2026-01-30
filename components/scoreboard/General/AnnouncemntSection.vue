@@ -285,11 +285,18 @@ const globalButtons = [
 ]
 
 function editAnnouncement() {
+  if (!editedMessage.value.trim().length) {
+    toast.add({
+      title: 'Error',
+      description: 'Announcement message cannot be empty',
+      color: 'error'
+    });
+    return; 
+  }
   board.announcement[openedAnnouncement.value]!.message = editedMessage.value;
   if (editedTimer.value.trim() === '') {
     board.announcement[openedAnnouncement.value]!.timer = null;
-  }
-  else {
+  } else {
     let totalTime = -1;
     try {
       totalTime = parseTimeString(editedTimer.value);

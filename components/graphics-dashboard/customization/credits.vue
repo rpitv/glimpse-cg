@@ -10,9 +10,6 @@
         Add Credit
       </UButton>
     </div>
-    <div v-show="false">
-      {{ creditsRef }}
-    </div>
     <table class="w-full">
       <thead>
         <tr>

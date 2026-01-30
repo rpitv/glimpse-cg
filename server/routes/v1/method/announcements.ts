@@ -127,13 +127,13 @@ function handleRemove(params: any) {
   const { param1, param2 } = params;
   if (!param1) return { code: 400, msg: 'missing announcement type to remove announcement from (global | team1 | team2)' };
   const announcement_handleRemove_param1 = {
-    global: replicants.scoreboard.announcement,
-    team1: replicants.scoreboard.homeTeam.announcement,
-    team2: replicants.scoreboard.awayTeam.announcement,
+    global: replicants.scoreboard,
+    team1: replicants.scoreboard.homeTeam,
+    team2: replicants.scoreboard.awayTeam,
   };
-  if (announcement_handleRemove_param1[param1 as keyof typeof announcement_handleRemove_param1]) {
+  if (announcement_handleRemove_param1[param1 as keyof typeof announcement_handleRemove_param1].announcement) {
     if (param2 === 'all') {
-      announcement_handleRemove_param1[param1 as keyof typeof announcement_handleRemove_param1] = [];
+      announcement_handleRemove_param1[param1 as keyof typeof announcement_handleRemove_param1].announcement = [];
       return { code: 200, msg: `removed all controllable messages` };
     }
     else {
