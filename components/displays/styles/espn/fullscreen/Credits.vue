@@ -24,7 +24,6 @@
         :style="peopleStyles[i]"
         class="person"
       >
-        {{ credit.people[j] }}
         {{ credits.credit[i]!.people[j] }}
       </p>
     </div>
