@@ -130,7 +130,7 @@
           </th>
         </tr>
       </thead>
-      <tbody class="my-table-tbody">
+      <tbody ref="tbody" class="my-table-tbody" :key="standings.teams.length">
         <tr
           v-for="(team, i) in standingsRef"
           :key="i"
@@ -202,6 +202,7 @@ const standingsRef = computed({
 });
 const search = ref('');
 const showDeleteModal = ref(false);
+const tbody = ref(null);
 const itemsTitle = ref<CommandPaletteGroup[]>([
   {
     id: 'titles',
@@ -312,15 +313,26 @@ function fetchECACWomenHockey() {
   return fetchECACHockeyRankings(false, ECAC_WOMENS_HOCKEY_URL);
 }
 
-const sortableInstance = useSortable('.my-table-tbody', standingsRef, { animation: 150 });
-watch(standingsRef, () => {
-  if (standingsRef.value.length === 0) {
-    sortableInstance.stop();
-  }
-  else {
-    sortableInstance.start();
-  }
-}, { immediate: true });
+let sortable = useSortable(tbody, standingsRef, { animation: 150 });
+
+function initSortable() {
+  if (!tbody.value) return;
+  
+  sortable.stop()
+  sortable = useSortable(tbody, standingsRef, {
+    animation: 150,
+  });
+}
+
+
+watch(() => standings.teams.length, async () => {
+  await nextTick();
+  initSortable();
+});
+
+onMounted(() => {
+  initSortable();
+});
 
 watch(search, (val) => {
   standings.title = val;

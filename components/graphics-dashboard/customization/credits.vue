@@ -24,7 +24,7 @@
           </th>
         </tr>
       </thead>
-      <tbody class="my-table-tbody">
+      <tbody ref="tbody" class="my-table-tbody" :key="credits.credit.length">
         <tr
           v-for="(credit, index) in credits.credit"
           :key="index"
@@ -157,6 +157,8 @@ const creditsRef = computed({
   get: () => credits.credit,
   set: val => (credits.credit = val),
 });
+const tbody = ref(null);
+
 
 function addCredit() {
   creditsRef.value = [...creditsRef.value, new Credit()];
@@ -164,17 +166,26 @@ function addCredit() {
 function deleteCredit(index: number) {
   creditsRef.value = creditsRef.value.filter((_, i) => i !== index);
 }
+let sortable = useSortable('.my-table-tbody', creditsRef, { animation: 150 });
 
-const sortableInstance = useSortable('.my-table-tbody', creditsRef, { animation: 150 });
+function initSortable() {
+  if (!tbody.value) return;
+  
+  sortable.stop()
+  sortable = useSortable(tbody, creditsRef, {
+    animation: 150,
+  });
+}
 
-watch(creditsRef, () => {
-  if (creditsRef.value.length === 0) {
-    sortableInstance.stop();
-  }
-  else {
-    sortableInstance.start();
-  }
-}, { immediate: true });
+
+watch(() => credits.credit.length, async () => {
+  await nextTick();
+  initSortable();
+});
+
+onMounted(() => {
+  initSortable();
+});
 </script>
 
 <style scoped>

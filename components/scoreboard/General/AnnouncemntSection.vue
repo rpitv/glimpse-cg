@@ -29,7 +29,7 @@
           </th>
         </tr>
       </thead>
-      <tbody :class="`${name} [&>tr]:h-[90px]`">
+      <tbody ref="tbody" :class="`${name} [&>tr]:h-[90px]`" :key="board.announcement.length">
         <tr
           v-for="(announcement, index) in announcementRef"
           :key="index"
@@ -226,7 +226,6 @@ const editedMessage = ref('');
 const editedTimer = ref('');
 
 function addAnnouncement(message: string = announcementMessage.value, timer: string = time.value) {
-  console.log('Adding announcement:', message, timer);
   if (message.trim() === '') {
     toast.add({
       title: 'Error',
@@ -351,7 +350,27 @@ function openModal(index: number) {
   modalState.value = true;
 }
 
-const sortableInstance = useSortable(`.${props.name}`, announcementRef, { animation: 150 });
+const tbody = ref(null);
+
+let sortable = useSortable(tbody, announcementRef, { animation: 150 });
+
+function initSortable() {
+  if (!tbody.value) return;
+  
+  sortable.stop()
+  sortable = useSortable(tbody, announcementRef, {
+    animation: 150,
+  });
+}
+
+watch(() => board.announcement.length, async () => {
+  await nextTick();
+  initSortable();
+});
+
+onMounted(() => {
+  initSortable();
+});
 </script>
 
 <style scoped>

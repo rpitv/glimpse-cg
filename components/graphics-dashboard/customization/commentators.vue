@@ -44,7 +44,7 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody class="my-table-tbody">
+        <tbody ref="tbody" class="my-table-tbody" :key="commentators.people.length">
           <tr
             v-for="(commentator, index) in commentators.people"
             :key="index"
@@ -127,6 +127,7 @@ import { useSortable } from '@vueuse/integrations/useSortable.mjs';
 
 const replicants = await useReplicants();
 const commentators = replicants.lowerThird.commentators;
+const tbody = ref(null);
 const commentatorsRef = computed({
   get: () => commentators.people,
   set: val => (commentators.people = val),
@@ -140,16 +141,25 @@ function deleteCommentator(index: number) {
   commentators.people.splice(index, 1);
 }
 
-const sortableInstance = useSortable('.my-table-tbody', commentatorsRef, { animation: 150 });
+let sortable = useSortable(tbody, commentatorsRef, { animation: 150 });
 
-watch(commentatorsRef, () => {
-  if (commentatorsRef.value.length === 0) {
-    sortableInstance.stop();
-  }
-  else {
-    sortableInstance.start();
-  }
-}, { immediate: true });
+function initSortable() {
+  if (!tbody.value) return;
+  
+  sortable.stop()
+  sortable = useSortable(tbody, commentatorsRef, {
+    animation: 150,
+  });
+}
+
+watch(() => commentators.people.length, async () => {
+  await nextTick();
+  initSortable();
+});
+
+onMounted(() => {
+  initSortable();
+});
 </script>
 
 <style scoped>

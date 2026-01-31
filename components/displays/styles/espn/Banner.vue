@@ -13,13 +13,11 @@
     <div class="upward-line" />
     <div
       class="away-team-name"
-      :style="{ color: awayTeam.primaryColor }"
     >
       {{ awayTeam.shortName }}
     </div>
     <div
       class="home-team-name"
-      :style="{ color: homeTeam.primaryColor }"
     >
       {{ homeTeam.shortName }}
     </div>
