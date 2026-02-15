@@ -166,7 +166,7 @@ function addCredit() {
 function deleteCredit(index: number) {
   creditsRef.value = creditsRef.value.filter((_, i) => i !== index);
 }
-let sortable = useSortable('.my-table-tbody', creditsRef, { animation: 150 });
+let sortable = useSortable(tbody, creditsRef, { animation: 150 });
 
 function initSortable() {
   if (!tbody.value) return;
@@ -178,12 +178,8 @@ function initSortable() {
 }
 
 
-watch(() => credits.credit.length, async () => {
+watch([() => credits.credit.length, tbody], async () => {
   await nextTick();
-  initSortable();
-});
-
-onMounted(() => {
   initSortable();
 });
 </script>

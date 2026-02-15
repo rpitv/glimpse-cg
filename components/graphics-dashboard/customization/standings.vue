@@ -325,12 +325,8 @@ function initSortable() {
 }
 
 
-watch(() => standings.teams.length, async () => {
+watch([() => standings.teams.length, tbody], async () => {
   await nextTick();
-  initSortable();
-});
-
-onMounted(() => {
   initSortable();
 });
 

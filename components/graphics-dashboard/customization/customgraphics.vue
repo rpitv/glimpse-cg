@@ -149,7 +149,7 @@ const selectRow = (index: number) => {
 function addGraphic(url: string) {
   if (url) {
     const newGraphic = new CustomGraphic(url);
-    fullscreen.custom = [...fullscreen.custom, newGraphic];
+    fullscreen.custom.push(newGraphic);
     graphicUrl.value = '';
     modalState.value = false;
     addCustomGraphic(newGraphic._id);

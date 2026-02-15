@@ -152,14 +152,11 @@ function initSortable() {
   });
 }
 
-watch(() => commentators.people.length, async () => {
+watch([() => commentators.people.length, tbody], async () => {
   await nextTick();
   initSortable();
 });
 
-onMounted(() => {
-  initSortable();
-});
 </script>
 
 <style scoped>

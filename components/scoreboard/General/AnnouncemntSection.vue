@@ -363,12 +363,8 @@ function initSortable() {
   });
 }
 
-watch(() => board.announcement.length, async () => {
+watch([() => board.announcement.length, tbody], async () => {
   await nextTick();
-  initSortable();
-});
-
-onMounted(() => {
   initSortable();
 });
 </script>

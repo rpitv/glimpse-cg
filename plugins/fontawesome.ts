@@ -13,7 +13,7 @@ import {
   faMagnifyingGlass,
   faRotateRight,
   faExplosion,
-} from '@fortawesome/pro-solid-svg-icons';
+} from '@fortawesome/free-solid-svg-icons';
 
 // Prevent FA from injecting CSS automatically
 config.autoAddCss = false;

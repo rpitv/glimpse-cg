@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  app:
+    image: rpitv/glimpse-cg:latest
+    container_name: glimpse-cg
+    ports:
+      - "3000:3000"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      NODE_ENV: production
+    volumes:
+      - app_data:/app/data/replicants.db
+    restart: unless-stopped
+
+volumes:
+  app_data:

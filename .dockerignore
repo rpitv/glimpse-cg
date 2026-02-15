@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules
+npm-debug.log
+.vscode
+.DS_Store
+.output
+.nuxt
+dist
+build
+*.local
+.env
+.cache
