@@ -8,24 +8,11 @@ broadcast and streaming applications.
 
 ### Prerequisites
 - Node.js v22.20.0
-- Google Chrome (required for puppeteer-core)
 
 ### Install Dependencies
 ```bash
 npm i
 ```
-
-### Environment Variables
-Create a `.env` file in the root directory and add the following environment variable:
-
-```bash
-CHROME_PATH=/path/to/your/chrome.exe
-```
-In `.env.sample`, the default path for Chrome on Windows is provided.
-
-### Fontawesome PRO
-This project uses Fontawesome PRO icons. To use them, you need to set up a `.npmrc` 
-file in the root directory with your Fontawesome authentication token. This file is provided in the RPI TV discord server.
 
 ### Development
 To start the development server, run:
