@@ -54,14 +54,14 @@ if "!WAS_UPDATED!"=="1" (
             if exist node_modules rd /s /q node_modules
 
             if exist package-lock.json (
-                npm ci --omit=dev
+                call npm ci --omit=dev
             ) else (
-                npm install --omit=dev
+                call npm install --omit=dev
             )
         )
 
         echo Building project...
-        npm run build
+        call npm run build
 
         if exist "!DIFFFILE!" del "!DIFFFILE!" >nul 2>nul
     )
@@ -69,6 +69,6 @@ if "!WAS_UPDATED!"=="1" (
 
 :startapp
 echo Starting application...
-npm run start
+call npm run start
 
 endlocal
