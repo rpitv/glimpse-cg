@@ -148,23 +148,6 @@ const selectedSchool = ref<Configuration['awayTeam' | 'homeTeam']>();
 const primaryChip = computed(() => ({ backgroundColor: configuration[props.teamSide].primaryColor }));
 const secondaryChip = computed(() => ({ backgroundColor: configuration[props.teamSide].secondaryColor }));
 
-function loadPreset(school: Configuration['awayTeam' | 'homeTeam']) {
-  // configuration[props.teamSide] = { ...school };
-  configuration[props.teamSide].schoolName = school.schoolName;
-  configuration[props.teamSide].shortName = school.shortName;
-  configuration[props.teamSide].abbr = school.abbr;
-  configuration[props.teamSide].teamName = school.teamName;
-  configuration[props.teamSide].primaryColor = school.primaryColor;
-  configuration[props.teamSide].secondaryColor = school.secondaryColor;
-  configuration[props.teamSide].logo = school.logo;
-  configuration[props.teamSide].athletics = school.athletics || '';
-  toast.add({
-    title: 'Preset Loaded',
-    description: `Loaded preset for ${school.schoolName}`,
-    duration: 3000,
-  });
-}
-
 defineEmits(['loadPreset']);
 </script>
 

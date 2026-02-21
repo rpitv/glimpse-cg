@@ -47,7 +47,7 @@
           </div>
         </template>
       </URadioGroup>
-      <i class="text-center w-full block text-muted mt-2">
+      <i v-else class="text-center w-full block text-muted mt-2">
         No players found.
       </i>
     </div>

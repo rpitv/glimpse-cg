@@ -44,5 +44,9 @@ export default defineNuxtConfig({
   experimental: {
     buildCache: true,
   },
-  
+  hooks: {
+    close: () => {
+      process.exit(0);
+    }
+  }
 });

@@ -5,7 +5,7 @@
         <TeamView team="awayTeam" />
         <div
           v-if="powerplaySync.type === 'away'"
-          class="announcement-section awayTeam"
+          class="announcement-section" :style="awayTeamClass"
         >
           <p>
             {{ powerplaySync.status }} {{ powerPlayClock }}
@@ -13,7 +13,7 @@
         </div>
         <div
           v-if="scoreboard!.awayTeam.announcement.length > 0"
-          class="announcement-section awayTeam"
+          class="announcement-section" :style="awayTeamClass"
         >
           <p>
             {{ computedMessage(scoreboard!.awayTeam.announcement[0]!).value }}
@@ -21,7 +21,7 @@
         </div>
         <div
           v-if="channel[channelIndex]!.shootout"
-          class="announcement-section awayTeam"
+          class="announcement-section" :style="awayTeamClass"
         >
           <p>
             <span v-for="shot of hockeyAwayTeam.score">
@@ -34,7 +34,7 @@
         <TeamView team="homeTeam" />
         <div
           v-if="powerplaySync.type === 'home'"
-          class="announcement-section homeTeam"
+          class="announcement-section" :style="homeTeamClass"
         >
           <p>
             {{ powerplaySync.status }} {{ powerPlayClock }}
@@ -42,7 +42,7 @@
         </div>
         <div
           v-if="scoreboard!.homeTeam.announcement.length > 0"
-          class="announcement-section homeTeam"
+          class="announcement-section" :style="homeTeamClass"
         >
           <p>
             {{ computedMessage(scoreboard!.homeTeam.announcement[0]!).value }}
@@ -50,7 +50,7 @@
         </div>
         <div
           v-if="channel![channelIndex]!.shootout"
-          class="announcement-section homeTeam"
+          class="announcement-section" :style="homeTeamClass"
         >
           <p>
             <span v-for="shot of hockeyHomeTeam.score">
@@ -92,6 +92,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CSSProperties } from 'vue';
 import TeamView from './TeamView.vue';
 import type { Announcement } from '~/utils/announcement';
 
@@ -107,8 +108,6 @@ const hockeyAwayTeam = scoreboard.hockey.awayTeam;
 const hockeyHomeTeam = scoreboard.hockey.homeTeam;
 const awayTeam = replicants.configuration.awayTeam;
 const homeTeam = replicants.configuration.homeTeam;
-const awayTeamColor = awayTeam.primaryColor;
-const homeTeamColor = homeTeam.primaryColor;
 const clock = scoreboard.clock;
 const period = scoreboard.period;
 
@@ -180,6 +179,32 @@ function pickTextColorBasedOnBgColorSimple(bgColor: string, lightColor: string, 
 
 const homeTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(homeTeam.primaryColor, '#ffffff', '#000000'));
 const awayTeamTextColor = computed(() => pickTextColorBasedOnBgColorSimple(awayTeam.primaryColor, '#ffffff', '#000000'));
+
+const awayTeamClass = computed((): CSSProperties => 
+  ({
+    display: 'flex',
+		alignItems: 'center',
+		textAlign: 'left',
+		paddingLeft: '0.5em',
+		backgroundColor: awayTeam.primaryColor,
+		color: awayTeamTextColor.value,
+		width: '20.7vw',
+		top: '5.4vh'
+  })
+);
+
+const homeTeamClass = computed((): CSSProperties => 
+  ({
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'left',
+    paddingLeft: '0.5em',
+    backgroundColor: homeTeam.primaryColor,
+    color: homeTeamTextColor.value,
+    width: '20.7vw',
+    top: '5.4vh'
+  })
+);
 
 function computedMessage(message: Announcement) {
   return computed(() => {
@@ -376,28 +401,6 @@ div {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	&.homeTeam {
-		display: flex;
-		align-items: center;
-		text-align: left;
-		padding-left: 0.5em;
-		background-color: v-bind(homeTeamColor);
-		color: v-bind(homeTeamTextColor);
-		width: 20.7vw;
-		top: 5.4vh;
-	}
-
-	&.awayTeam {
-		display: flex;
-		align-items: center;
-		text-align: left;
-		padding-left: 0.5em;
-		background-color: v-bind(awayTeamColor);
-		color: v-bind(awayTeamTextColor);
-		top: 5.4vh;
-		width: 20.7vw;
 	}
 }
 </style>
