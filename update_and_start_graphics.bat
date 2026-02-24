@@ -2,72 +2,81 @@
 setlocal EnableDelayedExpansion
 
 set "BRANCH="
-set "REMOTE_AHEAD=0"
-set "WAS_UPDATED=0"
 set "OLD_COMMIT="
 set "NEW_COMMIT="
+set "WAS_UPDATED=0"
+set "DEPS_CHANGED=0"
 
-REM Get branch
+REM ----------------------------------------
+REM Detect current branch
+REM ----------------------------------------
 for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD 2^>nul') do (
     set "BRANCH=%%b"
 )
 
-if not defined BRANCH (
-    echo Not inside a git repository.
-    goto :startapp
-)
-
-echo Current branch: !BRANCH!
-git fetch origin >nul 2>nul
-
-for /f "delims=" %%c in ('git rev-list --count HEAD..origin/!BRANCH! 2^>nul') do (
-    set "REMOTE_AHEAD=%%c"
-)
-
-echo Remote ahead count: !REMOTE_AHEAD!
-
-if not "!REMOTE_AHEAD!"=="0" (
-    set "WAS_UPDATED=1"
-    echo Pulling updates...
+if defined BRANCH (
+    echo Current branch: !BRANCH!
+    git fetch origin >nul 2>nul
 
     for /f "delims=" %%h in ('git rev-parse HEAD') do set "OLD_COMMIT=%%h"
 
-    git pull --ff-only
+    git pull --ff-only >nul 2>nul
 
     for /f "delims=" %%h in ('git rev-parse HEAD') do set "NEW_COMMIT=%%h"
+
+    if not "!OLD_COMMIT!"=="!NEW_COMMIT!" (
+        set "WAS_UPDATED=1"
+        echo Repository updated.
+    )
+) else (
+    echo Not inside a git repository.
 )
 
-if "!WAS_UPDATED!"=="1" (
-    if not "!OLD_COMMIT!"=="!NEW_COMMIT!" (
-        echo Updated from !OLD_COMMIT! to !NEW_COMMIT!
+REM ----------------------------------------
+REM Check if dependencies need installing
+REM ----------------------------------------
 
-        set "DIFFFILE=%TEMP%\pulldiff_!RANDOM!.tmp"
-        git diff --name-only !OLD_COMMIT! !NEW_COMMIT! > "!DIFFFILE!" 2>nul
+if not exist node_modules (
+    echo node_modules missing. Installing dependencies...
+    set "DEPS_CHANGED=1"
+)
 
-        set "DEPS_CHANGED=0"
-
-        findstr /I /C:"package.json" /C:"package-lock.json" /C:"package-lock.yaml" /C:"pnpm-lock.yaml" /C:"yarn.lock" "!DIFFFILE!" >nul 2>nul
-        if not errorlevel 1 set "DEPS_CHANGED=1"
-
-        if "!DEPS_CHANGED!"=="1" (
-            echo Dependencies changed.
-            if exist node_modules rd /s /q node_modules
-
-            if exist package-lock.json (
-                call npm ci --omit=dev
-            ) else (
-                call npm install --omit=dev
-            )
-        )
-
-        echo Building project...
-        call npm run build
-
-        if exist "!DIFFFILE!" del "!DIFFFILE!" >nul 2>nul
+REM If lockfile is newer than node_modules, reinstall
+if exist package-lock.json (
+    for %%F in (package-lock.json) do set LOCKTIME=%%~tF
+    for %%F in (node_modules) do set NODETIME=%%~tF
+    if "!LOCKTIME!" GTR "!NODETIME!" (
+        echo Lockfile newer than node_modules.
+        set "DEPS_CHANGED=1"
     )
 )
 
-:startapp
+if "!DEPS_CHANGED!"=="1" (
+    if exist package-lock.json (
+        call npm ci --omit=dev
+    ) else (
+        call npm install --omit=dev
+    )
+)
+
+REM ----------------------------------------
+REM Check if build is needed
+REM ----------------------------------------
+
+if not exist dist (
+    echo Build output missing. Building project...
+    call npm run build
+) else (
+    if "!WAS_UPDATED!"=="1" (
+        echo Changes pulled. Rebuilding...
+        call npm run build
+    )
+)
+
+REM ----------------------------------------
+REM Start app
+REM ----------------------------------------
+
 echo Starting application...
 call npm run start
 

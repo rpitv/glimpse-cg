@@ -45,8 +45,10 @@ export default defineNuxtConfig({
     buildCache: true,
   },
   hooks: {
-    close: () => {
-      process.exit(0);
+    "close": (e) => {
+      setTimeout(() => {
+        process.exit(0);
+      }, 3000);
     }
   }
 });

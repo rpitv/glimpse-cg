@@ -1,7 +1,5 @@
 import { library, config } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
-// Import only the FontAwesome icons actually used in the app to minimize bundle size
 import {
   faTrash,
   faMinus,

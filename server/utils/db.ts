@@ -1,9 +1,11 @@
 import Database from 'better-sqlite3';
 import { mkdir } from 'node:fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { writeFile } from 'node:fs';
 
-export const db = new Database('replicants.db');
+
+const dbPath = resolve(process.cwd(), 'replicants.db');
+export const db = new Database(dbPath);
 
 function initHttpCacheTable() {
   db.prepare(`

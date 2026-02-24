@@ -15,7 +15,7 @@ export async function useReplicants(): Promise<Replicants> {
 
   // Connect once per tab
   if (!socket) {
-    socket = io('http://localhost:3000');
+    socket = io();
 
     await new Promise<void>((resolve) => {
       socket!.on('init', (serverState) => {
