@@ -6,9 +6,6 @@ export default defineEventHandler(async (event) => {
   if (!awayTeam && !homeTeam) {
     return;
   };
-  let awayPlayers = awayTeam.athletics;
-  let homePlayers = homeTeam.athletics;
-
   let suffix = '';
 
   switch (sport) {
@@ -43,8 +40,8 @@ export default defineEventHandler(async (event) => {
       break;
   }
 
-  awayPlayers += suffix;
-  homePlayers += suffix;
+  const awayPlayers = getRosterUrl(awayTeam.athletics, suffix);
+  const homePlayers = getRosterUrl(homeTeam.athletics, suffix);
 
   const { html: awayHTML } = await grabHTML(awayPlayers);
   const { html: homeHTML } = await grabHTML(homePlayers);
@@ -58,6 +55,13 @@ export default defineEventHandler(async (event) => {
     },
   };
 });
+
+function getRosterUrl(input: string, suffix: string): string {
+  if (input.endsWith(suffix)) {
+    return input;
+  }
+  return input.replace(/\/+$/, '') + suffix;
+}
 
 const cache: Record<string, { html: string; timestamp: number }> = {};
 

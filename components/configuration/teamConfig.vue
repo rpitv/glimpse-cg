@@ -121,6 +121,7 @@
           <UFormField label="Athletics URL">
             <UInput
               v-model="configuration[props.teamSide].athletics"
+              placeholder="e.g., https://rpiathletics.com/"
               class="w-full"
             />
           </UFormField>
