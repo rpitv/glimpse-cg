@@ -194,7 +194,7 @@
 <script lang="ts" setup>
 import { Announcement, type AnnouncementTimer } from '#imports';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { useSortable } from '@vueuse/integrations/useSortable.mjs';
+import { useSortable } from '@vueuse/integrations/useSortable';
 import { millisToString } from '~/utils/milisToString';
 import { parseTimeString } from '~/utils/parseTimeString';
 

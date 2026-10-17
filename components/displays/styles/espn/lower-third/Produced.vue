@@ -2,10 +2,10 @@
   <div
     id="container"
     :class="{
-      show: channels![channelIndex].produced,
-      hide: !channels![channelIndex].produced,
-      translateUp: channels![channelIndex].copyright,
-      translateNone: !channels![channelIndex].copyright,
+      show: channels![channelIndex]!.produced,
+      hide: !channels![channelIndex]!.produced,
+      translateUp: channels![channelIndex]!.copyright,
+      translateNone: !channels![channelIndex]!.copyright,
     }"
   >
     <img
@@ -26,7 +26,6 @@ import RPITV_LOGO from '~/assets/rpitv-modern/rpitv_logo.svg';
 
 const route = useRoute();
 const replicants = await useReplicants();
-const preview = ref(route.query.preview === 'produced' || false);
 
 const channelIndex = ref(0);
 if (route.query.channel)

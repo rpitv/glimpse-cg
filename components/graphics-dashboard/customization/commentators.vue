@@ -123,7 +123,7 @@
 
 <script lang="ts" setup>
 import { Commentator } from '~/types/replicants';
-import { useSortable } from '@vueuse/integrations/useSortable.mjs';
+import { useSortable } from '@vueuse/integrations/useSortable';
 
 const replicants = await useReplicants();
 const commentators = replicants.lowerThird.commentators;

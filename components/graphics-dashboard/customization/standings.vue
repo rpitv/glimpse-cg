@@ -190,7 +190,7 @@
 
 <script setup lang="ts">
 import type { CommandPaletteGroup } from '@nuxt/ui';
-import { useSortable } from '@vueuse/integrations/useSortable.mjs';
+import { useSortable } from '@vueuse/integrations/useSortable';
 
 const replicants = await useReplicants();
 const toast = useToast();

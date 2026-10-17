@@ -9,6 +9,7 @@ import {
   faPlay,
   faInfoCircle,
   faMagnifyingGlass,
+  faArrowRotateLeft,
   faRotateRight,
   faExplosion,
 } from '@fortawesome/free-solid-svg-icons';
@@ -17,7 +18,19 @@ import {
 config.autoAddCss = false;
 
 // Add only the specific icons we use
-library.add(faMinus, faPlus, faPenToSquare, faPause, faPlay, faInfoCircle, faMagnifyingGlass, faTrash, faRotateRight, faExplosion);
+library.add(
+  faMinus, 
+  faPlus, 
+  faPenToSquare, 
+  faPause, 
+  faPlay, 
+  faInfoCircle, 
+  faMagnifyingGlass, 
+  faTrash, 
+  faRotateRight, 
+  faExplosion, 
+  faArrowRotateLeft
+);
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon);

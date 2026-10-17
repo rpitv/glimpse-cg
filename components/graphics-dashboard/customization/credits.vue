@@ -149,7 +149,7 @@
 
 <script lang="ts" setup>
 import { Credit } from '~/types/replicants';
-import { useSortable } from '@vueuse/integrations/useSortable.mjs';
+import { useSortable } from '@vueuse/integrations/useSortable';
 
 const replicants = await useReplicants();
 const credits = replicants.fullscreen.credits;

@@ -1,7 +1,5 @@
 export default defineAppConfig({
   ui: {
-    tooltip: {
-    },
     icons: {
       // Navigation
       arrowLeft: 'fa:arrow-left',
@@ -45,5 +43,10 @@ export default defineAppConfig({
       dotsHorizontal: 'fa:ellipsis',
       dotsVertical: 'fa:ellipsis-vertical',
     },
+    radioGroup: {
+      slots: {
+        label: 'w-full'
+      }
+    }
   },
 });

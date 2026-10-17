@@ -1,5 +1,5 @@
 <template>
-  <div :class="(channels[channelIndex]!.commentators && !route.query.preview) || preview ? 'show' : 'hide'">
+  <div :class="channels[channelIndex]!.commentators ? 'show' : 'hide'">
     <ESPNCommentators v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVCommentators v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
   </div>
@@ -12,7 +12,6 @@ import RPITVCommentators from '../styles/rpitv/lower-third/Commentators.vue';
 
 const route = useRoute();
 const replicants = await useReplicants();
-const preview = ref(route.query.preview === 'commentators' || false);
 
 const channelIndex = ref(0);
 if (route.query.channel)

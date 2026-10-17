@@ -2,8 +2,8 @@
   <div
     class="banner"
     :class="{
-      show: channels[channelIndex]!.scoreboard && channels[channelIndex]!.sog && !route.query.preview,
-      hide: !channels[channelIndex]!.scoreboard || !channels[channelIndex]!.sog || route.query.preview,
+      show: channels[channelIndex]!.scoreboard && channels[channelIndex]!.sog,
+      hide: !channels[channelIndex]!.scoreboard || !channels[channelIndex]!.sog,
     }"
   >
     <div class="title">

@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <UCard class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)">
+    <UCard class="w-full shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none">
       <template #header>
         <p class="text-2xl">
           Graphics List
@@ -54,7 +53,6 @@
         </div>
       </template>
     </UCard>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -71,12 +69,15 @@ import Standings from './customization/standings.vue';
 import Credits from './customization/credits.vue';
 import CustomGraphics from './customization/customgraphics.vue';
 import type { Component } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
 
 const replicants = await useReplicants();
 const inputFocus = useInputFocus();
 const channels = replicants.channels;
 const configuration = replicants.configuration;
 const graphicsStore = useGraphicsStore();
+const currentGraphic = useLocalStorage('currentGraphic', '');
+const graphicIndex = useLocalStorage('graphicIndex', -1);
 
 interface Graphic {
   label: string;
@@ -122,7 +123,7 @@ defineShortcuts({
 const graphics: Graphic[] = [
   {
     label: 'Scorebug',
-    val: { name: '', component: markRaw(Scorebug), reference: 'scoreboard' },
+    val: { name: 'scorebug', component: markRaw(Scorebug), reference: 'scoreboard' },
     restrictions: [],
     kbd: 'SPACE',
   },
@@ -183,6 +184,8 @@ const graphics: Graphic[] = [
 
 function changeGraphic(graphicVal: { name: string; component: Component; reference: string }) {
   graphicsStore.setGraphic({ component: graphicVal.component, name: graphicVal.name, index: -1 });
+  currentGraphic.value = graphicVal.name;
+  graphicIndex.value = -1;
 }
 
 const computedGraphics = computed(() => {
@@ -191,6 +194,10 @@ const computedGraphics = computed(() => {
     return graphic.restrictions.includes(configuration.style);
   });
 });
+
+onMounted(() => {
+  currentGraphic.value = '';
+})
 </script>
 
 <style scoped>

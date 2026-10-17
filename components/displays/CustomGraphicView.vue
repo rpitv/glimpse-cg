@@ -8,17 +8,21 @@
         :ref="el => imgRefs[i] = el"
         :style="graphicsProps(i)"
         :src="customGraphics[i]!.imagePath"
-        :class="(!route.query.preview && channelGraphics!.custom[i]?.show) || (preview && parseInt(route.query.index) === i) ? 'show' : 'hide'"
+        :class="`${preview && currentGraphic === 'customgraphic' ? 'super-show' : 'super-hide'}` +
+         ` ${channelGraphics!.custom[i]?.show || (preview && graphicIndex === i) ? 'show' : 'hide'}`"
       >
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core';
 import type { CSSProperties } from 'vue';
 
 const route = useRoute();
-const preview = ref(route.query.preview === 'customgraphic' || false);
+const currentGraphic = useLocalStorage('currentGraphic', '');
+const graphicIndex = useLocalStorage('graphicIndex', -1);
+const preview = ref(route.query.preview || false);
 const channelIndex = ref(0);
 if (route.query.channel)
   channelIndex.value = parseInt(route.query.channel as string);

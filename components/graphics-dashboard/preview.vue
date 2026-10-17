@@ -1,28 +1,25 @@
 <template>
-  <div>
     <UCard
-      class="shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none border-1 border-(--tw-ring-color)"
-      :ui="{
-      }"
+      class="w-full h-full shadow-none inset-shadow-none ring-0 inset-ring-0 rounded-none"
     >
       <p class="text-2xl">
         Preview
       </p>
       <br>
-      <div v-if="loading && graphicsStore.selectedGraphic.name">
+      <div v-if="loading">
         <UProgress indeterminate />
         <p class="text-center">
           Loading Preview...
         </p>
       </div>
-      <iframe
-        v-if="graphicsStore.selectedGraphic.name"
-        :src="`/display/?preview=${graphicsStore.selectedGraphic.name}&dev=1&${graphicsStore.selectedGraphic.index !== -1 ? `index=${graphicsStore.selectedGraphic.index}` : ''}`"
-        @load="loading = false"
-      />
-      <p v-else>
+      <p v-else v-show="!graphicsStore.selectedGraphic.name">
         No Graphic Selected
       </p>
+      <iframe
+        v-show="!loading"
+        :src="`/display/?preview=1&dev=1`"
+        @load="loading = false"
+      />
       <div v-if="graphicsStore.selectedGraphic.index !== -1 && graphicsStore.selectedGraphic.name === 'customgraphic'">
         <UFormField
           class="mt-4"
@@ -92,10 +89,10 @@
         </div>
       </div>
     </UCard>
-  </div>
 </template>
 
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core';
 import { useGraphicsStore } from '~/store/graphics';
 
 const replicants = await useReplicants();
@@ -104,9 +101,6 @@ const loading = ref(true);
 let fullscreen = replicants.fullscreen;
 
 watch(() => graphicsStore.selectedGraphic, (n, o) => {
-  if (n.name !== o.name || n.index !== o.index)
-    loading.value = true;
-
   if (graphicsStore.selectedGraphic.name !== 'customgraphic')
     graphicsStore.selectedGraphic.index = -1;
 });

@@ -124,6 +124,7 @@
 import { CustomGraphic } from '~/types/replicants';
 import { useGraphicsStore } from '~/store/graphics';
 import customgraphics from './customgraphics.vue';
+import { useLocalStorage } from '@vueuse/core';
 
 const toast = useToast();
 const graphicsStore = useGraphicsStore();
@@ -136,13 +137,16 @@ const graphicFile = ref<File | null>(null);
 const graphicUrl = ref('');
 const deleteModalState = ref(false);
 const deleteIndex = ref<number | null>(null);
+const graphicIndex = useLocalStorage('graphicIndex', -1);
 
 const selectRow = (index: number) => {
   if (index !== null) {
     graphicsStore.setGraphic({ component: markRaw(customgraphics), name: 'customgraphic', index });
+    graphicIndex.value = index;
   }
   else {
     graphicsStore.setGraphic({ component: null, name: '', index: -1 });
+    graphicIndex.value = -1;
   }
 };
 
@@ -206,6 +210,7 @@ function performDelete() {
     deleteCustomGraphic(fullscreen.custom[deleteIndex.value]!._id);
     if (graphicsStore.selectedGraphic.index === deleteIndex.value) {
       graphicsStore.setGraphic({ component: customgraphics, name: 'customgraphic', index: -1 });
+      graphicIndex.value = -1;
     }
     fullscreen.custom = fullscreen.custom.filter((_, i) => i !== deleteIndex.value);
     deleteIndex.value = null;
