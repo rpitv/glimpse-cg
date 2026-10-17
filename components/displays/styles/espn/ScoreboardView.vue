@@ -240,10 +240,10 @@ const powerplaySync = computed(() => {
     status: '',
     type: '',
   };
-  if (hockeyAwayTeam.penalty.player1.number && hockeyAwayTeam.penalty.player2.number) {
+  if (hockeyAwayTeam.penalty.player1.number && hockeyAwayTeam.penalty.player2.number && hockeyAwayTeam.penalty.player1.number !== hockeyAwayTeam.penalty.player2.number) {
     // If two home players are on penalty
     if (hockeyHomeTeam.penalty.player1.number) {
-      if (hockeyHomeTeam.penalty.player2.number) {
+      if (hockeyHomeTeam.penalty.player2.number && hockeyHomeTeam.penalty.player1.number !== hockeyHomeTeam.penalty.player2.number) {
         powerplay.type = 'global';
         powerplay.status = '3 on 3';
       }
@@ -258,10 +258,10 @@ const powerplaySync = computed(() => {
     }
   }
   // If two home players are on penalty...
-  else if (hockeyHomeTeam.penalty.player1.number && hockeyHomeTeam.penalty.player2.number) {
+  else if (hockeyHomeTeam.penalty.player1.number && hockeyHomeTeam.penalty.player2.number && hockeyHomeTeam.penalty.player1.number !== hockeyHomeTeam.penalty.player2.number) {
     // If two away players are on penalty
     if (hockeyAwayTeam.penalty.player1.number) {
-      if (hockeyAwayTeam.penalty.player2.number) {
+      if (hockeyAwayTeam.penalty.player2.number && hockeyAwayTeam.penalty.player1.number !== hockeyAwayTeam.penalty.player2.number) {
         powerplay.type = 'global';
         powerplay.status = '3 on 3';
       }

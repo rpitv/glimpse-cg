@@ -77,10 +77,7 @@
         >
           <span>Last Updated: {{ lastUpdated }}</span>
           <UButton @click="refresh(true)">
-            <UIcon
-              name="material-symbols-light:sync"
-              class="size-full"
-            />
+            <FontAwesomeIcon icon="fas fa-arrow-rotate-left" />
           </UButton>
         </span>
       </div>

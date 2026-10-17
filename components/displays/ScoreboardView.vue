@@ -1,5 +1,5 @@
 <template>
-  <div :class="(channels![channelIndex]!.scoreboard && !route.query.preview) || preview ? 'show' : 'hide'">
+  <div :class="channels![channelIndex]!.scoreboard ? 'show' : 'hide'">
     <ESPNScoreboard v-if="configuration!.style === 'espn'" />
     <RPITV v-if="configuration!.style === 'rpitv'" />
     <RPITVFootball v-if="configuration!.style === 'football'" />
@@ -13,7 +13,6 @@ import RPITVFootball from './styles/rpitv/football/ScoreboardView.vue';
 
 const route = useRoute();
 const replicants = await useReplicants();
-const preview = ref(route.query.preview === 'scoreboard' || false);
 
 const channelIndex = ref(0);
 if (route.query.channel)

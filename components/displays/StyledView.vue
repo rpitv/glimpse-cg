@@ -1,19 +1,19 @@
 <template>
   <div>
     <ImageView id="images" />
-    <ScoreboardView id="scorebug" />
-    <CommentatorsView id="commentators" />
-    <CreditsView id="credits" />
+    <ScoreboardView id="scorebug" :class="`${preview && currentGraphic === 'scorebug' ? 'super-show' : 'super-hide'}`" />
+    <CommentatorsView id="commentators" :class="`${preview && currentGraphic === 'commentators' ? 'super-show' : 'super-hide'}`"/>
+    <CreditsView id="credits" :class="`${preview && currentGraphic === 'credits' ? 'super-show' : 'super-hide'}`"/>
     <div v-if="configuration!.style === 'espn'">
       <ESPNProduced id="espn-produced" />
-      <ESPNBanner id="espn-banner" />
-      <ESPNTombstone id="espn-tombstone" />
+      <ESPNBanner id="espn-banner" :class="`${preview && currentGraphic === 'scorebug' ? 'super-show' : 'super-hide'}`"/>
+      <ESPNTombstone id="espn-tombstone" :class="`${preview && currentGraphic === 'standings' ? 'super-show' : 'super-hide'}`"/>
     </div>
-    <LocatorView id="locator" />
-    <GoToBreakView id="break-scoreboard" />
-    <PlayerBioView id="PlayerBio" />
-    <CopyrightView id="copyright" />
-    <BugView />
+    <LocatorView id="locator" :class="`${preview && currentGraphic === 'locator' ? 'super-show' : 'super-hide'}`"/>
+    <GoToBreakView id="break-scoreboard" :class="`${preview && currentGraphic === 'gotobreak' ? 'super-show' : 'super-hide'}`"/>
+    <PlayerBioView id="PlayerBio" :class="`${preview && currentGraphic === 'playerbio' ? 'super-show' : 'super-hide'}`"/>
+    <CopyrightView id="copyright" :class="`${preview && currentGraphic === 'copyright' ? 'super-show' : 'super-hide'}`"/>
+    <BugView id="bug" :class="`${preview && currentGraphic === 'bug' ? 'super-show' : 'super-hide'}`"/>
   </div>
 </template>
 
@@ -30,9 +30,14 @@ import GoToBreakView from './LowerThirdViews/GoToBreakView.vue';
 import ScoreboardView from './ScoreboardView.vue';
 import PlayerBioView from './LowerThirdViews/PlayerBioView.vue';
 import ESPNTombstone from './styles/espn/tomestone/Tombstone.vue';
+import { useLocalStorage } from '@vueuse/core';
 
 const replicants = await useReplicants();
 const configuration = replicants.configuration;
+const currentGraphic = useLocalStorage('currentGraphic', '');
+const route = useRoute();
+const preview = ref(route.query.preview || false);
+
 </script>
 
 <style scoped lang="scss">
@@ -44,5 +49,15 @@ const configuration = replicants.configuration;
 .show {
   opacity: 1;
   transition: 1s;
+}
+
+.super-hide {
+  opacity: 0 !important;
+  transition: none !important;
+}
+
+.super-show {
+  opacity: 1 !important;
+  transition: none !important;
 }
 </style>

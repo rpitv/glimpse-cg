@@ -1,5 +1,5 @@
 <template>
-  <div :class="(channels![channelIndex].locator && !route.query.preview) || preview ? 'show' : 'hide'">
+  <div :class="channels![channelIndex]!.locator ? 'show' : 'hide'">
     <ESPNLocator v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVLocator v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
   </div>
@@ -12,7 +12,6 @@ import RPITVLocator from '../styles/rpitv/lower-third/Locator.vue';
 
 const route = useRoute();
 const replicants = await useReplicants();
-const preview = ref(route.query.preview === 'locator' || false);
 
 const channelIndex = ref(0);
 if (route.query.channel)

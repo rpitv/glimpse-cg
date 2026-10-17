@@ -154,7 +154,6 @@ function setPlayers(html: string, team: 'home' | 'away'): Player[] {
         .substring("window.__INITIAL_STATE__='".length, text.length - 1) // remove the starting assignment and closing '
         .replace(/\\'/g, "'") // escaped single quote ' get unescaped
         .replaceAll("\\\\", "\\") // escaped \ get unescaped
-      console.log("HELLO");
       const data = JSON.parse(jsonString)
       // @ts-expect-error because making an interface for JSON format used this singular time is not worth it
       data["rostersModule"]["roster"][Object.keys(data["rostersModule"]["roster"])]["players"].forEach(player => {

@@ -165,7 +165,6 @@ function loadMatchup(teamConfig: Configuration['awayTeam' | 'homeTeam']) {
 
 function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['awayTeam' | 'homeTeam']) {
   // Avoid unnecessary updates
-  console.log(JSON.stringify(configuration[teamSide]), "\n\n", JSON.stringify(school));
   if (JSON.stringify(configuration[teamSide]) === JSON.stringify(school)) {
     return;
   }
