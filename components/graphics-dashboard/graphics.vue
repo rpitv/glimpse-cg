@@ -64,6 +64,7 @@ import Commentators from './customization/commentators.vue';
 import Copyright from './customization/copyright.vue';
 import GoToBreak from './customization/gotobreak.vue';
 import Locator from './customization/locator.vue';
+import OutOfTown from './customization/outoftown.vue';
 import PlayerBio from './customization/playerbio.vue';
 import Standings from './customization/standings.vue';
 import Credits from './customization/credits.vue';
@@ -113,9 +114,12 @@ defineShortcuts({
     if (!inputFocus.isInputFocused.value) channels[0]!.locator = !channels[0]?.locator;
   },
   '7': () => {
-    if (!inputFocus.isInputFocused.value) channels[0]!.playerBio = !channels[0]?.playerBio;
+    if (!inputFocus.isInputFocused.value) channels[0]!.outoftown = !channels[0]?.outoftown;
   },
   '8': () => {
+    if (!inputFocus.isInputFocused.value) channels[0]!.playerBio = !channels[0]?.playerBio;
+  },
+  '9': () => {
     if (!inputFocus.isInputFocused.value) channels[0]!.standings = !channels[0]?.standings;
   },
 });
@@ -164,16 +168,22 @@ const graphics: Graphic[] = [
     kbd: '6',
   },
   {
+    label: 'Out of Town',
+    val: { name: 'outoftown', component: markRaw(OutOfTown), reference: 'outOfTown' },
+    restrictions: ['espn', 'sny'],
+    kbd: '7'
+  },
+  {
     label: 'Player Bios',
     val: { name: 'playerbio', component: markRaw(PlayerBio), reference: 'playerBio' },
     restrictions: [],
-    kbd: '7',
+    kbd: '8',
   },
   {
     label: 'Standings',
     val: { name: 'standings', component: markRaw(Standings), reference: 'standings' },
     restrictions: [],
-    kbd: '8',
+    kbd: '9',
   },
   {
     label: 'Custom Graphics',

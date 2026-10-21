@@ -67,6 +67,9 @@ function makeProxy<T extends object>(obj: T, path: string[] = []): T {
   return new Proxy(obj, {
     get(target, key) {
       const value = Reflect.get(target, key);
+      if (value instanceof Date) {
+        return value;
+      }
       if (typeof value === 'object' && value !== null) {
         return makeProxy(value as any, [...path, String(key)]);
       }

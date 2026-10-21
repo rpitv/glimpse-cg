@@ -1,55 +1,5 @@
 <template>
   <div>
-    <!-- <UFormField label="Offset X" help="Adjust the horizontal position of the locator. Positive values move it to the right, negative values to the left.">
-      <UInputNumber v-model="locator.offsetX" :step="0.1" :format-options="{
-        minimumFractionDigits: 1,
-      }" />
-    </UFormField>
-    <UFormField class="mt-4" label="Offset Y" help="Adjust the vertical position of the locator. Positive values move it up, negative values down.">
-      <UInputNumber v-model="locator.offsetY" :step="0.1" :format-options="{
-        minimumFractionDigits: 1,
-      }" />
-    </UFormField> -->
-    <!-- <UFormField
-      class="mt-4"
-      label="Location"
-      help="The location of the event."
-    >
-      <UInput
-        v-model="locator.location.name"
-        placeholder="Default Value"
-      />
-    </UFormField> -->
-    <!-- <UPopover arrow>
-      <UButton
-        class="mt-2"
-        label="Show Advanced Settings"
-        variant="outline"
-      />
-      <template #content>
-        <div
-          class="p-2"
-          style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
-        >
-          <ColorPicker
-            v-model="locator.location.nameColor"
-            label="Location Text Color"
-            help="The color for the location text."
-          />
-          <UFormField
-            class="mt-4"
-            label="Location Text Size"
-            help="Adjust the size of the location text."
-          >
-            <UInputNumber
-              v-model="locator.location.nameSize"
-              :step="0.1"
-              :format-options="{ minimumFractionDigits: 1 }"
-            />
-          </UFormField>
-        </div>
-      </template>
-    </UPopover> -->
     <div class="flex justify-around mt-2">
       <UCard class="w-full rounded-none">
         <template #header>
@@ -182,13 +132,6 @@ const replicants = await useReplicants();
 const configuration = replicants.configuration;
 const locator = replicants.lowerThird.locator;
 
-const teams: {
-  name: string;
-  key: 'homeTeam' | 'awayTeam';
-}[] = [
-  { name: 'Away Team', key: 'awayTeam' },
-  { name: 'Home Team', key: 'homeTeam' },
-];
 </script>
 
 <style>

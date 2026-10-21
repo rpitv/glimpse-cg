@@ -33,15 +33,16 @@
             <div v-if="configuration.sport !== 'acha' && configuration.sport !== 'football'">
               <UFormField
                 class="mt-4"
-                label="Type (Important for Rosters)"
+                label="Type (Important for Rosters and Schedules)"
               >
                 <USelect
                   v-model="configuration.type"
                   :class="width"
                   :items="type"
-                  @update:model-value="scheduleCard!.refresh()"
+                  @update:model-value="onTypeUpdate"
                 />
               </UFormField>
+
             </div>
           </div>
           <div class="flex flex-col">
@@ -216,7 +217,7 @@ function loadPreset(teamSide: 'awayTeam' | 'homeTeam', school: Configuration['aw
 }
 
 async function resetScoreboard() {
-  await useFetch('/api/resetScoreboard', {
+  await $fetch('/api/resetScoreboard', {
     method: 'POST',
   }).then(() => {
     toast.add({
@@ -232,6 +233,19 @@ async function resetScoreboard() {
       color: 'error',
     });
   });
+}
+
+async function onTypeUpdate() {
+  scheduleCard.value!.refresh();
+  await $fetch('/api/outoftown/default', {
+    method: 'POST',
+  }).then(() => {
+    toast.add({
+      title: 'Updated Out of Town Teams for ' + configuration.type,
+      description: 'The out of town teams have been updated for the selected type.',
+      duration: 2000
+    });
+  })
 }
 </script>
 
