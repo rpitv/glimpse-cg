@@ -314,18 +314,25 @@ export const defaultScoreboard = {
 export class OutOfTownTeam {
     public sidearmsLink: string;
     public body: any = {};
-    public details: { 
-      HasStarted: boolean; 
-      IsComplete: boolean; 
-      Date: Date; 
-      Period: number; 
-      ClockSeconds: number; 
-      HomeTeam: { Name: string, Score: number, CurrentRecord: string, Color: string, TextColor: string }; 
-      VisitingTeam: { Name: string, Score: number, CurrentRecord: string, Color: string, TextColor: string }; 
-    } | null = null;
+    public details = {
+      homeTeam: '',
+      visitingTeam: '',
+      date: '',
+      score: '',
+      clock: '',
+      period: 1,
+      periodsRegulation: 3,
+      homeLogo: '',
+      homeColor: '',
+      homeTextColor: '',
+      visitingLogo: '',
+      visitingColor: '',
+      visitingTextColor: '',
+    }
+    show = false;
     public constructor(link: string, body={}) {
-        this.sidearmsLink = link;
-        this.body = body;
+      this.sidearmsLink = link;
+      this.body = body;
     }
 }
 

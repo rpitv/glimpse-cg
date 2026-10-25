@@ -169,7 +169,7 @@ const graphics: Graphic[] = [
   },
   {
     label: 'Out of Town',
-    val: { name: 'outoftown', component: markRaw(OutOfTown), reference: 'outOfTown' },
+    val: { name: 'outoftown', component: markRaw(OutOfTown), reference: 'outoftown' },
     restrictions: ['espn', 'sny'],
     kbd: '7'
   },

@@ -239,6 +239,9 @@ async function onTypeUpdate() {
   scheduleCard.value!.refresh();
   await $fetch('/api/outoftown/default', {
     method: 'POST',
+    body: {
+      type: configuration.type
+    }
   }).then(() => {
     toast.add({
       title: 'Updated Out of Town Teams for ' + configuration.type,
