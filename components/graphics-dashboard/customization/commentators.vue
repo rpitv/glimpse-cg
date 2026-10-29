@@ -21,6 +21,21 @@
         :format-options="{ minimumFractionDigits: 1 }"
       />
     </UFormField>
+    <UFormField
+      v-if="configuration.style === 'sny'"
+      class="mt-4"
+      label="Commentator Mode"
+      help="Adjust the mode of the commentators depending on the situation."
+    >
+      <USelect
+        v-model="commentators.mode"
+        :items="[
+          { label: '2 Person BOOTH', value: '2 Person BOOTH' },
+          { label: '3 Person BOOTH', value: '3 Person BOOTH' },
+          { label: '3 Person BENCH', value: '3 Person BENCH' }
+        ]"
+      />
+    </UFormField>
     <USeparator
       class="mt-2"
       size="md"
@@ -62,6 +77,18 @@
                     class="w-full"
                   />
                 </UFormField>
+                <UFormField
+                  v-if="configuration.style === 'sny'"
+                  class="mt-4"
+                  label="Description"
+                  help="The description of the commentator."
+                >
+                  <UInput
+                    v-model="commentators.people[index]!.description"
+                    placeholder="Description"
+                    class="w-full"
+                  />
+                </UFormField>
                 <UPopover arrow>
                   <UButton
                     class="mt-2"
@@ -90,6 +117,24 @@
                           :format-options="{ minimumFractionDigits: 1 }"
                         />
                       </UFormField>
+                      <div v-if="configuration.style === 'sny'">
+                        <ColorPicker
+                          v-model="commentators.people[index]!.descriptionColor"
+                          label="Description Color"
+                          help="The color for the commentator's description."
+                        />
+                        <UFormField
+                          class="mt-4"
+                          label="Description Size"
+                          help="Adjust the size of the commentator's description."
+                        >
+                          <UInputNumber
+                            v-model="commentators.people[index]!.descriptionSize"
+                            :step="0.1"
+                            :format-options="{ minimumFractionDigits: 1 }"
+                          />
+                        </UFormField>
+                      </div>
                     </div>
                   </template>
                 </UPopover>
@@ -126,6 +171,7 @@ import { Commentator } from '~/types/replicants';
 import { useSortable } from '@vueuse/integrations/useSortable';
 
 const replicants = await useReplicants();
+const configuration = replicants.configuration
 const commentators = replicants.lowerThird.commentators;
 const tbody = ref(null);
 const commentatorsRef = computed({

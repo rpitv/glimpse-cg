@@ -2,12 +2,14 @@
   <div :class="channels![channelIndex]!.bug ? 'show' : 'hide'">
     <ESPNBug v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVBug v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
+    <SNYBug v-if="configuration.style === 'sny'" />
   </div>
 </template>
 
 <script setup lang="ts">
 import ESPNBug from '../styles/espn/lower-third/Bug.vue';
 import RPITVBug from '../styles/rpitv/lower-third/Bug.vue';
+import SNYBug from '../styles/sny/lower-third/Bug.vue';
 import { espnStyles, rpiTVStyles } from '../util';
 
 const route = useRoute();

@@ -25,12 +25,27 @@
         }"
       />
     </UFormField>
+    <UFormField
+      v-if="configuration.style === 'sny'"
+      class="mt-4"
+      label="Opacity"
+      help="Adjust the opacity of the bug. 0 is fully transparent, 1 is fully opaque."
+    >
+      <UInputNumber
+        v-model="bug.opacity"
+        :step="0.01"
+        :format-options="{
+          minimumFractionDigits: 1,
+        }"
+      />
+    </UFormField>
   </div>
 </template>
 
 <script lang="ts" setup>
 const replicants = await useReplicants();
 const bug = replicants.lowerThird.bug;
+const configuration = replicants.configuration
 </script>
 
 <style>

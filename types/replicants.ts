@@ -5,11 +5,13 @@ export const defaultLowerThird = {
   bug: {
     offsetX: 0,
     offsetY: 0,
+    opacity: 1
   },
   commentators: {
     offsetX: 0,
     offsetY: 0,
     people: [] as Commentator[],
+    mode: '2 Person BOOTH' as '2 Person BOOTH' | '3 Person BOOTH' | '3 Person BENCH'
   },
   copyright: {
     offsetX: 0,
@@ -129,7 +131,7 @@ export class Commentator {
 }
 
 export const defaultConfiguration = {
-  style: 'rpitv' as 'rpitv' | 'espn' | 'football',
+  style: 'rpitv' as 'rpitv' | 'espn' | 'football' | 'sny',
   // Based on the selected sport, it will attempt to fetch different data from athletics.
   sport: 'hockey' as 'hockey' | 'football' | 'acha' | 'lacrosse' | 'basketball' | 'soccer',
   type: 'men' as 'men' | 'women',
@@ -370,6 +372,9 @@ export const defaultFullscreen = {
   credits: {
     credit: [] as Credit[],
   },
+  snyCredits: {
+    credit: [] as SNYCredit[],
+  },
   outOfTown: {
     teams: defaultOutOfTownTeams('m'),
     loading: false,
@@ -421,6 +426,10 @@ export class Credit {
   public constructor() {
     this._id = v4();
   }
+}
+
+export class SNYCredit extends Credit {
+  public column: 1 | 2 | 3 = 1;
 }
 
 export class Channel {

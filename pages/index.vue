@@ -116,18 +116,24 @@ const scoreboard = replicants.scoreboard;
 const scheduleCard = useTemplateRef<typeof ScheduleCard>('scheduleCard');
 const width = 'w-48';
 
-const styles = [{
-  label: 'RPI TV',
-  value: 'rpitv',
-},
-{
-  label: 'ESPN',
-  value: 'espn',
-},
-{
-  label: 'Football',
-  value: 'football',
-}];
+const styles = [
+  {
+    label: 'RPI TV',
+    value: 'rpitv',
+  },
+  {
+    label: 'ESPN',
+    value: 'espn',
+  },
+  {
+    label: 'Football',
+    value: 'football',
+  },
+  {
+    label: 'SNY',
+    value: 'sny',
+  }
+];
 
 const sports = [{
   label: 'Hockey',

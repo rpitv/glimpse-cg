@@ -1,7 +1,7 @@
 <template>
   <div :class="channels![channelIndex]!.scoreboard ? 'show' : 'hide'">
     <ESPNScoreboard v-if="configuration!.style === 'espn'" />
-    <RPITV v-if="configuration!.style === 'rpitv'" />
+    <RPITV v-if="configuration!.style === 'rpitv' || configuration.style === 'sny'" />
     <RPITVFootball v-if="configuration!.style === 'football'" />
   </div>
 </template>

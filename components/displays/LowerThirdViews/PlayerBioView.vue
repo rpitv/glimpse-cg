@@ -1,7 +1,7 @@
 <template>
   <div :class="channels![channelIndex]!.playerBio ? 'show' : 'hide'">
     <ESPNPlayerBio v-if="espnStyles.indexOf(configuration!.style) !== -1" />
-    <RPITVPlayerBio v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
+    <RPITVPlayerBio v-if="rpiTVStyles.indexOf(configuration!.style) !== -1 || configuration!.style === 'sny'" />
   </div>
 </template>
 

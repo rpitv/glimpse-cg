@@ -13,6 +13,9 @@
         {{ playerBio.playerNumber ? "#" + playerBio.playerNumber: "" }}
         {{ playerBio.playerName ?? "" }}
       </div>
+      <div v-if="playerBio.info.show" :style="info">
+        {{ infoItemsFiltered.join(" | ") }}
+      </div>
     </div>
   </div>
 </template>
@@ -52,12 +55,36 @@ const action = computed((): CSSProperties => {
     color: 'white',
     display: 'flex',
     alignItems: 'center',
-    bottom: playerBio.offsetY + 10 + 'vh',
-    height: '9.7vh',
+    height: '6.7vh',
     left: playerBio.offsetX + 'vw',
-    marginLeft: '3vw',
-    fontSize: playerBio.fontSize + 7 + 'vh',
+    marginLeft: '2.5vw',
+    fontSize: playerBio.fontSize + (playerBio.info.show ? 6 : 7) + 'vh',
   };
+});
+
+const info = computed((): CSSProperties => {
+  return {
+    opacity: playerBio.info.show ? 100 : 0,
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: '-2.6vh',
+    height: '8.9vh',
+    left: '5.3vw',
+    marginLeft: '1vw',
+    width: '58.5vw',
+    fontSize: '3vh',
+  };
+});
+
+const infoItemsFiltered = computed(() => {
+  return [
+    playerBio.info.height,
+    playerBio.info.year,
+    playerBio.info.weight,
+    playerBio.info.hometown,
+  ].filter(item => item && item !== '');
 });
 </script>
 
