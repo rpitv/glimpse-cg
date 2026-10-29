@@ -1,19 +1,20 @@
 <template>
   <div>
     <ImageView id="images" />
-    <ScoreboardView id="scorebug" :class="`${preview && currentGraphic === 'scorebug' ? 'super-show' : 'super-hide'}`" />
-    <CommentatorsView id="commentators" :class="`${preview && currentGraphic === 'commentators' ? 'super-show' : 'super-hide'}`"/>
-    <CreditsView id="credits" :class="`${preview && currentGraphic === 'credits' ? 'super-show' : 'super-hide'}`"/>
+    <ScoreboardView id="scorebug" :class="`${preview ? (currentGraphic === 'scorebug' ? 'super-show' : 'super-hide') : ''}`" />
     <div v-if="configuration!.style === 'espn'">
       <ESPNProduced id="espn-produced" />
-      <ESPNBanner id="espn-banner" :class="`${preview && currentGraphic === 'scorebug' ? 'super-show' : 'super-hide'}`"/>
-      <ESPNTombstone id="espn-tombstone" :class="`${preview && currentGraphic === 'standings' ? 'super-show' : 'super-hide'}`"/>
+      <ESPNBanner id="espn-banner" :class="`${preview ? (currentGraphic === 'scorebug' ? 'super-show' : 'super-hide') : ''}`"/>
+      <ESPNTombstone id="espn-tombstone" :class="`${preview ? (currentGraphic === 'standings' ? 'super-show' : 'super-hide') : ''}`"/>
     </div>
-    <LocatorView id="locator" :class="`${preview && currentGraphic === 'locator' ? 'super-show' : 'super-hide'}`"/>
-    <GoToBreakView id="break-scoreboard" :class="`${preview && currentGraphic === 'gotobreak' ? 'super-show' : 'super-hide'}`"/>
-    <PlayerBioView id="PlayerBio" :class="`${preview && currentGraphic === 'playerbio' ? 'super-show' : 'super-hide'}`"/>
-    <CopyrightView id="copyright" :class="`${preview && currentGraphic === 'copyright' ? 'super-show' : 'super-hide'}`"/>
-    <BugView id="bug" :class="`${preview && currentGraphic === 'bug' ? 'super-show' : 'super-hide'}`"/>
+    <CommentatorsView id="commentators" :class="`${preview ? (currentGraphic === 'commentators' ? 'super-show' : 'super-hide') : ''}`"/>
+    <CreditsView id="credits" :class="`${preview ? (currentGraphic === 'credits' ? 'super-show' : 'super-hide') : ''}`"/>
+    <LocatorView id="locator" :class="`${preview ? (currentGraphic === 'locator' ? 'super-show' : 'super-hide') : ''}`"/>
+    <GoToBreakView id="break-scoreboard" :class="`${preview ? (currentGraphic === 'gotobreak' ? 'super-show' : 'super-hide') : ''}`"/>
+    <PlayerBioView id="PlayerBio" :class="`${preview ? (currentGraphic === 'playerbio' ? 'super-show' : 'super-hide') : ''}`" />
+    <OutOfTownView id="OutOfTown" :class="`${preview ? (currentGraphic === 'outoftown' ? 'super-show' : 'super-hide') : ''}`" />
+    <CopyrightView id="copyright" :class="`${preview ? (currentGraphic === 'copyright' ? 'super-show' : 'super-hide') : ''}`"/>
+    <BugView id="bug" :class="`${preview ? (currentGraphic === 'bug' ? 'super-show' : 'super-hide') : ''}`"/>
   </div>
 </template>
 
@@ -31,6 +32,7 @@ import ScoreboardView from './ScoreboardView.vue';
 import PlayerBioView from './LowerThirdViews/PlayerBioView.vue';
 import ESPNTombstone from './styles/espn/tomestone/Tombstone.vue';
 import { useLocalStorage } from '@vueuse/core';
+import OutOfTownView from './FullscreenViews/OutOfTownView.vue';
 
 const replicants = await useReplicants();
 const configuration = replicants.configuration;

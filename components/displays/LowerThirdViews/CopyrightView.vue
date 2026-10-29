@@ -2,12 +2,14 @@
   <div :class="channels![channelIndex]!.copyright ? 'show' : 'hide'">
     <ESPNCopyright v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVCopyright v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
+    <SNYCopyright v-if="configuration!.style === 'sny'" />
   </div>
 </template>
 
 <script setup lang="ts">
 import ESPNCopyright from '../styles/espn/lower-third/Copyright.vue';
 import RPITVCopyright from '../styles/rpitv/lower-third/Copyright.vue';
+import SNYCopyright from '../styles/sny/lower-third/Copyright.vue';
 import { espnStyles, rpiTVStyles } from '../util';
 
 const route = useRoute();

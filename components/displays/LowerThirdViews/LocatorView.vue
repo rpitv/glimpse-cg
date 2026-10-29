@@ -2,6 +2,7 @@
   <div :class="channels![channelIndex]!.locator ? 'show' : 'hide'">
     <ESPNLocator v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVLocator v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
+    <SNYLocator v-if="configuration.style === 'sny'" />
   </div>
 </template>
 
@@ -9,6 +10,7 @@
 import { espnStyles, rpiTVStyles } from '../util';
 import ESPNLocator from '../styles/espn/lower-third/Locator.vue';
 import RPITVLocator from '../styles/rpitv/lower-third/Locator.vue';
+import SNYLocator from '../styles/sny/lower-third/Locator.vue';
 
 const route = useRoute();
 const replicants = await useReplicants();

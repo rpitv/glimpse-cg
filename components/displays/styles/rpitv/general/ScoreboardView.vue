@@ -4,7 +4,7 @@
       <div class="logo game-info-child">
         <img
           id="logoImg"
-          :src="rpitvLogo"
+          :src="configuration.style === 'sny' ? snyLogo : rpitvLogo"
         >
       </div>
       <div class="clock game-info-child">
@@ -66,6 +66,7 @@
 
 <script setup lang="ts">
 import rpitvLogo from '~/assets/football/rpitv_logo.png';
+import snyLogo from '~/assets/sny/SNY_logo.png';
 import TeamView from './TeamView.vue';
 import gsap from 'gsap';
 import { isLightColor, calcLinearGrad, isLighter } from '../../../util';

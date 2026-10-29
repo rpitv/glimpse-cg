@@ -19,14 +19,20 @@
           <th class="text-left p-2">
             People
           </th>
+          <th
+            v-if="configuration.style === 'sny'"
+            class="text-left p-2"
+          >
+            Column
+          </th>
           <th class="text-right p-2">
             Actions
           </th>
         </tr>
       </thead>
-      <tbody ref="tbody" class="my-table-tbody" :key="credits.credit.length">
+      <tbody ref="tbody" class="my-table-tbody" :key="creditsRef.length">
         <tr
-          v-for="(credit, index) in credits.credit"
+          v-for="(credit, index) in creditsRef"
           :key="index"
           class="border-t border-muted"
         >
@@ -37,7 +43,7 @@
                 help="The title of the role."
               >
                 <UInput
-                  v-model="credits.credit[index]!.title"
+                  v-model="creditsRef[index]!.title"
                   placeholder="Title of the role"
                   class="w-full"
                 />
@@ -55,7 +61,7 @@
                     style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
                   >
                     <ColorPicker
-                      v-model="credits.credit[index]!.titleColor"
+                      v-model="creditsRef[index]!.titleColor"
                       label="Title Color"
                       help="The color for the title."
                     />
@@ -65,7 +71,7 @@
                       help="Adjust the size of the role title."
                     >
                       <UInputNumber
-                        v-model="credits.credit[index]!.titleSize"
+                        v-model="creditsRef[index]!.titleSize"
                         :step="0.1"
                         :format-options="{
                           minimumFractionDigits: 1,
@@ -83,7 +89,7 @@
               help="People can be added by pressing enter after typing a name."
             >
               <UInputTags
-                v-model="credits.credit[index]!.people"
+                v-model="creditsRef[index]!.people"
                 placeholder="Add a person"
                 class="w-full"
               />
@@ -101,7 +107,7 @@
                   style="box-shadow: 0 4px 16px rgba(0,0,0,0.9); border-radius: 0.5rem;"
                 >
                   <ColorPicker
-                    v-model="credits.credit[index]!.peopleColor"
+                    v-model="creditsRef[index]!.peopleColor"
                     label="People Text Color"
                     help="The color for the people text."
                   />
@@ -111,7 +117,7 @@
                     help="Adjust the size of the names of the people."
                   >
                     <UInputNumber
-                      v-model="credits.credit[index]!.peopleSize"
+                      v-model="creditsRef[index]!.peopleSize"
                       :step="0.1"
                       :format-options="{
                         minimumFractionDigits: 1,
@@ -121,6 +127,18 @@
                 </div>
               </template>
             </UPopover>
+          </td>
+          <td v-if="configuration.style === 'sny'">
+            <UFormField
+              label="Column"
+              help="The SNY column where this credit is displayed."
+            >
+              <USelect
+                v-model="creditsRef[index]!.column"
+                :items="[1, 2, 3]"
+                class="w-full"
+              />
+            </UFormField>
           </td>
           <td>
             <div class="flex gap-2 justify-end">
@@ -136,7 +154,7 @@
         </tr>
         <tr v-if="creditsRef.length === 0">
           <td
-            colspan="3"
+            :colspan="configuration.style === 'sny' ? 4 : 3"
             class="text-center p-4 text-gray-500"
           >
             No credits added yet. Click "Add Credit" to add one.
@@ -148,20 +166,31 @@
 </template>
 
 <script lang="ts" setup>
-import { Credit } from '~/types/replicants';
+import { Credit, SNYCredit } from '~/types/replicants';
 import { useSortable } from '@vueuse/integrations/useSortable';
 
 const replicants = await useReplicants();
-const credits = replicants.fullscreen.credits;
+const configuration = replicants.configuration;
 const creditsRef = computed({
-  get: () => credits.credit,
-  set: val => (credits.credit = val),
+  get: () => configuration.style === 'sny'
+    ? replicants.fullscreen.snyCredits.credit
+    : replicants.fullscreen.credits.credit,
+  set: val => {
+    if (configuration.style === 'sny') {
+      replicants.fullscreen.snyCredits.credit = val;
+    } else {
+      replicants.fullscreen.credits.credit = val;
+    }
+  },
 });
 const tbody = ref(null);
 
 
 function addCredit() {
-  creditsRef.value = [...creditsRef.value, new Credit()];
+  creditsRef.value = [
+    ...creditsRef.value,
+    configuration.style === 'sny' ? new SNYCredit() : new Credit(),
+  ];
 }
 function deleteCredit(index: number) {
   creditsRef.value = creditsRef.value.filter((_, i) => i !== index);
@@ -178,7 +207,7 @@ function initSortable() {
 }
 
 
-watch([() => credits.credit.length, tbody], async () => {
+watch([() => creditsRef.value.length, () => configuration.style, tbody], async () => {
   await nextTick();
   initSortable();
 });

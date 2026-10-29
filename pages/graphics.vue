@@ -28,7 +28,7 @@ const graphicsStore = useGraphicsStore();
 const items: SplitterItem[] = [
   { slot: 'graphics', minSize: 16, defaultSize: 25, class: 'min-w-[300px]' },
   { slot: 'customization', minSize: 30, defaultSize: 50 },
-  { slot: 'preview', minSize: 15, defaultSize: 25 }
+  { slot: 'preview', minSize: 0, defaultSize: 25 }
 ]
 </script>
 

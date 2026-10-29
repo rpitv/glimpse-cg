@@ -5,11 +5,13 @@ export const defaultLowerThird = {
   bug: {
     offsetX: 0,
     offsetY: 0,
+    opacity: 1
   },
   commentators: {
     offsetX: 0,
     offsetY: 0,
     people: [] as Commentator[],
+    mode: '2 Person BOOTH' as '2 Person BOOTH' | '3 Person BOOTH' | '3 Person BENCH'
   },
   copyright: {
     offsetX: 0,
@@ -129,7 +131,7 @@ export class Commentator {
 }
 
 export const defaultConfiguration = {
-  style: 'rpitv' as 'rpitv' | 'espn' | 'football',
+  style: 'rpitv' as 'rpitv' | 'espn' | 'football' | 'sny',
   // Based on the selected sport, it will attempt to fetch different data from athletics.
   sport: 'hockey' as 'hockey' | 'football' | 'acha' | 'lacrosse' | 'basketball' | 'soccer',
   type: 'men' as 'men' | 'women',
@@ -311,9 +313,77 @@ export const defaultScoreboard = {
   },
 };
 
+export class OutOfTownTeam {
+    public sidearmsLink: string;
+    public body: any = {};
+    public details = {
+      homeTeam: '',
+      visitingTeam: '',
+      date: '',
+      score: '',
+      clock: '',
+      period: 1,
+      periodsRegulation: 3,
+      homeLogo: '',
+      homeColor: '',
+      homeTextColor: '',
+      visitingLogo: '',
+      visitingColor: '',
+      visitingTextColor: '',
+    }
+    show = false;
+    public constructor(link: string, body={}) {
+      this.sidearmsLink = link;
+      this.body = body;
+    }
+}
+
+// Returns the sidearms page for all teams except RPI
+export function defaultOutOfTownTeams(team: 'm' | 'w'): OutOfTownTeam[] {
+    return [
+        new OutOfTownTeam(`https://sidearmstats.com/cornell/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/quinnipiac/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/dartmouth/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/princeton/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/union/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/harvard/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/colgate/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/clarkson/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/yale/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/stlawu/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+        new OutOfTownTeam(`https://sidearmstats.com/brown/${team === 'm' ? 'm' : 'w'}hockey/game.json?detail=game`),
+    ]
+}
+
+export interface Timeline {
+  description: string;
+  title: string;
+  type: string;
+  homeGame: boolean;
+  opponentLogo?: {
+    src: string;
+    alt: string;
+  };
+  preset: Configuration['awayTeam' | 'homeTeam'] | null;
+  uni: string;
+}
+
 export const defaultFullscreen = {
   credits: {
     credit: [] as Credit[],
+  },
+  snyCredits: {
+    credit: [] as SNYCredit[],
+  },
+  outOfTown: {
+    teams: defaultOutOfTownTeams('m'),
+    loading: false,
+    lastUpdated: new Date().toLocaleString()
+  },
+  schedule: {
+    opponents: [] as Timeline[],
+    loading: false,
+    lastUpdated: new Date().toLocaleString(),
   },
   standings: {
     teams: [] as StandingsTeam[],
@@ -358,6 +428,10 @@ export class Credit {
   }
 }
 
+export class SNYCredit extends Credit {
+  public column: 1 | 2 | 3 = 1;
+}
+
 export class Channel {
   public bottomTextBar = false;
   public bottomGrayText = false;
@@ -369,6 +443,7 @@ export class Channel {
   public faceoff = false;
   public goToBreak = false;
   public locator = false;
+  public outoftown = false;
   public playerBio = false;
   public produced = false;
   public scoreboard = false;

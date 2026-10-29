@@ -2,6 +2,7 @@
   <div :class="channels![channelIndex]!.goToBreak ? 'show' : 'hide'">
     <ESPNGoToBreak v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVGoToBreak v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
+    <SNYGoToBreak v-if="configuration!.style === 'sny'" />
   </div>
 </template>
 
@@ -9,6 +10,7 @@
 import { espnStyles, rpiTVStyles } from '../util';
 import ESPNGoToBreak from '../styles/espn/lower-third/GoToBreak.vue';
 import RPITVGoToBreak from '../styles/rpitv/lower-third/GoToBreak.vue';
+import SNYGoToBreak from '../styles/sny/lower-third/GoToBreak.vue';
 
 const route = useRoute();
 const replicants = await useReplicants();
