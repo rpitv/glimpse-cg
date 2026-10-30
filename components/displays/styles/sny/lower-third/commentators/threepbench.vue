@@ -9,6 +9,13 @@
     >
       <g id="Left_Namebar">
         <rect
+          class="cls-11"
+          x="-1.23"
+          y="864.91"
+          width="947.82"
+          height="126.91"
+        />
+        <rect
           class="cls-19"
           x="760.76"
           y="859.32"
@@ -16,13 +23,6 @@
           height="138.48"
         />
         <rect class="cls-1" x="-1.23" y="859.32" width="195.77" height="139.48" />
-        <rect
-          class="cls-11"
-          x="-1.23"
-          y="864.91"
-          width="947.82"
-          height="126.91"
-        />
         <rect class="cls-6" x="-1.23" y="873.27" width="939.37" height="111.58" />
         <rect class="cls-13" y="931.46" width="938.14" height="53.39" />
         <text class="cls-22" transform="translate(148.85 915.76)" x="80" text-anchor="middle"

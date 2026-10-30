@@ -212,6 +212,7 @@ const peopleStyles = computed((): CSSProperties[] => {
     styles.push({
       color: credits.credit[i]!.peopleColor,
       fontSize: credits.credit[i]!.peopleSize + 2.4 + 'vh',
+      fontStyle: 'italic',
     });
   }
   return styles;
