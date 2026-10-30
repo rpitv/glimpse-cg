@@ -25,9 +25,4 @@ const preview = ref(!!route.query.preview || false);
 </script>
 
 <style scoped>
-.fullscreen {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-}
 </style>

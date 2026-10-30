@@ -57,13 +57,7 @@ const copyrightStyle = computed((): CSSProperties => {
 
 </script>
 
-<style>
-.fullscreen {
-  position: absolute;
-  height: 100vh;
-  width: 100vw;
-}
-
+<style scoped>
 .cls-1 {
   fill: #d31245;
 }

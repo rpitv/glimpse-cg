@@ -4,7 +4,7 @@
       <div class="logo game-info-child">
         <img
           id="logoImg"
-          :src="configuration.style === 'sny' ? snyLogo : rpitvLogo"
+          :src="configuration.style === 'sny' ? ECACLogo : rpitvLogo"
         >
       </div>
       <div class="clock game-info-child">
@@ -16,12 +16,12 @@
     </div>
     <div class="teams">
       <TeamView
-        team="homeTeam"
-        class="home-team-view"
-      />
-      <TeamView
         team="awayTeam"
         class="away-team-view"
+      />
+      <TeamView
+        team="homeTeam"
+        class="home-team-view"
       />
     </div>
     <div class="animation">
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import rpitvLogo from '~/assets/football/rpitv_logo.png';
-import snyLogo from '~/assets/sny/SNY_logo.png';
+import ECACLogo from '~/assets/sny/ecac_hockey.svg';
 import TeamView from './TeamView.vue';
 import gsap from 'gsap';
 import { isLightColor, calcLinearGrad, isLighter } from '../../../util';
@@ -138,8 +138,8 @@ function runAnimation(team: 'awayTeam' | 'homeTeam') {
   const t6 = gsap.timeline();
   const disappearance = 1.5;
   t1.to('.game-info', { top: '-4vh', duration: disappearance });
-  t2.to('.home-team-view', { top: '5vh', left: '-10.5vw', duration: disappearance });
-  t3.to('.away-team-view', { top: '5vh', left: '21vw', duration: disappearance });
+  t2.to('.away-team-view', { top: '5vh', left: '-10.5vw', duration: disappearance });
+  t3.to('.home-team-view', { top: '5vh', left: '21vw', duration: disappearance });
   t4.fromTo('.text1', { left: '', filter: '', letterSpacing: 0, fontSize: '100vh' }, { fontSize: '8vh', duration: 2 });
   t4.to('.text1', { fontSize: '9vh', duration: 0.5 });
   t5.to('.text1', { letterSpacing: '1vw', duration: 2 }, '+=2');
@@ -151,8 +151,8 @@ function runAnimation(team: 'awayTeam' | 'homeTeam') {
   scorer.value = configuration[team].shortName;
   t4.fromTo('.text2', { left: '75vw', letterSpacing: 0 }, { left: '0vw', duration: 1, ease: 'power3.out' }, '-=1.25');
   t1.to('.game-info', { top: '0vh', duration: disappearance }, '+=4');
-  t2.to('.home-team-view', { top: '0vh', left: '0vw', duration: disappearance }, '+=4');
-  t3.to('.away-team-view', { top: '0vh', left: '12.5vw', duration: disappearance }, '+=4');
+  t2.to('.away-team-view', { top: '0vh', left: '0vw', duration: disappearance }, '+=4');
+  t3.to('.home-team-view', { top: '0vh', left: '12.5vw', duration: disappearance }, '+=4');
 }
 
 const awayTeamScore = computed(() => scoreboard.awayTeam.score);
@@ -592,14 +592,14 @@ onMounted(() => {
 .home-team-view {
 	width: 12.5vw;
 	position: absolute;
-	left: 0vw;
+	left: 12.5vw;
 	height: 5vh;
 }
 
 .away-team-view {
 	position: absolute;
-	left: 12.5vw;
 	width: 12.5vw;
+	left: 0vw;
 	height: 5vh;
 }
 
@@ -637,7 +637,7 @@ onMounted(() => {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	left: 16.5vw;
+	left: 4vw;
 	background: linear-gradient(v-bind(awayTeamColor1), v-bind(awayTeamColor2));
 	color: v-bind(awayTeamFontColor);
 }
@@ -647,7 +647,7 @@ onMounted(() => {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	left: 4vw;
+	left: 16.5vw;
 	background: linear-gradient(v-bind(homeTeamColor1), v-bind(homeTeamColor2));
 	color: v-bind(homeTeamFontColor);
 }
