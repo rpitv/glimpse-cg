@@ -79,7 +79,6 @@ onMounted(() => {
   top: 36vh;
   width: 85vw;
   left: 7.5vw;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .fullscreen {
@@ -117,8 +116,7 @@ onMounted(() => {
   justify-content: space-evenly;
   height: 100%;
   gap: 1vh;
-  font-weight: 600;
-  
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .cls-1 {
