@@ -44,7 +44,7 @@
     <p v-if="scoreboard!.homeTeam.announcement.length > 0">
       {{ computedMessage('homeTeam').value }}
     </p>
-    <p v-else-if="powerPlaySync.type === 'home'">
+    <p v-else-if="powerPlaySync.type === 'away'">
       {{ powerPlaySync.status }} {{ powerPlayClock }}
     </p>
     <p v-else-if="channels[channelIndex]!.shootout">
@@ -55,7 +55,7 @@
     <p v-if="scoreboard!.awayTeam.announcement.length > 0">
       {{ computedMessage('awayTeam').value }}
     </p>
-    <p v-else-if="powerPlaySync.type === 'away'">
+    <p v-else-if="powerPlaySync.type === 'home'">
       {{ powerPlaySync.status }} {{ powerPlayClock }}
     </p>
     <p v-else-if="channels[channelIndex]!.shootout">
