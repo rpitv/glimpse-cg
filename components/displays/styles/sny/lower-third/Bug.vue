@@ -726,9 +726,4 @@ const bugStyles = computed((): CSSProperties => {
 </script>
 
 <style scoped>
-.fullscreen {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-}
 </style>

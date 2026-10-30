@@ -42,7 +42,7 @@ const preview = ref(route.query.preview || false);
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .hide {
   opacity: 0;
   transition: 1s;
@@ -61,5 +61,13 @@ const preview = ref(route.query.preview || false);
 .super-show {
   opacity: 1 !important;
   transition: none !important;
+}
+
+.fullscreen {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
 }
 </style>
