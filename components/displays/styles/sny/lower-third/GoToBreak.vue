@@ -6,6 +6,7 @@
       version="1.2"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 3840 2160"
+      style="z-index: -1"
     >
       <defs>
         <image
@@ -33,13 +34,13 @@
           href="/assets/sny/ecac_hockey.svg"
         />
       </defs>
-      <path
-        id="BACKGROUND RECTANGLE"
-        fill-rule="evenodd"
-        class="s0"
-        d="m1042 1206h1748c5.52 0 10 4.48 10 10v771c0 5.52-4.48 10-10 10h-1748c-5.52 0-10-4.48-10-10v-771c0-5.52 4.48-10 10-10z"
-      />
-      <g id="HOME - RIGHT">
+        <path
+            id="BACKGROUND RECTANGLE"
+            fill-rule="evenodd"
+            class="s0"
+            d="m970 1350h1900c5.52 0 10 4.48 10 10v600c0 5.52-4.48 10-10 10h-1900c-5.52 0-10-4.48-10-10v-600c0-5.52 4.48-10 10-10z"
+        />
+      <g id="HOME - RIGHT" style="transform: translateX(100px);">
         <path
           id="HOME SCHOOL COLOR BG"
           fill-rule="evenodd"
@@ -63,7 +64,7 @@
         </text>
         <use id="Home - School Logo" href="#img2" x="2396" y="1457" />
       </g>
-      <g id="Away - Left">
+      <g id="Away - Left" style="transform: translateX(-100px);">
         <path
           :style="`fill: ${goToBreak.awayTeam.primaryColor || awayTeam.primaryColor || '#858585'}`"
           id="AWAY SCHOOL COLOR BG"
@@ -82,35 +83,30 @@
           style="transform: matrix(1.122, 0, 0, 1.122, 1222.563, 1783.783)"
         >
           <tspan :style="awayTeamName" text-anchor="middle" x="60" y="0" class="t3">
-            {{ goToBreak.awayTeam.name || awayTeam.teamName }} 
+            {{ goToBreak.awayTeam.name || awayTeam.teamName }}
           </tspan>
         </text>
         <use id="Away - School Logo" href="#img3" x="1143" y="1465" />
       </g>
       <g id="Score Box">
-        <path
-          id="Score Box"
-          fill-rule="evenodd"
-          class="s4"
-          d="m1510.5 1421h819v386h-819z"
-        />
-        <path
-          id="vertical sep"
-          fill-rule="evenodd"
-          class="s5"
-          d="m1916.5 1438h8v357h-8z"
-        />
+
+          <path
+              id="Score Box"
+              fill-rule="evenodd"
+              class="s4"
+              d="m1420 1421h1000v386h-1000z"
+          />
         <text
           id="Away Score"
-          style="transform: matrix(5.637, 0, 0, 5.637, 1630.226, 1709.835)"
+          style="transform: matrix(5.637, 0, 0, 5.637, 1590, 1709.835)"
         >
-          <tspan text-anchor="middle" x="15" y="0" class="t3">{{ scoreboard.awayTeam.score }}</tspan>
+          <tspan text-anchor="middle" x="0" y="0" class="t3">{{ scoreboard.awayTeam.score }}</tspan>
         </text>
         <text
           id="Home Score"
-          style="transform: matrix(5.637, 0, 0, 5.637, 2040.226, 1709.835)"
+          style="transform: matrix(5.637, 0, 0, 5.637, 2090, 1709.835)"
         >
-          <tspan text-anchor="middle" x="15" y="0" class="t3">{{ scoreboard.homeTeam.score }}</tspan>
+          <tspan text-anchor="middle" x="30" y="0" class="t3">{{ scoreboard.homeTeam.score }}</tspan>
         </text>
         <path
           id="Description Box"
@@ -122,24 +118,14 @@
           <tspan text-anchor="middle" x="265" y="0"  class="t3">{{ goToBreak.description.text }} {{ goToBreak.description.clock && clock.time ? `(${formattedClockTime})` : '' }}</tspan>
         </text>
       </g>
-      <g id="ECAC &amp; SNY">
-        <use
-          id="SNY_LOGO_BLUE"
-          href="#img4"
-          transform="matrix(.017,0,0,.017,1971.88,1284)"
-        />
-        <use
-          id="ECAC Primary Logo"
-          href="#img5"
-          transform="matrix(.195,0,0,.195,1527.104,1284.3)"
-        />
-      </g>
     </svg>
+    <SNYBug class="bug" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue';
+import SNYBug from './Bug.vue';
 
 const replicants = await useReplicants();
 const goToBreak = replicants.lowerThird.goToBreak;
@@ -180,7 +166,14 @@ const awayTeamName = computed((): CSSProperties => {
 </script>
 
 <style scoped>
-.fullscreen { 
+.bug {
+  position: absolute;
+  width: 17vw;
+  top: 62.5vh;
+  left: 41.6vw;
+}
+
+.fullscreen {
   width: 100vw;
   height: 100vh;
 }

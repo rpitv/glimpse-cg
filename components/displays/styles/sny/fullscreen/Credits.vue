@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="scale: 90%; transform: translateY(5vh)">
     <svg
       id="Layer_1"
       data-name="Layer 1"

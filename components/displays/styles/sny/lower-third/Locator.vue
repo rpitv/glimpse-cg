@@ -21,12 +21,12 @@
         />
       </defs>
 
-      <path
-        id="Locater BG"
-        fill-rule="evenodd"
-        class="s0"
-        d="m1471 1279h897c5.52 0 10 4.48 10 10v753c0 5.52-4.48 10-10 10h-897c-5.52 0-10-4.48-10-10v-753c0-5.52 4.48-10 10-10z"
-      />
+        <path
+            id="Locater BG"
+            fill-rule="evenodd"
+            class="s0"
+            d="m1295 1350h1250c5.52 0 10 4.48 10 10v680c0 5.52-4.48 10-10 10h-1250c-5.52 0-10-4.48-10-10v-680c0-5.52 4.48-10 10-10z"
+        />
       <g id="Location">
         <path
           id="Location BG"
@@ -47,7 +47,7 @@
           <tspan :style="locationStyle" text-anchor="middle" x="205" y="0" class="t3">{{ locator.location.name || 'Houston Field House' }}</tspan>
         </text>
       </g>
-      <g id="Home">
+      <g id="Home"  style="transform: translateX(150px);">
         <path
           id="Color bg"
           fill-rule="evenodd"
@@ -69,7 +69,7 @@
         </text>
         <use id="Home School Logo" href="#img2" x="2010" y="1470" />
       </g>
-      <g id="AWAY - LEFT">
+      <g id="AWAY - LEFT"  style="transform: translateX(-150px);">
         <path
           id="Away Color BG"
           fill-rule="evenodd"
@@ -91,24 +91,14 @@
         </text>
         <use id="Away School Logo" href="#img3" x="1531" y="1470" />
       </g>
-      <g id="ECAC &amp; SNY">
-        <use
-          id="SNY_LOGO_BLUE"
-          href="#img4"
-          transform="matrix(.017,0,0,.017,2010,1300)"
-        />
-        <use
-          id="ECAC Primary Logo"
-          href="#img5"
-          transform="matrix(.195,0,0,.196,1489.953,1300)"
-        />
-      </g>
     </svg>
+    <SNYBug class="bug" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { CSSProperties } from 'vue';
+import SNYBug from './Bug.vue';
 
 const replicants = await useReplicants();
 const locator = replicants.lowerThird.locator;
@@ -144,6 +134,14 @@ const awayTeamStyle = computed((): CSSProperties => {
   height: 100vh;
   width: 100vw;
 }
+
+.bug {
+  position: absolute;
+  width: 20vw;
+  top: 60vh;
+  left: 40vw;
+}
+
 tspan {
   white-space: pre;
 }

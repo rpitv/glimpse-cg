@@ -12,7 +12,7 @@
     <div class="commentators">
       <div class="container" v-for="(c, i) in commentators.people" :key="i">
         <p :style="{
-          color: commentators.people[i]!.nameColor || 'rgb(63, 64, 59)',
+          color: commentators.people[i]!.nameColor || 'black',
           fontSize: commentators.people[i]!.nameSize + 4 + 'vh',
         }">{{ commentators.people[i]?.name }}</p>
       </div>
@@ -82,6 +82,12 @@ onMounted(() => {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+.fullscreen {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+}
+
 .commentators {
   width: 85vw;
   height: 6vh;
@@ -111,6 +117,8 @@ onMounted(() => {
   justify-content: space-evenly;
   height: 100%;
   gap: 1vh;
+  font-weight: 600;
+  
 }
 
 .cls-1 {

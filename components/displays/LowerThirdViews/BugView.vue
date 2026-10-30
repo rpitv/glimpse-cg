@@ -2,7 +2,7 @@
   <div :class="channels![channelIndex]!.bug ? 'show' : 'hide'">
     <ESPNBug v-if="espnStyles.indexOf(configuration!.style) !== -1" />
     <RPITVBug v-if="rpiTVStyles.indexOf(configuration!.style) !== -1" />
-    <SNYBug v-if="configuration.style === 'sny'" />
+    <!-- <SNYBug v-if="configuration.style === 'sny'" /> -->
   </div>
 </template>
 
